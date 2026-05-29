@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { listTeams, registerTeam } from "./api/_lib/teams.js";
+import { listPlayers, registerPlayer } from "./api/_lib/players.js";
 import { validateRegistration } from "./api/_lib/validate.js";
 
 function localApiPlugin() {
@@ -13,14 +13,14 @@ function localApiPlugin() {
 
         res.setHeader("Content-Type", "application/json");
 
-        if (url === "/api/teams" && req.method === "GET") {
+        if (url === "/api/players" && req.method === "GET") {
           try {
-            const teams = await listTeams();
-            res.end(JSON.stringify({ teams, count: teams.length }));
+            const players = await listPlayers();
+            res.end(JSON.stringify({ players, count: players.length }));
           } catch (err) {
-            console.error("[teams]", err);
+            console.error("[players]", err);
             res.statusCode = 500;
-            res.end(JSON.stringify({ error: "Failed to load teams" }));
+            res.end(JSON.stringify({ error: "Failed to load players" }));
           }
           return;
         }
@@ -38,11 +38,11 @@ function localApiPlugin() {
                 res.end(JSON.stringify({ error: parsed.error }));
                 return;
               }
-              const team = await registerTeam(parsed.data);
+              const player = await registerPlayer(parsed.data);
               res.statusCode = 201;
-              res.end(JSON.stringify({ team }));
+              res.end(JSON.stringify({ player }));
             } catch (err) {
-              if (err?.code === "DUPLICATE") {
+              if (err?.code === "DUPLICATE" || err?.code === "FULL") {
                 res.statusCode = 409;
                 res.end(JSON.stringify({ error: err.message }));
                 return;

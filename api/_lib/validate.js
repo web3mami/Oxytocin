@@ -1,7 +1,9 @@
-const TEAM_NAME_RE = /^[\w\s\-'.]{2,32}$/u;
+import { tournament } from "../../shared/tournament.js";
+
 const IGN_RE = /^[\w\s\-'.#]{2,24}$/u;
 const UID_RE = /^\d{5,15}$/;
 const DISCORD_RE = /^.{2,64}$/;
+const X_HANDLE_RE = /^@?[A-Za-z0-9_]{1,15}$/;
 
 /**
  * @param {unknown} body
@@ -12,60 +14,56 @@ export function validateRegistration(body) {
     return { ok: false, error: "Invalid request body" };
   }
 
-  const teamName = trim(body.teamName);
-  const captainName = trim(body.captainName);
-  const captainDiscord = trim(body.captainDiscord);
-  const captainContact = trim(body.captainContact) || null;
-  const players = body.players;
+  const ign = trim(body.ign);
+  const uid = trim(body.uid);
+  const xHandle = normalizeXHandle(trim(body.xHandle));
+  const discord = trim(body.discord);
+  const modes = body.modes;
 
-  if (!teamName || !TEAM_NAME_RE.test(teamName)) {
-    return { ok: false, error: "Team name must be 2–32 characters" };
+  if (!ign || !IGN_RE.test(ign)) {
+    return { ok: false, error: "Valid CODM in-game name is required" };
   }
-  if (!captainName || captainName.length < 2 || captainName.length > 48) {
-    return { ok: false, error: "Captain name is required" };
+  if (!uid || !UID_RE.test(uid)) {
+    return { ok: false, error: "UID must be 5–15 digits" };
   }
-  if (!captainDiscord || !DISCORD_RE.test(captainDiscord)) {
-    return { ok: false, error: "Captain Discord is required" };
+  if (!xHandle || !X_HANDLE_RE.test(xHandle)) {
+    return { ok: false, error: "Valid X handle is required (e.g. @username)" };
   }
-  if (captainContact && captainContact.length > 80) {
-    return { ok: false, error: "Contact info is too long" };
+  if (!discord || !DISCORD_RE.test(discord)) {
+    return { ok: false, error: "Discord username is required" };
   }
-  if (!Array.isArray(players) || players.length !== 5) {
-    return { ok: false, error: "Exactly 5 players are required" };
+  if (!Array.isArray(modes) || modes.length === 0) {
+    return { ok: false, error: "Select at least one mode" };
   }
 
-  const normalizedPlayers = [];
-  const uids = new Set();
-
-  for (let i = 0; i < players.length; i++) {
-    const p = players[i];
-    const ign = trim(p?.ign);
-    const uid = trim(p?.uid);
-    const role = i === 0 ? "Captain" : trim(p?.role) || `Player ${i + 1}`;
-
-    if (!ign || !IGN_RE.test(ign)) {
-      return { ok: false, error: `Player ${i + 1}: invalid in-game name` };
+  const allowed = new Set(tournament.modes);
+  const normalizedModes = [];
+  for (const mode of modes) {
+    const value = trim(mode);
+    if (!allowed.has(value)) {
+      return { ok: false, error: "Invalid mode selection" };
     }
-    if (!uid || !UID_RE.test(uid)) {
-      return { ok: false, error: `Player ${i + 1}: UID must be 5–15 digits` };
+    if (!normalizedModes.includes(value)) {
+      normalizedModes.push(value);
     }
-    if (uids.has(uid)) {
-      return { ok: false, error: "Duplicate player UID in roster" };
-    }
-    uids.add(uid);
-    normalizedPlayers.push({ ign, uid, role });
   }
 
   return {
     ok: true,
     data: {
-      teamName,
-      captainName,
-      captainDiscord,
-      captainContact,
-      players: normalizedPlayers,
+      ign,
+      uid,
+      xHandle,
+      discord,
+      modes: normalizedModes,
     },
   };
+}
+
+/** @param {string} value */
+function normalizeXHandle(value) {
+  if (!value) return "";
+  return value.startsWith("@") ? value : `@${value}`;
 }
 
 /** @param {unknown} value */

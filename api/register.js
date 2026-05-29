@@ -1,4 +1,4 @@
-import { registerTeam } from "./_lib/teams.js";
+import { registerPlayer } from "./_lib/players.js";
 import { validateRegistration } from "./_lib/validate.js";
 
 export default async function handler(req, res) {
@@ -13,10 +13,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const team = await registerTeam(parsed.data);
-    return res.status(201).json({ team });
+    const player = await registerPlayer(parsed.data);
+    return res.status(201).json({ player });
   } catch (err) {
     if (err?.code === "DUPLICATE") {
+      return res.status(409).json({ error: err.message });
+    }
+    if (err?.code === "FULL") {
       return res.status(409).json({ error: err.message });
     }
     if (err?.code === "NO_STORAGE") {

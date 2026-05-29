@@ -1,24 +1,20 @@
 import { useState } from "react";
-import { ROSTER_SIZE } from "../config.js";
+import { tournament } from "../config.js";
 import { submitRegistration } from "../lib/api.js";
 
-const emptyPlayer = () => ({ ign: "", uid: "" });
-
 export default function RegistrationForm({ disabled, onRegistered }) {
-  const [teamName, setTeamName] = useState("");
-  const [captainName, setCaptainName] = useState("");
-  const [captainDiscord, setCaptainDiscord] = useState("");
-  const [captainContact, setCaptainContact] = useState("");
-  const [players, setPlayers] = useState(
-    Array.from({ length: ROSTER_SIZE }, () => emptyPlayer())
-  );
+  const [ign, setIgn] = useState("");
+  const [uid, setUid] = useState("");
+  const [xHandle, setXHandle] = useState("");
+  const [discord, setDiscord] = useState("");
+  const [modes, setModes] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  function updatePlayer(index, field, value) {
-    setPlayers((prev) =>
-      prev.map((p, i) => (i === index ? { ...p, [field]: value } : p))
+  function toggleMode(mode) {
+    setModes((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode]
     );
   }
 
@@ -31,22 +27,15 @@ export default function RegistrationForm({ disabled, onRegistered }) {
     setError("");
 
     try {
-      await submitRegistration({
-        teamName,
-        captainName,
-        captainDiscord,
-        captainContact,
-        players: players.map((p, i) => ({
-          ...p,
-          role: i === 0 ? "Captain" : `Player ${i + 1}`,
-        })),
-      });
-      setMessage("Team registered successfully. Good luck, operator.");
-      setTeamName("");
-      setCaptainName("");
-      setCaptainDiscord("");
-      setCaptainContact("");
-      setPlayers(Array.from({ length: ROSTER_SIZE }, () => emptyPlayer()));
+      await submitRegistration({ ign, uid, xHandle, discord, modes });
+      setMessage(
+        "You're registered. Teams will be drafted before the event — check Discord for updates."
+      );
+      setIgn("");
+      setUid("");
+      setXHandle("");
+      setDiscord("");
+      setModes([]);
       onRegistered?.();
     } catch (err) {
       setError(err.message);
@@ -59,92 +48,73 @@ export default function RegistrationForm({ disabled, onRegistered }) {
     <form className="register-form panel" onSubmit={handleSubmit}>
       {disabled && (
         <div className="alert alert--warn">
-          Registration is closed — all team slots are filled.
+          Registration is closed — all player slots are filled.
         </div>
       )}
 
       <fieldset disabled={disabled || submitting}>
-        <legend className="form-section-title">Team</legend>
-        <label className="field">
-          <span>Team name</span>
-          <input
-            type="text"
-            value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
-            placeholder="e.g. Shadow Legion"
-            required
-            maxLength={32}
-          />
-        </label>
-      </fieldset>
-
-      <fieldset disabled={disabled || submitting}>
-        <legend className="form-section-title">Captain contact</legend>
+        <legend className="form-section-title">Player details</legend>
         <div className="field-grid">
           <label className="field">
-            <span>Captain name</span>
+            <span>CODM in-game name</span>
             <input
               type="text"
-              value={captainName}
-              onChange={(e) => setCaptainName(e.target.value)}
-              placeholder="Full name or gamertag"
+              value={ign}
+              onChange={(e) => setIgn(e.target.value)}
+              placeholder="Your IGN"
               required
+              maxLength={24}
+            />
+          </label>
+          <label className="field">
+            <span>UID</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={uid}
+              onChange={(e) => setUid(e.target.value)}
+              placeholder="1234567890"
+              required
+              pattern="\d{5,15}"
+            />
+          </label>
+          <label className="field">
+            <span>X handle</span>
+            <input
+              type="text"
+              value={xHandle}
+              onChange={(e) => setXHandle(e.target.value)}
+              placeholder="@username"
+              required
+              maxLength={16}
             />
           </label>
           <label className="field">
             <span>Discord username</span>
             <input
               type="text"
-              value={captainDiscord}
-              onChange={(e) => setCaptainDiscord(e.target.value)}
-              placeholder="username or username#0000"
+              value={discord}
+              onChange={(e) => setDiscord(e.target.value)}
+              placeholder="username"
               required
-            />
-          </label>
-          <label className="field field--wide">
-            <span>Phone or email (optional)</span>
-            <input
-              type="text"
-              value={captainContact}
-              onChange={(e) => setCaptainContact(e.target.value)}
-              placeholder="For urgent match-day contact"
             />
           </label>
         </div>
       </fieldset>
 
       <fieldset disabled={disabled || submitting}>
-        <legend className="form-section-title">Roster — 5 players</legend>
-        <p className="field-hint">
-          Player 1 should be your in-game captain. UID is the numeric ID on your CODM profile.
-        </p>
-        <div className="roster">
-          {players.map((player, index) => (
-            <div className="roster-row" key={index}>
-              <span className="roster-row__num">{index + 1}</span>
-              <label className="field">
-                <span>In-game name</span>
-                <input
-                  type="text"
-                  value={player.ign}
-                  onChange={(e) => updatePlayer(index, "ign", e.target.value)}
-                  placeholder="IGN"
-                  required
-                />
-              </label>
-              <label className="field">
-                <span>UID</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={player.uid}
-                  onChange={(e) => updatePlayer(index, "uid", e.target.value)}
-                  placeholder="1234567890"
-                  required
-                  pattern="\d{5,15}"
-                />
-              </label>
-            </div>
+        <legend className="form-section-title">Mode preference</legend>
+        <p className="field-hint">Select one or both — used for drafting and bracket placement.</p>
+        <div className="mode-options">
+          {tournament.modes.map((mode) => (
+            <label className="mode-option" key={mode}>
+              <input
+                type="checkbox"
+                checked={modes.includes(mode)}
+                onChange={() => toggleMode(mode)}
+              />
+              <span>{mode}</span>
+            </label>
           ))}
         </div>
       </fieldset>
@@ -153,7 +123,7 @@ export default function RegistrationForm({ disabled, onRegistered }) {
       {message && <div className="alert alert--success">{message}</div>}
 
       <button className="btn btn--primary btn--full" type="submit" disabled={disabled}>
-        {submitting ? "Submitting…" : "Submit registration"}
+        {submitting ? "Submitting…" : "Register"}
       </button>
     </form>
   );

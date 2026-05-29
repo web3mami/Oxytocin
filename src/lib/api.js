@@ -1,8 +1,8 @@
 const API_BASE = "";
 
-export async function fetchTeams() {
-  const res = await fetch(`${API_BASE}/api/teams`);
-  if (!res.ok) throw new Error("Could not load teams");
+export async function fetchPlayers() {
+  const res = await fetch(`${API_BASE}/api/players`);
+  if (!res.ok) throw new Error("Could not load players");
   return res.json();
 }
 

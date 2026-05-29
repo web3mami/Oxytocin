@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { tournament } from "../../shared/tournament.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.join(__dirname, "../../data/registrations.json");
@@ -14,36 +15,43 @@ async function readFile() {
   }
 }
 
-async function writeFile(teams) {
-  await fs.writeFile(DATA_FILE, JSON.stringify(teams, null, 2), "utf8");
+async function writeFile(players) {
+  await fs.writeFile(DATA_FILE, JSON.stringify(players, null, 2), "utf8");
 }
 
 /** @returns {Promise<Array<object>>} */
-export async function listTeamsFromFile() {
-  const teams = await readFile();
-  return teams.sort(
+export async function listPlayersFromFile() {
+  const players = await readFile();
+  return players.sort(
     (a, b) => new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime()
   );
 }
 
-/** @param {object} team */
-export async function addTeamToFile(team) {
-  const teams = await readFile();
-  const exists = teams.some(
-    (t) => t.teamName.toLowerCase() === team.teamName.toLowerCase()
+/** @param {object} player */
+export async function addPlayerToFile(player) {
+  const players = await readFile();
+  if (players.length >= tournament.maxPlayers) {
+    const err = new Error("Registration is full");
+    err.code = "FULL";
+    throw err;
+  }
+  const duplicate = players.find(
+    (p) =>
+      p.uid === player.uid ||
+      p.ign.toLowerCase() === player.ign.toLowerCase()
   );
-  if (exists) {
-    const err = new Error("Team name already registered");
+  if (duplicate) {
+    const err = new Error("This player is already registered");
     err.code = "DUPLICATE";
     throw err;
   }
   const entry = {
     id: crypto.randomUUID(),
-    ...team,
+    ...player,
     registeredAt: new Date().toISOString(),
   };
-  teams.push(entry);
-  await writeFile(teams);
+  players.push(entry);
+  await writeFile(players);
   return entry;
 }
 

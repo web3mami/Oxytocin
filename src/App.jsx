@@ -2,38 +2,38 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header.jsx";
 import TournamentInfo from "./components/TournamentInfo.jsx";
 import RegistrationForm from "./components/RegistrationForm.jsx";
-import TeamList from "./components/TeamList.jsx";
-import { fetchTeams } from "./lib/api.js";
+import PlayerList from "./components/PlayerList.jsx";
+import { fetchPlayers } from "./lib/api.js";
 import { tournament } from "./config.js";
 
 export default function App() {
-  const [teams, setTeams] = useState([]);
+  const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  async function loadTeams() {
+  async function loadPlayers() {
     setLoading(true);
     setError("");
     try {
-      const data = await fetchTeams();
-      setTeams(data.teams || []);
+      const data = await fetchPlayers();
+      setPlayers(data.players || []);
     } catch {
-      setError("Could not load registered teams.");
+      setError("Could not load registered players.");
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadTeams();
+    loadPlayers();
   }, []);
 
-  const spotsLeft = Math.max(0, tournament.maxTeams - teams.length);
+  const spotsLeft = Math.max(0, tournament.maxPlayers - players.length);
   const registrationOpen = spotsLeft > 0;
 
   return (
     <>
-      <Header spotsLeft={spotsLeft} teamCount={teams.length} />
+      <Header spotsLeft={spotsLeft} playerCount={players.length} />
       <main>
         <section className="hero" id="top">
           <div className="hero__glow" aria-hidden="true" />
@@ -43,8 +43,8 @@ export default function App() {
             <p className="hero__subtitle">{tournament.subtitle}</p>
             <div className="hero__stats">
               <div className="stat-pill">
-                <span className="stat-pill__label">Format</span>
-                <span className="stat-pill__value">{tournament.format}</span>
+                <span className="stat-pill__label">Modes</span>
+                <span className="stat-pill__value">MP · BR</span>
               </div>
               <div className="stat-pill">
                 <span className="stat-pill__label">Date</span>
@@ -61,10 +61,10 @@ export default function App() {
             </div>
             <div className="hero__actions">
               <a className="btn btn--primary" href="#register">
-                Register your team
+                Register now
               </a>
-              <a className="btn btn--ghost" href="#teams">
-                View teams
+              <a className="btn btn--ghost" href="#players">
+                View players
               </a>
             </div>
           </div>
@@ -76,30 +76,30 @@ export default function App() {
           <div className="container">
             <div className="section__head">
               <p className="eyebrow">Registration</p>
-              <h2>Lock in your squad</h2>
+              <h2>Join the player pool</h2>
               <p className="section__lead">
                 {registrationOpen
-                  ? `${spotsLeft} of ${tournament.maxTeams} team slots available. Deadline: ${tournament.registrationDeadline}.`
+                  ? `${spotsLeft} of ${tournament.maxPlayers} slots available. Teams drafted after registration closes (${tournament.registrationDeadline}).`
                   : "Registration is full. Join the Discord for waitlist updates."}
               </p>
             </div>
             <RegistrationForm
               disabled={!registrationOpen}
-              onRegistered={() => loadTeams()}
+              onRegistered={() => loadPlayers()}
             />
           </div>
         </section>
 
-        <section className="section section--muted" id="teams">
+        <section className="section section--muted" id="players">
           <div className="container">
             <div className="section__head">
-              <p className="eyebrow">Roster</p>
-              <h2>Registered teams</h2>
+              <p className="eyebrow">Player pool</p>
+              <h2>Registered players</h2>
               <p className="section__lead">
-                {teams.length} team{teams.length === 1 ? "" : "s"} signed up so far.
+                {players.length} player{players.length === 1 ? "" : "s"} signed up so far.
               </p>
             </div>
-            <TeamList teams={teams} loading={loading} error={error} />
+            <PlayerList players={players} loading={loading} error={error} />
           </div>
         </section>
       </main>

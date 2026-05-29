@@ -1,4 +1,4 @@
-import { tournament } from "../config.js";
+import { tournament, ROSTER_SIZE } from "../config.js";
 
 export default function TournamentInfo() {
   return (
@@ -9,12 +9,12 @@ export default function TournamentInfo() {
           <h2>Tournament briefing</h2>
           <dl className="detail-list">
             <div>
-              <dt>Format</dt>
-              <dd>{tournament.format}</dd>
+              <dt>Modes</dt>
+              <dd>{tournament.modes.join(" · ")}</dd>
             </div>
             <div>
-              <dt>Mode</dt>
-              <dd>{tournament.mode}</dd>
+              <dt>Format</dt>
+              <dd>Individual sign-up · organizer draft into {ROSTER_SIZE}-player teams</dd>
             </div>
             <div>
               <dt>Date & time</dt>
@@ -35,8 +35,8 @@ export default function TournamentInfo() {
               <dd className="accent">{tournament.prizePool}</dd>
             </div>
             <div>
-              <dt>Max teams</dt>
-              <dd>{tournament.maxTeams}</dd>
+              <dt>Max players</dt>
+              <dd>{tournament.maxPlayers}</dd>
             </div>
             <div>
               <dt>Deadline</dt>
