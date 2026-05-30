@@ -44,7 +44,7 @@ export default function App() {
             <div className="hero__stats">
               <div className="stat-pill">
                 <span className="stat-pill__label">Modes</span>
-                <span className="stat-pill__value">MP · BR</span>
+                <span className="stat-pill__value">MP / BR</span>
               </div>
               <div className="stat-pill">
                 <span className="stat-pill__label">Date</span>
@@ -76,10 +76,10 @@ export default function App() {
           <div className="container">
             <div className="section__head">
               <p className="eyebrow">Registration</p>
-              <h2>Join the player pool</h2>
+              <h2>Lock in your spot</h2>
               <p className="section__lead">
                 {registrationOpen
-                  ? `${spotsLeft} of ${tournament.maxPlayers} slots available. Teams drafted after registration closes (${tournament.registrationDeadline}).`
+                  ? `${spotsLeft} of ${tournament.maxPlayers} player slots available. Teams drafted after registration closes (${tournament.registrationDeadline}).`
                   : "Registration is full. Join the Discord for waitlist updates."}
               </p>
             </div>
