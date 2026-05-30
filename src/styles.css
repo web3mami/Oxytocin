@@ -40,7 +40,7 @@ body {
   line-height: 1.5;
   color: var(--text);
   background:
-    repeating-radial-gradient(circle at 80% 20%, rgba(158, 255, 0, 0.05) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(135deg, rgba(158, 255, 0, 0.04) 0 2px, transparent 2px 22px),
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(158, 255, 0, 0.12), transparent),
     linear-gradient(180deg, #0d1015 0%, var(--bg) 40%);
   -webkit-font-smoothing: antialiased;
