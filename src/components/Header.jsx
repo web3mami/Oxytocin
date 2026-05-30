@@ -1,4 +1,4 @@
-export default function Header({ spotsLeft, playerCount }) {
+export default function Header({ spotsLeft }) {
   return (
     <header className="header">
       <div className="container header__inner">
@@ -12,7 +12,6 @@ export default function Header({ spotsLeft, playerCount }) {
         <nav className="header__nav">
           <a href="#info">Info</a>
           <a href="#register">Register</a>
-          <a href="#players">Players ({playerCount})</a>
         </nav>
         <div className="header__badge" aria-label={`${spotsLeft} spots remaining`}>
           {spotsLeft} slots left

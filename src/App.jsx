@@ -2,25 +2,18 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header.jsx";
 import TournamentInfo from "./components/TournamentInfo.jsx";
 import RegistrationForm from "./components/RegistrationForm.jsx";
-import PlayerList from "./components/PlayerList.jsx";
 import { fetchPlayers } from "./lib/api.js";
 import { tournament } from "./config.js";
 
 export default function App() {
   const [players, setPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   async function loadPlayers() {
-    setLoading(true);
-    setError("");
     try {
       const data = await fetchPlayers();
       setPlayers(data.players || []);
     } catch {
-      setError("Could not load registered players.");
-    } finally {
-      setLoading(false);
+      /* spots count falls back to 0 registered */
     }
   }
 
@@ -33,7 +26,7 @@ export default function App() {
 
   return (
     <>
-      <Header spotsLeft={spotsLeft} playerCount={players.length} />
+      <Header spotsLeft={spotsLeft} />
       <main>
         <section className="hero" id="top">
           <div className="hero__glow" aria-hidden="true" />
@@ -63,9 +56,6 @@ export default function App() {
               <a className="btn btn--primary" href="#register">
                 Register now
               </a>
-              <a className="btn btn--ghost" href="#players">
-                View players
-              </a>
             </div>
           </div>
         </section>
@@ -87,19 +77,6 @@ export default function App() {
               disabled={!registrationOpen}
               onRegistered={() => loadPlayers()}
             />
-          </div>
-        </section>
-
-        <section className="section section--muted" id="players">
-          <div className="container">
-            <div className="section__head">
-              <p className="eyebrow">Player pool</p>
-              <h2>Registered players</h2>
-              <p className="section__lead">
-                {players.length} player{players.length === 1 ? "" : "s"} signed up so far.
-              </p>
-            </div>
-            <PlayerList players={players} loading={loading} error={error} />
           </div>
         </section>
       </main>
