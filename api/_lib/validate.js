@@ -1,9 +1,5 @@
-import { tournament } from "../../shared/tournament.js";
-
-const IGN_RE = /^[\w\s\-'.#]{2,24}$/u;
-const UID_RE = /^\d{5,15}$/;
-const DISCORD_RE = /^.{2,64}$/;
-const X_HANDLE_RE = /^@?[A-Za-z0-9_]{1,15}$/;
+const IGN_RE = /^[\w\s\-'.#]{2,32}$/u;
+const X_HANDLE_RE = /^[A-Za-z0-9_]{1,15}$/;
 
 /**
  * @param {unknown} body
@@ -15,55 +11,29 @@ export function validateRegistration(body) {
   }
 
   const ign = trim(body.ign);
-  const uid = trim(body.uid);
-  const xHandle = normalizeXHandle(trim(body.xHandle));
-  const discord = trim(body.discord);
-  const modes = body.modes;
+  const xHandle = trim(body.xHandle).replace(/^@/, "");
+  const modeMp = Boolean(body.modeMp);
+  const modeBr = Boolean(body.modeBr);
 
   if (!ign || !IGN_RE.test(ign)) {
-    return { ok: false, error: "Valid CODM in-game name is required" };
+    return { ok: false, error: "Please enter your in-game name." };
   }
-  if (!uid || !UID_RE.test(uid)) {
-    return { ok: false, error: "UID must be 5–15 digits" };
+  if (xHandle && !X_HANDLE_RE.test(xHandle)) {
+    return { ok: false, error: "Invalid X handle." };
   }
-  if (!xHandle || !X_HANDLE_RE.test(xHandle)) {
-    return { ok: false, error: "Valid X handle is required (e.g. @username)" };
-  }
-  if (!discord || !DISCORD_RE.test(discord)) {
-    return { ok: false, error: "Discord username is required" };
-  }
-  if (!Array.isArray(modes) || modes.length === 0) {
-    return { ok: false, error: "Select at least one mode" };
-  }
-
-  const allowed = new Set(tournament.modes);
-  const normalizedModes = [];
-  for (const mode of modes) {
-    const value = trim(mode);
-    if (!allowed.has(value)) {
-      return { ok: false, error: "Invalid mode selection" };
-    }
-    if (!normalizedModes.includes(value)) {
-      normalizedModes.push(value);
-    }
+  if (!modeMp && !modeBr) {
+    return { ok: false, error: "Pick at least one mode (MP, BR, or both)." };
   }
 
   return {
     ok: true,
     data: {
       ign,
-      uid,
-      xHandle,
-      discord,
-      modes: normalizedModes,
+      xHandle: xHandle || null,
+      modeMp,
+      modeBr,
     },
   };
-}
-
-/** @param {string} value */
-function normalizeXHandle(value) {
-  if (!value) return "";
-  return value.startsWith("@") ? value : `@${value}`;
 }
 
 /** @param {unknown} value */

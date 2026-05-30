@@ -10,6 +10,13 @@ function formatDate(iso) {
   }
 }
 
+function modeLabels(player) {
+  const labels = [];
+  if (player.modeMp) labels.push("MP");
+  if (player.modeBr) labels.push("BR");
+  return labels;
+}
+
 export default function PlayerList({ players, loading, error }) {
   if (loading) {
     return <p className="empty-state">Loading players…</p>;
@@ -33,20 +40,13 @@ export default function PlayerList({ players, loading, error }) {
             <h3>{player.ign}</h3>
             <time dateTime={player.registeredAt}>{formatDate(player.registeredAt)}</time>
           </div>
-          <dl className="player-card__meta">
-            <div>
-              <dt>UID</dt>
-              <dd>{player.uid}</dd>
-            </div>
-            <div>
-              <dt>X</dt>
-              <dd>{player.xHandle}</dd>
-            </div>
-          </dl>
+          {player.xHandle && (
+            <p className="player-card__handle">@{player.xHandle.replace(/^@/, "")}</p>
+          )}
           <div className="player-card__modes">
-            {player.modes.map((mode) => (
-              <span className="mode-chip" key={mode}>
-                {mode.replace(" (MP)", "").replace(" (BR)", "")}
+            {modeLabels(player).map((label) => (
+              <span className="mode-chip" key={label}>
+                {label}
               </span>
             ))}
           </div>

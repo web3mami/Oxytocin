@@ -36,9 +36,7 @@ export async function addPlayerToFile(player) {
     throw err;
   }
   const duplicate = players.find(
-    (p) =>
-      p.uid === player.uid ||
-      p.ign.toLowerCase() === player.ign.toLowerCase()
+    (p) => p.ign.toLowerCase() === player.ign.toLowerCase()
   );
   if (duplicate) {
     const err = new Error("This player is already registered");

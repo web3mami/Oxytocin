@@ -1,41 +1,44 @@
 import { useState } from "react";
-import { tournament } from "../config.js";
 import { submitRegistration } from "../lib/api.js";
 
 export default function RegistrationForm({ disabled, onRegistered }) {
   const [ign, setIgn] = useState("");
-  const [uid, setUid] = useState("");
   const [xHandle, setXHandle] = useState("");
-  const [discord, setDiscord] = useState("");
-  const [modes, setModes] = useState([]);
+  const [modeMp, setModeMp] = useState(false);
+  const [modeBr, setModeBr] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  function toggleMode(mode) {
-    setModes((prev) =>
-      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode]
-    );
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     if (disabled || submitting) return;
+
+    if (!ign.trim()) {
+      setError("Please enter your in-game name.");
+      return;
+    }
+    if (!modeMp && !modeBr) {
+      setError("Pick at least one mode (MP, BR, or both).");
+      return;
+    }
 
     setSubmitting(true);
     setMessage("");
     setError("");
 
     try {
-      await submitRegistration({ ign, uid, xHandle, discord, modes });
-      setMessage(
-        "You're registered. Teams will be drafted before the event — check Discord for updates."
-      );
+      await submitRegistration({
+        ign: ign.trim(),
+        xHandle: xHandle.replace(/^@/, "").trim(),
+        modeMp,
+        modeBr,
+      });
+      setMessage("Registered successfully. Good luck, operator.");
       setIgn("");
-      setUid("");
       setXHandle("");
-      setDiscord("");
-      setModes([]);
+      setModeMp(false);
+      setModeBr(false);
       onRegistered?.();
     } catch (err) {
       setError(err.message);
@@ -48,34 +51,22 @@ export default function RegistrationForm({ disabled, onRegistered }) {
     <form className="register-form panel" onSubmit={handleSubmit}>
       {disabled && (
         <div className="alert alert--warn">
-          Registration is closed — all player slots are filled.
+          Registration is closed.
         </div>
       )}
 
       <fieldset disabled={disabled || submitting}>
-        <legend className="form-section-title">Player details</legend>
+        <legend className="form-section-title">Player identity</legend>
         <div className="field-grid">
           <label className="field">
-            <span>CODM in-game name</span>
+            <span>In-game name (IGN)</span>
             <input
               type="text"
               value={ign}
               onChange={(e) => setIgn(e.target.value)}
-              placeholder="Your IGN"
+              placeholder="Your CODM IGN"
               required
-              maxLength={24}
-            />
-          </label>
-          <label className="field">
-            <span>UID</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={uid}
-              onChange={(e) => setUid(e.target.value)}
-              placeholder="1234567890"
-              required
-              pattern="\d{5,15}"
+              maxLength={32}
             />
           </label>
           <label className="field">
@@ -84,38 +75,34 @@ export default function RegistrationForm({ disabled, onRegistered }) {
               type="text"
               value={xHandle}
               onChange={(e) => setXHandle(e.target.value)}
-              placeholder="@username"
-              required
-              maxLength={16}
-            />
-          </label>
-          <label className="field">
-            <span>Discord username</span>
-            <input
-              type="text"
-              value={discord}
-              onChange={(e) => setDiscord(e.target.value)}
-              placeholder="username"
-              required
+              placeholder="@yourhandle"
             />
           </label>
         </div>
       </fieldset>
 
       <fieldset disabled={disabled || submitting}>
-        <legend className="form-section-title">Mode preference</legend>
-        <p className="field-hint">Select one or both — used for drafting and bracket placement.</p>
-        <div className="mode-options">
-          {tournament.modes.map((mode) => (
-            <label className="mode-option" key={mode}>
-              <input
-                type="checkbox"
-                checked={modes.includes(mode)}
-                onChange={() => toggleMode(mode)}
-              />
-              <span>{mode}</span>
-            </label>
-          ))}
+        <legend className="form-section-title">Mode</legend>
+        <p className="field-hint">Pick one or both. Select both to play MP and BR.</p>
+        <div className="mode-grid">
+          <label className={`mode-card ${modeMp ? "mode-card--active" : ""}`}>
+            <input
+              type="checkbox"
+              checked={modeMp}
+              onChange={(e) => setModeMp(e.target.checked)}
+            />
+            <span className="mode-card__title">Multiplayer</span>
+            <span className="mode-card__tag">MP</span>
+          </label>
+          <label className={`mode-card ${modeBr ? "mode-card--active" : ""}`}>
+            <input
+              type="checkbox"
+              checked={modeBr}
+              onChange={(e) => setModeBr(e.target.checked)}
+            />
+            <span className="mode-card__title">Battle Royale</span>
+            <span className="mode-card__tag">BR</span>
+          </label>
         </div>
       </fieldset>
 
@@ -123,7 +110,7 @@ export default function RegistrationForm({ disabled, onRegistered }) {
       {message && <div className="alert alert--success">{message}</div>}
 
       <button className="btn btn--primary btn--full" type="submit" disabled={disabled}>
-        {submitting ? "Submitting…" : "Register"}
+        {submitting ? "Submitting..." : "Submit registration"}
       </button>
     </form>
   );

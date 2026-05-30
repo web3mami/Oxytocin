@@ -529,33 +529,56 @@ h3 {
   color: #ffe08a;
 }
 
-.mode-options {
-  display: flex;
-  flex-wrap: wrap;
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
-.mode-option {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.75rem 1rem;
+.mode-card {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  font-weight: 600;
   user-select: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.mode-option:has(input:checked) {
+.mode-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mode-card--active {
   border-color: var(--accent);
   background: var(--accent-dim);
+}
+
+.mode-card__title {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.mode-card__tag {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
   color: var(--accent-bright);
 }
 
-.mode-option input {
-  accent-color: var(--accent);
+.mode-card--active .mode-card__title {
+  color: var(--text);
+}
+
+.player-card__handle {
+  margin: 0 0 0.85rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
 }
 
 /* Player list */
