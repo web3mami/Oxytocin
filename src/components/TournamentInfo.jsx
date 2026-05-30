@@ -47,6 +47,20 @@ export default function TournamentInfo() {
         <div className="panel panel--wide">
           <p className="eyebrow">Rules</p>
           <h2>Competitive rules</h2>
+          <div className="bans-block">
+            <h3 className="bans-block__title">Weapon bans</h3>
+            <div className="format-card__maps">
+              {tournament.bans.weapons.map((weapon) => (
+                <span className="mode-chip" key={weapon}>{weapon}</span>
+              ))}
+            </div>
+            <h3 className="bans-block__title">Perk bans</h3>
+            <div className="format-card__maps">
+              {tournament.bans.perks.map((perk) => (
+                <span className="mode-chip" key={perk}>{perk}</span>
+              ))}
+            </div>
+          </div>
           <ul className="rules-list">
             {tournament.rules.map((rule) => (
               <li key={rule}>{rule}</li>

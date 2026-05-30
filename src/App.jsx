@@ -98,6 +98,9 @@ export default function App() {
             Join Discord
           </a>
         </div>
+        <p className="footer__sponsor">
+          Sponsored by <strong>Super Mom Milla</strong> · with love ♥
+        </p>
       </footer>
     </>
   );

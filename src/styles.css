@@ -810,6 +810,20 @@ h3 {
   margin: 0;
 }
 
+.footer__sponsor {
+  margin: 1.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.footer__sponsor strong {
+  color: var(--accent-bright);
+  font-weight: 600;
+}
+
 /* Countdown */
 .countdown {
   margin: 2.5rem 0;
@@ -998,4 +1012,22 @@ h3 {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent-bright);
+}
+
+.bans-block {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.bans-block__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.65rem;
+  color: var(--accent-bright);
+}
+
+.bans-block__title:not(:first-child) {
+  margin-top: 1rem;
 }

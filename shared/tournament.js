@@ -19,6 +19,10 @@ export const tournament = {
     "Drafted rosters are final once announced.",
     "Cheating, account sharing, or toxicity results in immediate disqualification.",
   ],
+  bans: {
+    weapons: ["SO14"],
+    perks: ["Persistence", "Martyrdom", "Quick Fix", "Tracker", "Alert", "High Alert"],
+  },
   schedule: [
     { label: "Registration opens", date: "May 30, 2026" },
     { label: "Registration closes", date: "June 10, 2026" },
