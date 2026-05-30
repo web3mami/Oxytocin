@@ -26,6 +26,28 @@ export const tournament = {
     { label: "Group stage", date: "June 14, 2026" },
     { label: "Grand finals", date: "June 15, 2026" },
   ],
+  mpFormat: {
+    series: "Best of 3",
+    description: "Modes are Search & Destroy and Domination.",
+    tiebreaker: "Hardpoint",
+    modes: [
+      {
+        name: "Search & Destroy",
+        rules: ["Rounds: 6", "Time limit: 90 seconds"],
+        maps: ["Tunisia", "Firing Range", "Raid"],
+      },
+      {
+        name: "Domination",
+        rules: ["Score limit: 250", "Time limit: 600 seconds"],
+        maps: ["Standoff", "Firing Range", "Vacant"],
+      },
+    ],
+    tiebreakerMode: {
+      name: "Hardpoint",
+      rules: ["Score limit: 250", "Time limit: 600 seconds"],
+      maps: ["Summit", "Firing Range", "Standoff"],
+    },
+  },
 };
 
 export const ROSTER_SIZE = 5;

@@ -1,61 +1,47 @@
-import { tournament, ROSTER_SIZE } from "../config.js";
+import { tournament } from "../config.js";
 
 export default function TournamentInfo() {
   return (
     <section className="section" id="info">
       <div className="container info-grid">
-        <div className="panel">
-          <p className="eyebrow">Event details</p>
-          <h2>Tournament briefing</h2>
-          <dl className="detail-list">
-            <div>
-              <dt>Modes</dt>
-              <dd>{tournament.modes.join(" · ")}</dd>
-            </div>
-            <div>
-              <dt>Format</dt>
-              <dd>Individual sign-up · organizer draft into {ROSTER_SIZE}-player teams</dd>
-            </div>
-            <div>
-              <dt>Date & time</dt>
-              <dd>
-                {tournament.date} · {tournament.time}
-              </dd>
-            </div>
-            <div>
-              <dt>Venue</dt>
-              <dd>{tournament.venue}</dd>
-            </div>
-            <div>
-              <dt>Entry fee</dt>
-              <dd>{tournament.entryFee}</dd>
-            </div>
-            <div>
-              <dt>Prize pool</dt>
-              <dd className="accent">{tournament.prizePool}</dd>
-            </div>
-            <div>
-              <dt>Max players</dt>
-              <dd>{tournament.maxPlayers}</dd>
-            </div>
-            <div>
-              <dt>Deadline</dt>
-              <dd>{tournament.registrationDeadline}</dd>
-            </div>
-          </dl>
-        </div>
-
-        <div className="panel">
-          <p className="eyebrow">Schedule</p>
-          <h2>Key dates</h2>
-          <ol className="timeline">
-            {tournament.schedule.map((item) => (
-              <li key={item.label}>
-                <span className="timeline__date">{item.date}</span>
-                <span className="timeline__label">{item.label}</span>
-              </li>
+        <div className="panel panel--wide">
+          <p className="eyebrow">Multiplayer format</p>
+          <h2>MP match format</h2>
+          <p className="section__lead" style={{ marginBottom: "1.25rem" }}>
+            {tournament.mpFormat.series}. {tournament.mpFormat.description} Tiebreaker:{" "}
+            {tournament.mpFormat.tiebreaker}.
+          </p>
+          <div className="format-grid">
+            {tournament.mpFormat.modes.map((mode) => (
+              <div className="format-card" key={mode.name}>
+                <h3>{mode.name}</h3>
+                <ul className="format-card__rules">
+                  {mode.rules.map((r) => (
+                    <li key={r}>{r}</li>
+                  ))}
+                </ul>
+                <div className="format-card__maps">
+                  {mode.maps.map((m) => (
+                    <span className="mode-chip" key={m}>{m}</span>
+                  ))}
+                </div>
+              </div>
             ))}
-          </ol>
+            <div className="format-card format-card--tiebreaker">
+              <p className="format-card__tag">Tiebreaker</p>
+              <h3>{tournament.mpFormat.tiebreakerMode.name}</h3>
+              <ul className="format-card__rules">
+                {tournament.mpFormat.tiebreakerMode.rules.map((r) => (
+                  <li key={r}>{r}</li>
+                ))}
+              </ul>
+              <div className="format-card__maps">
+                {tournament.mpFormat.tiebreakerMode.maps.map((m) => (
+                  <span className="mode-chip" key={m}>{m}</span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="panel panel--wide">
