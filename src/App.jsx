@@ -35,6 +35,9 @@ export default function App() {
           <div className="hero__reticle" aria-hidden="true" />
           <div className="hero__frame" aria-hidden="true" />
           <div className="container hero__inner">
+            <div className="hero__emblem">
+              <img src="/emblem.svg" alt="Oxytocin Cup" />
+            </div>
             <p className="eyebrow">Call of Duty Mobile</p>
             <h1><Typewriter text={tournament.name} speed={95} /></h1>
             <p className="hero__subtitle">{tournament.subtitle}</p>

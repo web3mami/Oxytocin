@@ -3,7 +3,7 @@ export default function Header({ spotsLeft }) {
     <header className="header">
       <div className="container header__inner">
         <a className="brand" href="#top">
-          <span className="brand__mark" aria-hidden="true" />
+          <img src="/emblem.svg" alt="Oxytocin Cup" className="brand__mark" />
           <span>
             <strong>Oxytocin</strong>
             <small>CODM Cup</small>

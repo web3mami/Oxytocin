@@ -163,13 +163,16 @@ h3 {
 }
 
 .brand__mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background:
-    linear-gradient(135deg, var(--accent) 0%, #5a8a00 100%);
-  box-shadow: 0 0 20px var(--accent-glow);
-  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+  height: 52px;
+  width: auto;
+  max-width: 78px;
+  object-fit: contain;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.brand:hover .brand__mark {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 14px var(--accent-glow));
 }
 
 .header__nav {
@@ -296,6 +299,31 @@ h3 {
 .hero__inner {
   position: relative;
   z-index: 2;
+}
+
+.hero__emblem {
+  width: min(320px, 78vw);
+  margin: 0 auto 1.75rem;
+}
+
+.hero__emblem img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 28px var(--accent-glow));
+  animation: emblem-idle 5.5s ease-in-out infinite;
+}
+
+@keyframes emblem-idle {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 22px rgba(158, 255, 0, 0.24));
+  }
+  50% {
+    transform: translateY(-8px) scale(1.12);
+    filter: drop-shadow(0 0 48px rgba(158, 255, 0, 0.52));
+  }
 }
 
 .hero__subtitle {
@@ -845,6 +873,7 @@ h3 {
   animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .hero__inner > .eyebrow      { animation-delay: 0.05s; }
+.hero__inner > .hero__emblem  { animation-delay: 0.02s; }
 .hero__inner > h1 {
   opacity: 1;
   animation: none;
