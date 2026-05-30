@@ -7,7 +7,7 @@ export const tournament = {
   venue: "Online — Discord lobby",
   maxPlayers: 80,
   entryFee: "Free",
-  prizePool: "₦15,000",
+  prizePool: "₦500,000",
   registrationDeadline: "June 10, 2026",
   registrationCloseISO: "2026-06-10T23:59:59",
   discordInvite: "https://discord.gg/your-invite",
