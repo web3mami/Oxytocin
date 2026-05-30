@@ -12,7 +12,7 @@ export async function listPlayers() {
   if (sql) {
     await ensureSchema(sql);
     const rows = await sql`
-      SELECT id, ign, x_handle, mode_mp, mode_br, registered_at
+      SELECT id, ign, uid, x_handle, mode_mp, mode_br, registered_at
       FROM players
       ORDER BY registered_at DESC
     `;
@@ -38,14 +38,15 @@ export async function registerPlayer(data) {
     await ensureSchema(sql);
     try {
       const rows = await sql`
-        INSERT INTO players (ign, x_handle, mode_mp, mode_br)
+        INSERT INTO players (ign, uid, x_handle, mode_mp, mode_br)
         VALUES (
           ${data.ign},
+          ${data.uid},
           ${data.xHandle},
           ${data.modeMp},
           ${data.modeBr}
         )
-        RETURNING id, ign, x_handle, mode_mp, mode_br, registered_at
+        RETURNING id, ign, uid, x_handle, mode_mp, mode_br, registered_at
       `;
       return mapDbRow(rows[0]);
     } catch (err) {
@@ -72,6 +73,7 @@ function mapDbRow(row) {
   return {
     id: row.id,
     ign: row.ign,
+    uid: row.uid,
     xHandle: row.x_handle,
     modeMp: row.mode_mp,
     modeBr: row.mode_br,

@@ -3,6 +3,7 @@ import { submitRegistration } from "../lib/api.js";
 
 export default function RegistrationForm({ disabled, onRegistered }) {
   const [ign, setIgn] = useState("");
+  const [uid, setUid] = useState("");
   const [xHandle, setXHandle] = useState("");
   const [modeMp, setModeMp] = useState(false);
   const [modeBr, setModeBr] = useState(false);
@@ -30,12 +31,14 @@ export default function RegistrationForm({ disabled, onRegistered }) {
     try {
       await submitRegistration({
         ign: ign.trim(),
+        uid: uid.trim(),
         xHandle: xHandle.replace(/^@/, "").trim(),
         modeMp,
         modeBr,
       });
       setMessage("Registered successfully. Good luck, operator.");
       setIgn("");
+      setUid("");
       setXHandle("");
       setModeMp(false);
       setModeBr(false);
@@ -67,6 +70,18 @@ export default function RegistrationForm({ disabled, onRegistered }) {
               placeholder="Your CODM IGN"
               required
               maxLength={32}
+            />
+          </label>
+          <label className="field">
+            <span>UID</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={uid}
+              onChange={(e) => setUid(e.target.value)}
+              placeholder="1234567890"
+              required
+              pattern="\d{5,15}"
             />
           </label>
           <label className="field">

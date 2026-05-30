@@ -40,9 +40,18 @@ export default function PlayerList({ players, loading, error }) {
             <h3>{player.ign}</h3>
             <time dateTime={player.registeredAt}>{formatDate(player.registeredAt)}</time>
           </div>
-          {player.xHandle && (
-            <p className="player-card__handle">@{player.xHandle.replace(/^@/, "")}</p>
-          )}
+          <dl className="player-card__meta">
+            <div>
+              <dt>UID</dt>
+              <dd>{player.uid}</dd>
+            </div>
+            {player.xHandle && (
+              <div>
+                <dt>X</dt>
+                <dd>@{player.xHandle.replace(/^@/, "")}</dd>
+              </div>
+            )}
+          </dl>
           <div className="player-card__modes">
             {modeLabels(player).map((label) => (
               <span className="mode-chip" key={label}>
