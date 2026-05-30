@@ -811,17 +811,56 @@ h3 {
 }
 
 .footer__sponsor {
-  margin: 1.5rem 0 0;
-  padding-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 2rem auto 0;
+  padding: 1.5rem 1.75rem 0.25rem;
+  max-width: var(--container);
   border-top: 1px solid var(--line);
   text-align: center;
-  font-size: 0.95rem;
+}
+
+.footer__sponsor-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.footer__sponsor strong {
+.footer__sponsor-name {
+  font-family: var(--font-stencil);
+  font-size: clamp(1.4rem, 4.5vw, 2rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
   color: var(--accent-bright);
-  font-weight: 600;
+  text-shadow:
+    0 0 24px var(--accent-glow),
+    0 0 48px rgba(158, 255, 0, 0.12);
+}
+
+.footer__sponsor-heart {
+  display: inline-block;
+  margin-left: 0.2em;
+  font-family: var(--font-body);
+  font-size: 0.72em;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 10px rgba(255, 120, 140, 0.45));
+  animation: sponsor-heart-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes sponsor-heart-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
 }
 
 /* Countdown */
