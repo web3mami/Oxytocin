@@ -9,6 +9,7 @@ export const tournament = {
   entryFee: "Free",
   prizePool: "₦15,000",
   registrationDeadline: "June 10, 2026",
+  registrationCloseISO: "2026-06-10T23:59:59",
   discordInvite: "https://discord.gg/your-invite",
   rules: [
     "Register as an individual — teams will be drafted by the organizer.",

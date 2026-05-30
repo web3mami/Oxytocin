@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header.jsx";
 import TournamentInfo from "./components/TournamentInfo.jsx";
 import RegistrationForm from "./components/RegistrationForm.jsx";
+import Countdown from "./components/Countdown.jsx";
+import Typewriter from "./components/Typewriter.jsx";
 import { fetchPlayers } from "./lib/api.js";
 import { tournament } from "./config.js";
 
@@ -30,9 +32,11 @@ export default function App() {
       <main>
         <section className="hero" id="top">
           <div className="hero__glow" aria-hidden="true" />
+          <div className="hero__reticle" aria-hidden="true" />
+          <div className="hero__frame" aria-hidden="true" />
           <div className="container hero__inner">
             <p className="eyebrow">Call of Duty Mobile</p>
-            <h1>{tournament.name}</h1>
+            <h1><Typewriter text={tournament.name} speed={95} /></h1>
             <p className="hero__subtitle">{tournament.subtitle}</p>
             <div className="hero__stats">
               <div className="stat-pill">
@@ -52,6 +56,9 @@ export default function App() {
                 <span className="stat-pill__value">{spotsLeft}</span>
               </div>
             </div>
+
+            <Countdown />
+
             <div className="hero__actions">
               <a className="btn btn--primary" href="#register">
                 Register now
