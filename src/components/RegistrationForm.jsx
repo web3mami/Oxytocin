@@ -83,7 +83,6 @@ export default function RegistrationForm({ disabled, onRegistered }) {
               inputMode="numeric"
               value={uid}
               onChange={(e) => setUid(e.target.value.replace(/\D/g, "").slice(0, 20))}
-              placeholder="6793344815339077633"
               required
               maxLength={20}
               pattern="\d{19,20}"
