@@ -26,6 +26,11 @@
   --font-stencil: "Wallpoet", sans-serif;
   --font-body: "Rajdhani", "Segoe UI", sans-serif;
   --font-mono: "Share Tech Mono", ui-monospace, monospace;
+  /* Hero HUD — locked typography; do not change when editing other sections */
+  --font-hero-label: "Rajdhani", "Segoe UI", sans-serif;
+  --font-hero-stat: "Bebas Neue", Impact, sans-serif;
+  --font-hero-countdown: "Share Tech Mono", ui-monospace, monospace;
+  --font-hero-button: "Rajdhani", "Segoe UI", sans-serif;
   --radius: 12px;
   --radius-lg: 18px;
   --container: min(1120px, calc(100% - 2rem));
@@ -357,6 +362,7 @@ h3 {
 
 .stat-pill__label {
   display: block;
+  font-family: var(--font-hero-label);
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -365,7 +371,7 @@ h3 {
 }
 
 .stat-pill__value {
-  font-family: var(--font-display);
+  font-family: var(--font-hero-stat);
   font-size: 1.5rem;
   letter-spacing: 0.06em;
 }
@@ -374,6 +380,10 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+.hero__actions .btn {
+  font-family: var(--font-hero-button);
 }
 
 @media (min-width: 640px) {
@@ -871,10 +881,14 @@ h3 {
   }
 }
 
-/* Countdown */
+/* Countdown — hero HUD typography locked via --font-hero-* tokens */
 .countdown {
   margin: 2.5rem 0;
   text-align: center;
+}
+
+.countdown .eyebrow {
+  font-family: var(--font-hero-label);
 }
 
 .countdown__grid {
@@ -898,7 +912,7 @@ h3 {
 }
 
 .countdown__value {
-  font-family: var(--font-mono);
+  font-family: var(--font-hero-countdown);
   font-size: clamp(2.5rem, 9vw, 4rem);
   line-height: 1;
   color: var(--accent-bright);
@@ -906,7 +920,7 @@ h3 {
 }
 
 .countdown__label {
-  font-family: var(--font-mono);
+  font-family: var(--font-hero-countdown);
   font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
