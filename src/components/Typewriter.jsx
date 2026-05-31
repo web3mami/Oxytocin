@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 
 const HERO_FONT = '400 1em "Wallpoet"';
 
+async function waitForWallpoet() {
+  await document.fonts.load(HERO_FONT);
+  await document.fonts.ready;
+  return document.fonts.check(HERO_FONT);
+}
+
 export default function Typewriter({ text, speed = 60, className = "" }) {
   const [fontReady, setFontReady] = useState(false);
   const [shown, setShown] = useState("");
@@ -9,8 +15,8 @@ export default function Typewriter({ text, speed = 60, className = "" }) {
   useEffect(() => {
     let cancelled = false;
 
-    document.fonts.load(HERO_FONT).then(() => {
-      if (!cancelled) setFontReady(true);
+    waitForWallpoet().then((ready) => {
+      if (!cancelled) setFontReady(ready);
     });
 
     return () => {

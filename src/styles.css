@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Wallpoet";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("/fonts/Wallpoet-Regular.ttf") format("truetype");
+}
+
 :root {
   --bg: #0a0c0f;
   --bg-elevated: #12161c;
@@ -15,7 +23,7 @@
   --danger: #ff5c5c;
   --warn: #f0b429;
   --font-display: "Bebas Neue", Impact, sans-serif;
-  --font-stencil: "Wallpoet", "Bebas Neue", Impact, sans-serif;
+  --font-stencil: "Wallpoet", sans-serif;
   --font-body: "Rajdhani", "Segoe UI", sans-serif;
   --font-mono: "Share Tech Mono", ui-monospace, monospace;
   --radius: 12px;
