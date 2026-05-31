@@ -1060,9 +1060,10 @@ h3 {
 }
 
 .bans-block__title {
-  font-family: var(--font-display);
+  font-family: var(--font-stencil);
   font-size: 1.15rem;
-  letter-spacing: 0.06em;
+  font-weight: 400;
+  letter-spacing: 0.08em;
   margin: 0 0 0.65rem;
   color: var(--accent-bright);
 }
@@ -1091,9 +1092,10 @@ h3 {
 
 .weapon-ban-group__label {
   margin: 0 0 0.65rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-family: var(--font-stencil);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-bright);
 }
@@ -1133,9 +1135,10 @@ h3 {
 
 .bans-block__subtitle {
   margin: 0.85rem 0 0.55rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-family: var(--font-stencil);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-bright);
 }
