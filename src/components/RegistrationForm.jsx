@@ -19,8 +19,8 @@ export default function RegistrationForm({ disabled, onRegistered }) {
       setError("Please enter your in-game name.");
       return;
     }
-    if (!/^\d{19}$/.test(uid.trim())) {
-      setError("UID must be exactly 19 digits.");
+    if (!/^\d{19,20}$/.test(uid.trim())) {
+      setError("UID must be 19–20 digits.");
       return;
     }
     if (!modeMp && !modeBr) {
@@ -82,12 +82,12 @@ export default function RegistrationForm({ disabled, onRegistered }) {
               type="text"
               inputMode="numeric"
               value={uid}
-              onChange={(e) => setUid(e.target.value.replace(/\D/g, "").slice(0, 19))}
+              onChange={(e) => setUid(e.target.value.replace(/\D/g, "").slice(0, 20))}
               placeholder="6793344815339077633"
               required
-              maxLength={19}
-              pattern="\d{19}"
-              title="Enter your 19-digit CODM UID"
+              maxLength={20}
+              pattern="\d{19,20}"
+              title="Enter your 19–20 digit CODM UID"
             />
           </label>
           <label className="field">
