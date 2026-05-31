@@ -42,6 +42,26 @@ export default function App() {
             <h1><Typewriter text={tournament.name} speed={95} /></h1>
             <p className="hero__subtitle">{tournament.subtitle}</p>
             <div className="hero__stats">
+              <div className="stat-pill stat-pill--prize">
+                <span className="stat-pill__label">Prize pool</span>
+                <div className="stat-pill__value">
+                  <div className="stat-pill__prize-total">
+                    <span className="stat-pill__prize-total-label">Total prize pool</span>
+                    <span className="stat-pill__prize-total-amount">{tournament.prizePool.total}</span>
+                  </div>
+                  <div className="stat-pill__prize-splits">
+                    {tournament.prizePool.splits.map((split) => (
+                      <div className="stat-pill__prize-card" key={split.mode}>
+                        <p className="stat-pill__prize-mode">{split.mode}</p>
+                        <p className="stat-pill__prize-amount">{split.amount}</p>
+                        {split.detail ? (
+                          <p className="stat-pill__prize-detail">{split.detail}</p>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
               <div className="stat-pill">
                 <span className="stat-pill__label">Modes</span>
                 <span className="stat-pill__value">MP / BR</span>
@@ -49,10 +69,6 @@ export default function App() {
               <div className="stat-pill">
                 <span className="stat-pill__label">Date</span>
                 <span className="stat-pill__value">{tournament.date}</span>
-              </div>
-              <div className="stat-pill">
-                <span className="stat-pill__label">Prize</span>
-                <span className="stat-pill__value accent">{tournament.prizePool}</span>
               </div>
               <div className="stat-pill">
                 <span className="stat-pill__label">Spots left</span>
@@ -94,9 +110,17 @@ export default function App() {
       <footer className="footer">
         <div className="footer__sponsor">
           <span className="footer__sponsor-label">Sponsored by</span>
-          <span className="footer__sponsor-name">
-            Super Mom Milla <span className="footer__sponsor-heart" aria-hidden="true">❤️</span>
-          </span>
+          <a
+            className="footer__sponsor-link"
+            href={tournament.sponsor.xUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <span className="footer__sponsor-name">
+              {tournament.sponsor.name}{" "}
+              <span className="footer__sponsor-handle">@{tournament.sponsor.xHandle}</span>
+            </span>
+          </a>
         </div>
       </footer>
     </>

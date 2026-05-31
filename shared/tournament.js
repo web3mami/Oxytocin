@@ -7,7 +7,25 @@ export const tournament = {
   venue: "Online — Discord lobby",
   maxPlayers: 80,
   entryFee: "Free",
-  prizePool: "₦500,000",
+  prizePool: {
+    total: "₦200,000",
+    splits: [
+      {
+        mode: "Battle Royale Duo",
+        amount: "₦100,000",
+      },
+      {
+        mode: "Multiplayer",
+        amount: "₦100,000",
+        detail: "Top 3 winning team",
+      },
+    ],
+  },
+  sponsor: {
+    name: "Sakura",
+    xHandle: "Sakuramanga_",
+    xUrl: "https://x.com/Sakuramanga_",
+  },
   registrationDeadline: "June 10, 2026",
   registrationCloseISO: "2026-06-10T23:59:59",
   discordInvite: "https://discord.gg/your-invite",

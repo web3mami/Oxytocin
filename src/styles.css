@@ -375,6 +375,137 @@ h3 {
   letter-spacing: 0.06em;
 }
 
+.stat-pill--prize {
+  position: relative;
+  grid-column: 1 / -1;
+  padding: 1.2rem 1.35rem 1.2rem 1.5rem;
+  border: 1px solid rgba(158, 255, 0, 0.42);
+  background:
+    linear-gradient(135deg, rgba(158, 255, 0, 0.16), rgba(158, 255, 0, 0.04)),
+    rgba(0, 0, 0, 0.32);
+  box-shadow:
+    inset 0 0 0 1px rgba(158, 255, 0, 0.1),
+    inset 0 0 28px rgba(158, 255, 0, 0.08),
+    0 0 36px rgba(158, 255, 0, 0.14);
+  animation: prize-pill-glow 4s ease-in-out infinite;
+}
+
+.stat-pill--prize::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.9rem;
+  bottom: 0.9rem;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent-bright);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.stat-pill--prize .stat-pill__label {
+  color: var(--accent-bright);
+  letter-spacing: 0.2em;
+}
+
+.stat-pill--prize .stat-pill__value {
+  display: grid;
+  gap: 1rem;
+}
+
+.stat-pill__prize-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(158, 255, 0, 0.22);
+}
+
+.stat-pill__prize-total-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.stat-pill__prize-total-amount {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--accent-bright);
+  text-shadow:
+    0 0 20px var(--accent-glow),
+    0 0 40px rgba(158, 255, 0, 0.2);
+}
+
+.stat-pill__prize-splits {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.stat-pill__prize-card {
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(158, 255, 0, 0.2);
+  border-radius: calc(var(--radius) - 2px);
+  background: rgba(0, 0, 0, 0.28);
+  box-shadow: inset 0 0 18px rgba(158, 255, 0, 0.04);
+}
+
+.stat-pill__prize-mode {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.stat-pill__prize-amount {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 4vw, 1.65rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.stat-pill__prize-detail {
+  margin: 0.45rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+@keyframes prize-pill-glow {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 0 1px rgba(158, 255, 0, 0.1),
+      inset 0 0 28px rgba(158, 255, 0, 0.08),
+      0 0 28px rgba(158, 255, 0, 0.1);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 1px rgba(158, 255, 0, 0.16),
+      inset 0 0 32px rgba(158, 255, 0, 0.12),
+      0 0 44px rgba(158, 255, 0, 0.2);
+  }
+}
+
+@media (min-width: 640px) {
+  .stat-pill__prize-splits {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -389,7 +520,7 @@ h3 {
 
 @media (min-width: 640px) {
   .hero__stats {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -850,6 +981,18 @@ h3 {
   color: var(--text-muted);
 }
 
+.footer__sponsor-link {
+  color: inherit;
+  text-decoration: none;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.footer__sponsor-link:hover {
+  text-decoration: none;
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
 .footer__sponsor-name {
   font-family: var(--font-stencil);
   font-size: clamp(1.4rem, 4.5vw, 2rem);
@@ -862,24 +1005,16 @@ h3 {
     0 0 48px rgba(158, 255, 0, 0.12);
 }
 
-.footer__sponsor-heart {
-  display: inline-block;
-  margin-left: 0.2em;
-  font-family: var(--font-body);
-  font-size: 0.72em;
-  vertical-align: middle;
-  filter: drop-shadow(0 0 10px rgba(255, 120, 140, 0.45));
-  animation: sponsor-heart-pulse 2.8s ease-in-out infinite;
-}
-
-@keyframes sponsor-heart-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.12);
-  }
+.footer__sponsor-handle {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 2.8vw, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: none;
+  color: var(--accent);
+  text-shadow: none;
 }
 
 /* Countdown — hero HUD typography locked via --font-hero-* tokens */
