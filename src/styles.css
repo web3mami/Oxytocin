@@ -1091,12 +1091,11 @@ h3 {
 
 .weapon-ban-group__label {
   margin: 0 0 0.65rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 400;
+  font-size: 0.72rem;
+  font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--accent-bright);
 }
 
 .weapon-ban-chips {
@@ -1109,24 +1108,21 @@ h3 {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.35rem 0.65rem;
-  border: 1px solid var(--line-strong);
+  padding: 0.25rem 0.55rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 0.9rem;
-  color: var(--text);
-}
-
-.weapon-ban-chip strong {
+  font-size: 0.75rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--accent-bright);
+  background: var(--accent-dim);
+  border: 1px solid rgba(158, 255, 0, 0.25);
 }
 
 .weapon-ban-chip span {
-  font-size: 0.78rem;
+  font-size: 0.68rem;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  opacity: 0.85;
 }
 
 .weapon-ban-chip--thermite {
@@ -1137,12 +1133,11 @@ h3 {
 
 .bans-block__subtitle {
   margin: 0.85rem 0 0.55rem;
-  font-family: var(--font-mono);
   font-size: 0.72rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--accent-bright);
 }
 
 .mode-chip--warn {
@@ -1163,9 +1158,11 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  font-size: 0.98rem;
-  font-weight: 600;
-  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
 }
 
 .perk-ban::before {
