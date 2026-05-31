@@ -1,4 +1,3 @@
-import { tournament } from "../../shared/tournament.js";
 import { ensureSchema, getSql } from "./db.js";
 import {
   addPlayerToFile,
@@ -26,13 +25,6 @@ export async function listPlayers() {
 
 /** @param {object} data */
 export async function registerPlayer(data) {
-  const existing = await listPlayers();
-  if (existing.length >= tournament.maxPlayers) {
-    const err = new Error("Registration is full");
-    err.code = "FULL";
-    throw err;
-  }
-
   const sql = getSql();
   if (sql) {
     await ensureSchema(sql);

@@ -5,7 +5,6 @@ export const tournament = {
   date: "June 14, 2026",
   time: "6:00 PM (local)",
   venue: "Online — Discord lobby",
-  maxPlayers: 80,
   entryFee: "Free",
   prizePool: {
     total: "₦200,000",
@@ -43,6 +42,7 @@ export const tournament = {
       general: [
         { name: "SO14", type: "Marksman Rifle" },
         { name: "Striker", type: "Shotgun" },
+        { name: "Oden", type: "Assault Rifle" },
       ],
       thermite: ["Rytec AMR", "Kilo Bolt-Action", "Crossbow", "Man-O-War"],
     },

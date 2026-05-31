@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { tournament } from "../../shared/tournament.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE = path.join(__dirname, "../../data/registrations.json");
@@ -30,11 +29,6 @@ export async function listPlayersFromFile() {
 /** @param {object} player */
 export async function addPlayerToFile(player) {
   const players = await readFile();
-  if (players.length >= tournament.maxPlayers) {
-    const err = new Error("Registration is full");
-    err.code = "FULL";
-    throw err;
-  }
   const duplicate = players.find(
     (p) =>
       p.uid === player.uid ||

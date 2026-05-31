@@ -54,16 +54,17 @@ export default function TournamentInfo() {
           <p className="eyebrow">Rules</p>
           <h2>Competitive rules</h2>
           <div className="bans-block">
+            <div className="weapon-bans">
             <h3 className="bans-block__title">Weapon bans</h3>
             <div className="weapon-ban-groups">
               <div className="weapon-ban-group">
-                <p className="weapon-ban-group__label">Banned weapons</p>
-                <div className="weapon-ban-chips">
+                <div className="weapon-ban-cards">
                   {tournament.bans.weapons.general.map((weapon) => (
-                    <span className="weapon-ban-chip" key={weapon.name}>
-                      <strong>{weapon.name}</strong>
-                      <span>{weapon.type}</span>
-                    </span>
+                    <div className="weapon-ban-card" key={weapon.name}>
+                      <p className="weapon-ban-card__tag">Banned</p>
+                      <p className="weapon-ban-card__type">{weapon.type}</p>
+                      <p className="weapon-ban-card__name">{weapon.name}</p>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -77,6 +78,7 @@ export default function TournamentInfo() {
                   ))}
                 </div>
               </div>
+            </div>
             </div>
 
             <h3 className="bans-block__title">Perk bans</h3>

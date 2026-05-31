@@ -21,6 +21,9 @@
   --accent-glow: rgba(158, 255, 0, 0.28);
   --success: #3ecf8e;
   --danger: #ff5c5c;
+  --danger-bright: #ff7a7a;
+  --danger-dim: rgba(255, 92, 92, 0.12);
+  --danger-glow: rgba(255, 92, 92, 0.28);
   --warn: #f0b429;
   --font-display: "Bebas Neue", Impact, sans-serif;
   --font-stencil: "Wallpoet", sans-serif;
@@ -387,7 +390,8 @@ h3 {
     inset 0 0 0 1px rgba(158, 255, 0, 0.1),
     inset 0 0 28px rgba(158, 255, 0, 0.08),
     0 0 36px rgba(158, 255, 0, 0.14);
-  animation: prize-pill-glow 4s ease-in-out infinite;
+  animation: prize-pill-glow 5s ease-in-out infinite;
+  overflow: hidden;
 }
 
 .stat-pill--prize::before {
@@ -400,6 +404,26 @@ h3 {
   border-radius: 999px;
   background: var(--accent-bright);
   box-shadow: 0 0 14px var(--accent-glow);
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+
+.stat-pill--prize.is-visible::before {
+  animation: prize-bar-grow 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+.stat-pill--prize .stat-pill__prize-total,
+.stat-pill--prize .stat-pill__prize-card {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.stat-pill--prize.is-visible .stat-pill__prize-total {
+  animation: prize-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+.stat-pill--prize.is-visible .stat-pill__prize-card {
+  animation: prize-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--prize-card-delay, 0.55s) forwards;
 }
 
 .stat-pill--prize .stat-pill__label {
@@ -432,6 +456,9 @@ h3 {
 }
 
 .stat-pill__prize-total-amount {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
   font-family: var(--font-display);
   font-size: clamp(2rem, 6vw, 2.75rem);
   letter-spacing: 0.05em;
@@ -440,6 +467,28 @@ h3 {
   text-shadow:
     0 0 20px var(--accent-glow),
     0 0 40px rgba(158, 255, 0, 0.2);
+}
+
+.stat-pill__prize-total-amount-text {
+  position: relative;
+  z-index: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-pill--prize.is-visible .stat-pill__prize-total-amount::after {
+  content: "";
+  position: absolute;
+  inset: -30% -50%;
+  z-index: 2;
+  background: linear-gradient(
+    120deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 65%
+  );
+  transform: translateX(-130%);
+  animation: prize-shimmer 5s ease-in-out 1.4s infinite;
+  pointer-events: none;
 }
 
 .stat-pill__prize-splits {
@@ -453,6 +502,23 @@ h3 {
   border-radius: calc(var(--radius) - 2px);
   background: rgba(0, 0, 0, 0.28);
   box-shadow: inset 0 0 18px rgba(158, 255, 0, 0.04);
+}
+
+@media (hover: hover) {
+  .stat-pill__prize-card {
+    transition:
+      transform 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .stat-pill__prize-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(158, 255, 0, 0.38);
+    box-shadow:
+      inset 0 0 22px rgba(158, 255, 0, 0.08),
+      0 8px 20px rgba(0, 0, 0, 0.22);
+  }
 }
 
 .stat-pill__prize-mode {
@@ -499,6 +565,37 @@ h3 {
   }
 }
 
+@keyframes prize-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes prize-bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes prize-shimmer {
+  0%,
+  18% {
+    transform: translateX(-130%);
+  }
+  38%,
+  100% {
+    transform: translateX(130%);
+  }
+}
+
 @media (min-width: 640px) {
   .stat-pill__prize-splits {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -520,7 +617,7 @@ h3 {
 
 @media (min-width: 640px) {
   .hero__stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1075,6 +1172,16 @@ h3 {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+
+  .stat-pill--prize .stat-pill__prize-total,
+  .stat-pill--prize .stat-pill__prize-card {
+    opacity: 1;
+    transform: none;
+  }
+
+  .stat-pill--prize::before {
+    transform: scaleY(1);
+  }
 }
 
 /* Hero load-in: staggered rise */
@@ -1240,6 +1347,11 @@ h3 {
   margin-top: 1.25rem;
 }
 
+.weapon-bans .bans-block__title {
+  color: var(--danger-bright);
+  text-shadow: 0 0 18px var(--danger-glow);
+}
+
 .weapon-ban-groups {
   display: grid;
   gap: 0.85rem;
@@ -1247,15 +1359,16 @@ h3 {
 
 .weapon-ban-group {
   padding: 0.9rem 1rem;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 92, 92, 0.28);
   border-radius: var(--radius);
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(255, 92, 92, 0.05);
+  box-shadow: inset 0 0 24px rgba(255, 92, 92, 0.04);
 }
 
 .weapon-ban-group--nested {
   margin-left: 0.75rem;
-  border-left: 2px solid rgba(240, 180, 41, 0.45);
-  background: rgba(0, 0, 0, 0.12);
+  border-left: 2px solid rgba(255, 92, 92, 0.55);
+  background: rgba(255, 92, 92, 0.04);
 }
 
 .weapon-ban-group__label {
@@ -1265,13 +1378,67 @@ h3 {
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent-bright);
+  color: var(--danger-bright);
 }
 
 .weapon-ban-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+}
+
+.weapon-ban-cards {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.weapon-ban-card {
+  position: relative;
+  padding: 0.9rem 1rem 0.85rem;
+  border: 1px solid rgba(255, 92, 92, 0.35);
+  border-top: 2px solid var(--danger);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 92, 92, 0.1) 0%, rgba(0, 0, 0, 0.22) 100%);
+  box-shadow:
+    inset 0 0 20px rgba(255, 92, 92, 0.06),
+    0 0 14px rgba(255, 92, 92, 0.08);
+}
+
+.weapon-ban-card__tag {
+  display: inline-block;
+  margin: 0 0 0.55rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--danger);
+  box-shadow: 0 0 12px var(--danger-glow);
+}
+
+.weapon-ban-card__type {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 180, 180, 0.92);
+}
+
+.weapon-ban-card__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--danger-bright);
+  text-shadow: 0 0 16px var(--danger-glow);
 }
 
 .weapon-ban-chip {
@@ -1284,21 +1451,15 @@ h3 {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--accent-bright);
-  background: var(--accent-dim);
-  border: 1px solid rgba(158, 255, 0, 0.25);
-}
-
-.weapon-ban-chip span {
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  opacity: 0.85;
+  color: var(--danger-bright);
+  background: var(--danger-dim);
+  border: 1px solid rgba(255, 92, 92, 0.35);
 }
 
 .weapon-ban-chip--thermite {
-  border-color: rgba(240, 180, 41, 0.35);
-  color: #ffe08a;
-  background: rgba(240, 180, 41, 0.08);
+  border-color: rgba(255, 92, 92, 0.4);
+  color: var(--danger-bright);
+  background: rgba(255, 92, 92, 0.1);
 }
 
 .bans-block__subtitle {

@@ -4,31 +4,26 @@ import TournamentInfo from "./components/TournamentInfo.jsx";
 import RegistrationForm from "./components/RegistrationForm.jsx";
 import Countdown from "./components/Countdown.jsx";
 import Typewriter from "./components/Typewriter.jsx";
-import { fetchPlayerCount } from "./lib/api.js";
+import PrizePool from "./components/PrizePool.jsx";
 import { tournament } from "./config.js";
 
-export default function App() {
-  const [registeredCount, setRegisteredCount] = useState(0);
+const REGISTRATION_CLOSE = new Date(tournament.registrationCloseISO).getTime();
 
-  async function loadRegistrationCount() {
-    try {
-      const count = await fetchPlayerCount();
-      setRegisteredCount(count);
-    } catch {
-      /* spots count falls back to 0 registered */
-    }
-  }
+export default function App() {
+  const [registrationOpen, setRegistrationOpen] = useState(
+    () => Date.now() < REGISTRATION_CLOSE
+  );
 
   useEffect(() => {
-    loadRegistrationCount();
+    const tick = () => setRegistrationOpen(Date.now() < REGISTRATION_CLOSE);
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
   }, []);
-
-  const spotsLeft = Math.max(0, tournament.maxPlayers - registeredCount);
-  const registrationOpen = spotsLeft > 0;
 
   return (
     <>
-      <Header spotsLeft={spotsLeft} />
+      <Header />
       <main>
         <section className="hero" id="top">
           <div className="hero__glow" aria-hidden="true" />
@@ -42,26 +37,7 @@ export default function App() {
             <h1><Typewriter text={tournament.name} speed={95} /></h1>
             <p className="hero__subtitle">{tournament.subtitle}</p>
             <div className="hero__stats">
-              <div className="stat-pill stat-pill--prize">
-                <span className="stat-pill__label">Prize pool</span>
-                <div className="stat-pill__value">
-                  <div className="stat-pill__prize-total">
-                    <span className="stat-pill__prize-total-label">Total prize pool</span>
-                    <span className="stat-pill__prize-total-amount">{tournament.prizePool.total}</span>
-                  </div>
-                  <div className="stat-pill__prize-splits">
-                    {tournament.prizePool.splits.map((split) => (
-                      <div className="stat-pill__prize-card" key={split.mode}>
-                        <p className="stat-pill__prize-mode">{split.mode}</p>
-                        <p className="stat-pill__prize-amount">{split.amount}</p>
-                        {split.detail ? (
-                          <p className="stat-pill__prize-detail">{split.detail}</p>
-                        ) : null}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <PrizePool />
               <div className="stat-pill">
                 <span className="stat-pill__label">Modes</span>
                 <span className="stat-pill__value">MP / BR</span>
@@ -69,10 +45,6 @@ export default function App() {
               <div className="stat-pill">
                 <span className="stat-pill__label">Date</span>
                 <span className="stat-pill__value">{tournament.date}</span>
-              </div>
-              <div className="stat-pill">
-                <span className="stat-pill__label">Spots left</span>
-                <span className="stat-pill__value">{spotsLeft}</span>
               </div>
             </div>
 
@@ -95,14 +67,11 @@ export default function App() {
               <h2>Lock in your spot</h2>
               <p className="section__lead">
                 {registrationOpen
-                  ? `${spotsLeft} of ${tournament.maxPlayers} player slots available. Teams drafted after registration closes (${tournament.registrationDeadline}).`
-                  : "Registration is full. Join the Discord for waitlist updates."}
+                  ? `Teams drafted after registration closes (${tournament.registrationDeadline}).`
+                  : "Registration is closed."}
               </p>
             </div>
-            <RegistrationForm
-              disabled={!registrationOpen}
-              onRegistered={() => loadRegistrationCount()}
-            />
+            <RegistrationForm disabled={!registrationOpen} />
           </div>
         </section>
       </main>

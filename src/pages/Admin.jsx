@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchAdminPlayers } from "../lib/api.js";
-import { tournament } from "../config.js";
 
 const STORAGE_KEY = "oxytocin_admin_key";
 
@@ -123,9 +122,7 @@ export default function Admin() {
         <div>
           <p className="eyebrow">Organizer</p>
           <h1>Registrations</h1>
-          <p className="admin-header__meta">
-            {players.length} of {tournament.maxPlayers} slots filled
-          </p>
+          <p className="admin-header__meta">{players.length} registered</p>
         </div>
         <div className="admin-header__actions">
           <button
