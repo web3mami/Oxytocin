@@ -4,26 +4,26 @@ import TournamentInfo from "./components/TournamentInfo.jsx";
 import RegistrationForm from "./components/RegistrationForm.jsx";
 import Countdown from "./components/Countdown.jsx";
 import Typewriter from "./components/Typewriter.jsx";
-import { fetchPlayers } from "./lib/api.js";
+import { fetchPlayerCount } from "./lib/api.js";
 import { tournament } from "./config.js";
 
 export default function App() {
-  const [players, setPlayers] = useState([]);
+  const [registeredCount, setRegisteredCount] = useState(0);
 
-  async function loadPlayers() {
+  async function loadRegistrationCount() {
     try {
-      const data = await fetchPlayers();
-      setPlayers(data.players || []);
+      const count = await fetchPlayerCount();
+      setRegisteredCount(count);
     } catch {
       /* spots count falls back to 0 registered */
     }
   }
 
   useEffect(() => {
-    loadPlayers();
+    loadRegistrationCount();
   }, []);
 
-  const spotsLeft = Math.max(0, tournament.maxPlayers - players.length);
+  const spotsLeft = Math.max(0, tournament.maxPlayers - registeredCount);
   const registrationOpen = spotsLeft > 0;
 
   return (
@@ -101,7 +101,7 @@ export default function App() {
             </div>
             <RegistrationForm
               disabled={!registrationOpen}
-              onRegistered={() => loadPlayers()}
+              onRegistered={() => loadRegistrationCount()}
             />
           </div>
         </section>

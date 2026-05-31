@@ -1,9 +1,17 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
+import { requireAdmin } from "./api/_lib/auth.js";
 import { listPlayers, registerPlayer } from "./api/_lib/players.js";
 import { validateRegistration } from "./api/_lib/validate.js";
 
-function localApiPlugin() {
+function localApiPlugin(env) {
+  if (!process.env.ADMIN_PASSWORD && env.VITE_ADMIN_PASSWORD) {
+    process.env.ADMIN_PASSWORD = env.VITE_ADMIN_PASSWORD;
+  }
+  if (!process.env.ADMIN_PASSWORD && env.MODE === "development") {
+    process.env.ADMIN_PASSWORD = "oxytocin-dev";
+  }
+
   return {
     name: "oxytocin-local-api",
     configureServer(server) {
@@ -16,11 +24,29 @@ function localApiPlugin() {
         if (url === "/api/players" && req.method === "GET") {
           try {
             const players = await listPlayers();
-            res.end(JSON.stringify({ players, count: players.length }));
+            res.end(JSON.stringify({ count: players.length }));
           } catch (err) {
             console.error("[players]", err);
             res.statusCode = 500;
             res.end(JSON.stringify({ error: "Failed to load players" }));
+          }
+          return;
+        }
+
+        if (url === "/api/admin/players" && req.method === "GET") {
+          const auth = requireAdmin({ headers: req.headers });
+          if (!auth.ok) {
+            res.statusCode = auth.status;
+            res.end(JSON.stringify({ error: auth.error }));
+            return;
+          }
+          try {
+            const players = await listPlayers();
+            res.end(JSON.stringify({ players, count: players.length }));
+          } catch (err) {
+            console.error("[admin/players]", err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: "Failed to load registrations" }));
           }
           return;
         }
@@ -62,6 +88,9 @@ function localApiPlugin() {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), localApiPlugin()],
-});
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    localApiPlugin({ ...loadEnv(mode, process.cwd(), ""), MODE: mode }),
+  ],
+}));

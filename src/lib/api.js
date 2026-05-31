@@ -1,5 +1,25 @@
 const API_BASE = "";
 
+export async function fetchPlayerCount() {
+  const res = await fetch(`${API_BASE}/api/players`);
+  if (!res.ok) throw new Error("Could not load registration count");
+  const data = await res.json();
+  return data.count ?? 0;
+}
+
+/** @param {string} adminKey */
+export async function fetchAdminPlayers(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/players`, {
+    headers: { Authorization: `Bearer ${adminKey}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not load registrations");
+  }
+  return data;
+}
+
+/** @deprecated Public roster is admin-only; use fetchPlayerCount */
 export async function fetchPlayers() {
   const res = await fetch(`${API_BASE}/api/players`);
   if (!res.ok) throw new Error("Could not load players");
