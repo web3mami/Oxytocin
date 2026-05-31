@@ -1,5 +1,5 @@
 const IGN_RE = /^[\w\s\-'.#]{2,32}$/u;
-const UID_RE = /^\d{5,15}$/;
+const UID_RE = /^\d{19}$/;
 const X_HANDLE_RE = /^[A-Za-z0-9_]{1,15}$/;
 
 /**
@@ -21,7 +21,7 @@ export function validateRegistration(body) {
     return { ok: false, error: "Please enter your in-game name." };
   }
   if (!uid || !UID_RE.test(uid)) {
-    return { ok: false, error: "UID must be 5–15 digits." };
+    return { ok: false, error: "UID must be exactly 19 digits." };
   }
   if (xHandle && !X_HANDLE_RE.test(xHandle)) {
     return { ok: false, error: "Invalid X handle." };
