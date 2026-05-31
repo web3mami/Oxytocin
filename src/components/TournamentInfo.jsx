@@ -1,5 +1,11 @@
 import { tournament } from "../config.js";
 
+const PERK_GROUPS = [
+  { key: "blue", className: "perk-ban--blue" },
+  { key: "red", className: "perk-ban--red" },
+  { key: "green", className: "perk-ban--green" },
+];
+
 export default function TournamentInfo() {
   return (
     <section className="section" id="info">
@@ -49,17 +55,40 @@ export default function TournamentInfo() {
           <h2>Competitive rules</h2>
           <div className="bans-block">
             <h3 className="bans-block__title">Weapon bans</h3>
-            <div className="format-card__maps">
-              {tournament.bans.weapons.map((weapon) => (
-                <span className="mode-chip" key={weapon}>{weapon}</span>
-              ))}
+            <div className="weapon-ban-groups">
+              <div className="weapon-ban-group">
+                <p className="weapon-ban-group__label">Banned weapons</p>
+                <div className="weapon-ban-chips">
+                  {tournament.bans.weapons.general.map((weapon) => (
+                    <span className="weapon-ban-chip" key={weapon.name}>
+                      <strong>{weapon.name}</strong>
+                      <span>{weapon.type}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="weapon-ban-group weapon-ban-group--nested">
+                <p className="weapon-ban-group__label">Thermite ammunition</p>
+                <div className="weapon-ban-chips">
+                  {tournament.bans.weapons.thermite.map((weapon) => (
+                    <span className="weapon-ban-chip weapon-ban-chip--thermite" key={weapon}>
+                      {weapon}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
+
             <h3 className="bans-block__title">Perk bans</h3>
-            <div className="format-card__maps">
-              {tournament.bans.perks.map((perk) => (
-                <span className="mode-chip" key={perk}>{perk}</span>
-              ))}
-            </div>
+            <ul className="perk-ban-list">
+              {PERK_GROUPS.flatMap(({ key, className }) =>
+                tournament.bans.perks[key].map((perk) => (
+                  <li className={`perk-ban ${className}`} key={perk}>
+                    {perk}
+                  </li>
+                ))
+              )}
+            </ul>
           </div>
           <ul className="rules-list">
             {tournament.rules.map((rule) => (

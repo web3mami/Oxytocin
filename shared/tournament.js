@@ -15,13 +15,24 @@ export const tournament = {
     "Register as an individual — teams will be drafted by the organizer.",
     "All players must use mobile devices — no emulators.",
     "Provide a valid CODM IGN and a reachable X handle.",
-    "Players must be available on Discord during the entire event.",
     "Drafted rosters are final once announced.",
     "Cheating, account sharing, or toxicity results in immediate disqualification.",
+    "Streamer Mode is prohibited.",
+    "Use of emotes at any point during the game will lead to an instant DQ.",
   ],
   bans: {
-    weapons: ["SO14"],
-    perks: ["Persistence", "Martyrdom", "Quick Fix", "Tracker", "Alert", "High Alert"],
+    weapons: {
+      general: [
+        { name: "SO14", type: "Marksman Rifle" },
+        { name: "Striker", type: "Shotgun" },
+      ],
+      thermite: ["Rytec AMR", "Kilo Bolt-Action", "Crossbow", "Man-O-War"],
+    },
+    perks: {
+      blue: ["Persistence", "Alert", "High Alert"],
+      red: ["Martyrdom"],
+      green: ["Quick Fix", "Tracker"],
+    },
   },
   schedule: [
     { label: "Registration opens", date: "May 30, 2026" },
@@ -38,7 +49,7 @@ export const tournament = {
       {
         name: "Search & Destroy",
         rules: ["Rounds: 6", "Time limit: 90 seconds"],
-        maps: ["Tunisia", "Firing Range", "Raid"],
+        maps: ["Tunisia", "Firing Range", "Hackney Yard"],
       },
       {
         name: "Domination",
