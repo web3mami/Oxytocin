@@ -36,7 +36,7 @@ export default function App() {
           <div className="hero__frame" aria-hidden="true" />
           <div className="container hero__inner">
             <div className="hero__emblem">
-              <img src="/emblem.svg" alt="Oxytocin Cup" />
+              <img src="/emblem.svg" alt="Oxytocin Tournament" />
             </div>
             <p className="eyebrow">Call of Duty Mobile</p>
             <h1><Typewriter text={tournament.name} speed={95} /></h1>
@@ -92,12 +92,6 @@ export default function App() {
       </main>
 
       <footer className="footer">
-        <div className="container footer__inner">
-          <p>Oxytocin CODM Cup — organized for the community.</p>
-          <a href={tournament.discordInvite} target="_blank" rel="noreferrer">
-            Join Discord
-          </a>
-        </div>
         <div className="footer__sponsor">
           <span className="footer__sponsor-label">Sponsored by</span>
           <span className="footer__sponsor-name">

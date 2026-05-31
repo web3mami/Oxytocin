@@ -1,5 +1,5 @@
 export const tournament = {
-  name: "Oxytocin CODM Cup",
+  name: "Oxytocin Tournament",
   subtitle: "Season 1 — Call of Duty Mobile Tournament",
   modes: ["Multiplayer (MP)", "Battle Royale (BR)"],
   date: "June 14, 2026",

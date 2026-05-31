@@ -1021,8 +1021,11 @@ h3 {
 .hero h1 {
   font-family: var(--font-stencil);
   font-weight: 400;
+  font-size: clamp(2.1rem, 7vw, 4rem);
   letter-spacing: 0.02em;
+  line-height: 1;
   min-height: 1.05em;
+  white-space: nowrap;
 }
 
 .typewriter--loading {
