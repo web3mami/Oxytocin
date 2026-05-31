@@ -26,11 +26,11 @@
   --font-stencil: "Wallpoet", sans-serif;
   --font-body: "Rajdhani", "Segoe UI", sans-serif;
   --font-mono: "Share Tech Mono", ui-monospace, monospace;
-  /* Hero HUD — locked typography; do not change when editing other sections */
-  --font-hero-label: "Rajdhani", "Segoe UI", sans-serif;
-  --font-hero-stat: "Bebas Neue", Impact, sans-serif;
-  --font-hero-countdown: "Share Tech Mono", ui-monospace, monospace;
-  --font-hero-button: "Rajdhani", "Segoe UI", sans-serif;
+  /* Hero HUD — Wallpoet only; locked; do not change when editing other sections */
+  --font-hero-label: var(--font-stencil);
+  --font-hero-stat: var(--font-stencil);
+  --font-hero-countdown: var(--font-stencil);
+  --font-hero-button: var(--font-stencil);
   --radius: 12px;
   --radius-lg: 18px;
   --container: min(1120px, calc(100% - 2rem));
@@ -363,8 +363,9 @@ h3 {
 .stat-pill__label {
   display: block;
   font-family: var(--font-hero-label);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.25rem;
@@ -372,8 +373,10 @@ h3 {
 
 .stat-pill__value {
   font-family: var(--font-hero-stat);
-  font-size: 1.5rem;
-  letter-spacing: 0.06em;
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
 }
 
 .hero__actions {
@@ -384,6 +387,8 @@ h3 {
 
 .hero__actions .btn {
   font-family: var(--font-hero-button);
+  font-weight: 400;
+  letter-spacing: 0.1em;
 }
 
 @media (min-width: 640px) {
@@ -889,6 +894,8 @@ h3 {
 
 .countdown .eyebrow {
   font-family: var(--font-hero-label);
+  font-weight: 400;
+  letter-spacing: 0.16em;
 }
 
 .countdown__grid {
@@ -913,16 +920,19 @@ h3 {
 
 .countdown__value {
   font-family: var(--font-hero-countdown);
-  font-size: clamp(2.5rem, 9vw, 4rem);
+  font-size: clamp(2.25rem, 8vw, 3.5rem);
+  font-weight: 400;
   line-height: 1;
+  letter-spacing: 0.02em;
   color: var(--accent-bright);
   text-shadow: 0 0 18px var(--accent-glow);
 }
 
 .countdown__label {
   font-family: var(--font-hero-countdown);
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
