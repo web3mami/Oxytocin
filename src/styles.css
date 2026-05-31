@@ -26,9 +26,7 @@
   --font-stencil: "Wallpoet", sans-serif;
   --font-body: "Rajdhani", "Segoe UI", sans-serif;
   --font-mono: "Share Tech Mono", ui-monospace, monospace;
-  /* Hero HUD — Wallpoet only; locked; do not change when editing other sections */
-  --font-hero-label: var(--font-stencil);
-  --font-hero-stat: var(--font-stencil);
+  /* Hero HUD — locked typography; stat pills use body + display like pre-ban layout */
   --font-hero-countdown: var(--font-stencil);
   --font-hero-button: var(--font-stencil);
   --radius: 12px;
@@ -362,21 +360,17 @@ h3 {
 
 .stat-pill__label {
   display: block;
-  font-family: var(--font-hero-label);
-  font-size: 0.72rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.25rem;
 }
 
 .stat-pill__value {
-  font-family: var(--font-hero-stat);
-  font-size: 1.35rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.06em;
 }
 
 .hero__actions {
@@ -893,7 +887,6 @@ h3 {
 }
 
 .countdown .eyebrow {
-  font-family: var(--font-hero-label);
   font-weight: 400;
   letter-spacing: 0.16em;
 }
