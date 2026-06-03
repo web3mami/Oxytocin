@@ -656,6 +656,23 @@ h3 {
   border-color: var(--line-strong);
 }
 
+.btn--danger {
+  color: #fff;
+  background: linear-gradient(180deg, var(--danger-bright), var(--danger));
+  border-color: rgba(255, 92, 92, 0.45);
+  box-shadow: 0 4px 14px var(--danger-glow);
+}
+
+.btn--danger:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn--sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+}
+
 .btn--full {
   width: 100%;
 }
@@ -1649,4 +1666,9 @@ h3 {
 
 .admin-table a:hover {
   text-decoration: underline;
+}
+
+.admin-table__actions {
+  white-space: nowrap;
+  text-align: right;
 }

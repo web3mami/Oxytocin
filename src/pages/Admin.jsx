@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchAdminPlayers } from "../lib/api.js";
+import { fetchAdminPlayers, deleteAdminPlayer } from "../lib/api.js";
 
 const STORAGE_KEY = "oxytocin_admin_key";
 
@@ -34,6 +34,7 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
 
   const loadPlayers = useCallback(async (key) => {
@@ -83,6 +84,29 @@ export default function Admin() {
     setPlayers([]);
     setPassword("");
     setError("");
+    setDeletingId(null);
+  }
+
+  async function handleDelete(player) {
+    const label = player.ign || "this player";
+    if (
+      !window.confirm(
+        `Remove registration for ${label}? This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    setDeletingId(player.id);
+    setError("");
+    try {
+      await deleteAdminPlayer(adminKey, player.id);
+      setPlayers((prev) => prev.filter((p) => p.id !== player.id));
+    } catch (err) {
+      setError(err.message || "Could not delete registration.");
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   if (!adminKey) {
@@ -159,6 +183,7 @@ export default function Admin() {
                 <th scope="col">X handle</th>
                 <th scope="col">Mode(s)</th>
                 <th scope="col">Registered</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -184,6 +209,17 @@ export default function Admin() {
                     <span className="admin-table__modes">{formatModes(player)}</span>
                   </td>
                   <td className="admin-table__muted">{formatRegisteredAt(player.registeredAt)}</td>
+                  <td className="admin-table__actions">
+                    <button
+                      type="button"
+                      className="btn btn--danger btn--sm"
+                      onClick={() => handleDelete(player)}
+                      disabled={loading || deletingId === player.id}
+                      aria-label={`Delete registration for ${player.ign}`}
+                    >
+                      {deletingId === player.id ? "Deleting…" : "Delete"}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

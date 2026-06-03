@@ -1,6 +1,7 @@
 import { ensureSchema, getSql } from "./db.js";
 import {
   addPlayerToFile,
+  deletePlayerFromFile,
   isFileStoreAvailable,
   listPlayersFromFile,
 } from "./fileStore.js";
@@ -52,6 +53,44 @@ export async function registerPlayer(data) {
   }
   if (isFileStoreAvailable()) {
     return addPlayerToFile(data);
+  }
+  const err = new Error(
+    "No storage configured. Set DATABASE_URL or run locally with vercel dev."
+  );
+  err.code = "NO_STORAGE";
+  throw err;
+}
+
+/** @param {string | number} id */
+export async function deletePlayer(id) {
+  if (id === undefined || id === null || String(id).trim() === "") {
+    const err = new Error("Player id is required");
+    err.code = "INVALID";
+    throw err;
+  }
+
+  const idStr = String(id).trim();
+  const sql = getSql();
+  if (sql) {
+    await ensureSchema(sql);
+    const numId = Number(idStr);
+    if (!Number.isInteger(numId) || numId < 1) {
+      const err = new Error("Registration not found");
+      err.code = "NOT_FOUND";
+      throw err;
+    }
+    const rows = await sql`
+      DELETE FROM players WHERE id = ${numId} RETURNING id
+    `;
+    if (!rows.length) {
+      const err = new Error("Registration not found");
+      err.code = "NOT_FOUND";
+      throw err;
+    }
+    return { id: rows[0].id };
+  }
+  if (isFileStoreAvailable()) {
+    return deletePlayerFromFile(idStr);
   }
   const err = new Error(
     "No storage configured. Set DATABASE_URL or run locally with vercel dev."

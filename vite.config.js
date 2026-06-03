@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import { requireAdmin } from "./api/_lib/auth.js";
-import { listPlayers, registerPlayer } from "./api/_lib/players.js";
+import { deletePlayer, listPlayers, registerPlayer } from "./api/_lib/players.js";
 import { validateRegistration } from "./api/_lib/validate.js";
 
 function localApiPlugin(env) {
@@ -47,6 +47,35 @@ function localApiPlugin(env) {
             console.error("[admin/players]", err);
             res.statusCode = 500;
             res.end(JSON.stringify({ error: "Failed to load registrations" }));
+          }
+          return;
+        }
+
+        if (url?.startsWith("/api/admin/players") && req.method === "DELETE") {
+          const auth = requireAdmin({ headers: req.headers });
+          if (!auth.ok) {
+            res.statusCode = auth.status;
+            res.end(JSON.stringify({ error: auth.error }));
+            return;
+          }
+          const id = new URL(req.url, "http://localhost").searchParams.get("id");
+          try {
+            const result = await deletePlayer(id);
+            res.end(JSON.stringify({ ok: true, id: result.id }));
+          } catch (err) {
+            if (err?.code === "NOT_FOUND") {
+              res.statusCode = 404;
+              res.end(JSON.stringify({ error: err.message }));
+              return;
+            }
+            if (err?.code === "INVALID") {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: err.message }));
+              return;
+            }
+            console.error("[admin/players DELETE]", err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: "Failed to delete registration" }));
           }
           return;
         }

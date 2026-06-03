@@ -49,6 +49,21 @@ export async function addPlayerToFile(player) {
   return entry;
 }
 
+/** @param {string | number} id */
+export async function deletePlayerFromFile(id) {
+  const players = await readFile();
+  const idStr = String(id);
+  const index = players.findIndex((p) => String(p.id) === idStr);
+  if (index === -1) {
+    const err = new Error("Registration not found");
+    err.code = "NOT_FOUND";
+    throw err;
+  }
+  const [removed] = players.splice(index, 1);
+  await writeFile(players);
+  return { id: removed.id };
+}
+
 export function isFileStoreAvailable() {
   return !process.env.VERCEL;
 }

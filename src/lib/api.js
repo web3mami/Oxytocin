@@ -19,6 +19,22 @@ export async function fetchAdminPlayers(adminKey) {
   return data;
 }
 
+/** @param {string} adminKey @param {string | number} id */
+export async function deleteAdminPlayer(adminKey, id) {
+  const res = await fetch(
+    `${API_BASE}/api/admin/players?id=${encodeURIComponent(String(id))}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${adminKey}` },
+    }
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not delete registration");
+  }
+  return data;
+}
+
 /** @deprecated Public roster is admin-only; use fetchPlayerCount */
 export async function fetchPlayers() {
   const res = await fetch(`${API_BASE}/api/players`);
