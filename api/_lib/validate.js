@@ -1,4 +1,7 @@
-const IGN_RE = /^[\w\s\-'.#]{2,32}$/u;
+const IGN_MIN = 2;
+const IGN_MAX = 32;
+/** Disallow control characters only — CODM names may include symbols and Unicode. */
+const IGN_INVALID_RE = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/;
 const UID_RE = /^\d{19,20}$/;
 const X_HANDLE_RE = /^[A-Za-z0-9_]{1,15}$/;
 
@@ -17,8 +20,8 @@ export function validateRegistration(body) {
   const modeMp = Boolean(body.modeMp);
   const modeBr = Boolean(body.modeBr);
 
-  if (!ign || !IGN_RE.test(ign)) {
-    return { ok: false, error: "Please enter your in-game name." };
+  if (!ign || ign.length < IGN_MIN || ign.length > IGN_MAX || IGN_INVALID_RE.test(ign)) {
+    return { ok: false, error: "IGN must be 2–32 characters." };
   }
   if (!uid || !UID_RE.test(uid)) {
     return { ok: false, error: "UID must be 19–20 digits." };
