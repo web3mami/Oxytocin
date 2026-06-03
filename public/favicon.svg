@@ -1,0 +1,33 @@
+<svg viewBox="160 85 360 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oxytocin">
+  <rect x="160" y="85" width="360" height="360" fill="#0a0c0f"/>
+  <polygon points="505,245 422.5,387.9 257.5,387.9 175,245 257.5,102.1 422.5,102.1" fill="none" stroke="#9eff00" stroke-width="3"/>
+  <polygon points="490,245 415,374.9 265,374.9 190,245 265,115.1 415,115.1" fill="none" stroke="#9eff00" stroke-width="1.5" opacity="0.5"/>
+  <g transform="translate(340 240) rotate(-42)" fill="#0e1208" stroke="#9eff00" stroke-width="2" stroke-linejoin="round">
+    <path d="M-112,-9 L-58,-11 L-54,13 L-112,15 Z"/>
+    <rect x="-58" y="-13" width="74" height="25" rx="2"/>
+    <rect x="-42" y="-21" width="44" height="9" rx="1"/>
+    <path d="M-30,11 L-8,11 L0,44 L-24,44 Z"/>
+    <path d="M-46,11 L-34,11 L-40,32 L-52,30 Z"/>
+    <rect x="15" y="-5" width="98" height="7" rx="1.5"/>
+    <path d="M84,-5 L87,-16 L93,-16 L93,-5 Z"/>
+    <rect x="108" y="-4" width="12" height="5" rx="1"/>
+  </g>
+  <g transform="translate(340 240) scale(-1 1) rotate(-42)" fill="#0e1208" stroke="#9eff00" stroke-width="2" stroke-linejoin="round">
+    <path d="M-112,-9 L-58,-11 L-54,13 L-112,15 Z"/>
+    <rect x="-58" y="-13" width="74" height="25" rx="2"/>
+    <rect x="-42" y="-21" width="44" height="9" rx="1"/>
+    <path d="M-30,11 L-8,11 L0,44 L-24,44 Z"/>
+    <path d="M-46,11 L-34,11 L-40,32 L-52,30 Z"/>
+    <rect x="15" y="-5" width="98" height="7" rx="1.5"/>
+    <path d="M84,-5 L87,-16 L93,-16 L93,-5 Z"/>
+    <rect x="108" y="-4" width="12" height="5" rx="1"/>
+  </g>
+  <path d="M278,210 C278,160 402,160 402,210 L402,242 C402,262 388,274 372,280 L380,298 L362,308 C352,318 328,318 318,308 L300,298 L308,280 C292,274 278,262 278,242 Z" fill="#9eff00"/>
+  <polygon points="296,210 337,224 330,251 300,243" fill="#0a0c0f"/>
+  <polygon points="384,210 343,224 350,251 380,243" fill="#0a0c0f"/>
+  <polygon points="333,250 347,250 340,270" fill="#0a0c0f"/>
+  <rect x="318" y="296" width="8" height="16" rx="1" fill="#0a0c0f"/>
+  <rect x="328" y="296" width="8" height="19" rx="1" fill="#0a0c0f"/>
+  <rect x="338" y="296" width="8" height="20" rx="1" fill="#0a0c0f"/>
+  <rect x="348" y="296" width="8" height="17" rx="1" fill="#0a0c0f"/>
+</svg>
