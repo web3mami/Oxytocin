@@ -1,14 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchAdminPlayers, deleteAdminPlayer } from "../lib/api.js";
 
 const STORAGE_KEY = "oxytocin_admin_key";
-
-function formatModes(player) {
-  const modes = [];
-  if (player.modeMp) modes.push("MP");
-  if (player.modeBr) modes.push("BR");
-  return modes.length ? modes.join(" · ") : "—";
-}
 
 function formatX(handle) {
   if (!handle) return "—";
@@ -29,6 +22,63 @@ function formatRegisteredAt(iso) {
   }
 }
 
+function AdminPlayerTable({ players, deletingId, loading, onDelete }) {
+  if (!players.length) {
+    return <p className="admin-list__empty">No players in this list yet.</p>;
+  }
+
+  return (
+    <div className="admin-table-wrap">
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">IGN</th>
+            <th scope="col">UID</th>
+            <th scope="col">X handle</th>
+            <th scope="col">Registered</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {players.map((player, index) => (
+            <tr key={player.id}>
+              <td>{index + 1}</td>
+              <td>{player.ign}</td>
+              <td className="admin-table__mono">{player.uid || "—"}</td>
+              <td>
+                {player.xHandle ? (
+                  <a
+                    href={`https://x.com/${player.xHandle.replace(/^@/, "")}`}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {formatX(player.xHandle)}
+                  </a>
+                ) : (
+                  "—"
+                )}
+              </td>
+              <td className="admin-table__muted">{formatRegisteredAt(player.registeredAt)}</td>
+              <td className="admin-table__actions">
+                <button
+                  type="button"
+                  className="btn btn--danger btn--sm"
+                  onClick={() => onDelete(player)}
+                  disabled={loading || deletingId === player.id}
+                  aria-label={`Delete registration for ${player.ign}`}
+                >
+                  {deletingId === player.id ? "Deleting…" : "Delete"}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function Admin() {
   const [adminKey, setAdminKey] = useState(() => sessionStorage.getItem(STORAGE_KEY) ?? "");
   const [password, setPassword] = useState("");
@@ -36,6 +86,15 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
+
+  const mpPlayers = useMemo(
+    () => players.filter((p) => p.modeMp),
+    [players]
+  );
+  const brPlayers = useMemo(
+    () => players.filter((p) => p.modeBr),
+    [players]
+  );
 
   const loadPlayers = useCallback(async (key) => {
     setLoading(true);
@@ -146,7 +205,9 @@ export default function Admin() {
         <div>
           <p className="eyebrow">Organizer</p>
           <h1>Registrations</h1>
-          <p className="admin-header__meta">{players.length} registered</p>
+          <p className="admin-header__meta">
+            {mpPlayers.length} MP · {brPlayers.length} BR · {players.length} total sign-ups
+          </p>
         </div>
         <div className="admin-header__actions">
           <button
@@ -173,57 +234,32 @@ export default function Admin() {
       ) : !players.length ? (
         <p className="empty-state">No registrations yet.</p>
       ) : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">IGN</th>
-                <th scope="col">UID</th>
-                <th scope="col">X handle</th>
-                <th scope="col">Mode(s)</th>
-                <th scope="col">Registered</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {players.map((player, index) => (
-                <tr key={player.id}>
-                  <td>{index + 1}</td>
-                  <td>{player.ign}</td>
-                  <td className="admin-table__mono">{player.uid || "—"}</td>
-                  <td>
-                    {player.xHandle ? (
-                      <a
-                        href={`https://x.com/${player.xHandle.replace(/^@/, "")}`}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        {formatX(player.xHandle)}
-                      </a>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                  <td>
-                    <span className="admin-table__modes">{formatModes(player)}</span>
-                  </td>
-                  <td className="admin-table__muted">{formatRegisteredAt(player.registeredAt)}</td>
-                  <td className="admin-table__actions">
-                    <button
-                      type="button"
-                      className="btn btn--danger btn--sm"
-                      onClick={() => handleDelete(player)}
-                      disabled={loading || deletingId === player.id}
-                      aria-label={`Delete registration for ${player.ign}`}
-                    >
-                      {deletingId === player.id ? "Deleting…" : "Delete"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="admin-lists">
+          <section className="admin-list panel">
+            <div className="admin-list__head">
+              <h2 className="admin-list__title">Multiplayer</h2>
+              <span className="admin-list__count">{mpPlayers.length}</span>
+            </div>
+            <AdminPlayerTable
+              players={mpPlayers}
+              deletingId={deletingId}
+              loading={loading}
+              onDelete={handleDelete}
+            />
+          </section>
+
+          <section className="admin-list panel">
+            <div className="admin-list__head">
+              <h2 className="admin-list__title">Battle Royale</h2>
+              <span className="admin-list__count">{brPlayers.length}</span>
+            </div>
+            <AdminPlayerTable
+              players={brPlayers}
+              deletingId={deletingId}
+              loading={loading}
+              onDelete={handleDelete}
+            />
+          </section>
         </div>
       )}
     </div>

@@ -35,6 +35,15 @@ export async function deleteAdminPlayer(adminKey, id) {
   return data;
 }
 
+export async function fetchBattleRosters() {
+  const res = await fetch(`${API_BASE}/api/roster`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not load rosters");
+  }
+  return data;
+}
+
 /** @deprecated Public roster is admin-only; use fetchPlayerCount */
 export async function fetchPlayers() {
   const res = await fetch(`${API_BASE}/api/players`);

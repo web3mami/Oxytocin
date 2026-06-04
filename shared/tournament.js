@@ -43,6 +43,7 @@ export const tournament = {
         { name: "SO14", type: "Marksman Rifle" },
         { name: "Striker", type: "Shotgun" },
         { name: "Oden", type: "Assault Rifle" },
+        { name: "USS 9", type: "SMG" },
       ],
       thermite: ["Rytec AMR", "Kilo Bolt-Action", "Crossbow", "Man-O-War"],
     },

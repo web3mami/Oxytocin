@@ -11,6 +11,7 @@ export default function Header() {
         </a>
         <nav className="header__nav">
           <a href="#info">Info</a>
+          <a href="/roster">Battle roster</a>
           <a href="#register">Register</a>
         </nav>
       </div>

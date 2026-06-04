@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
+import { hasPublishedRosters, listPublicTeams } from "./api/_lib/teams.js";
 import { requireAdmin } from "./api/_lib/auth.js";
 import { deletePlayer, listPlayers, registerPlayer } from "./api/_lib/players.js";
 import { validateRegistration } from "./api/_lib/validate.js";
@@ -77,6 +78,15 @@ function localApiPlugin(env) {
             res.statusCode = 500;
             res.end(JSON.stringify({ error: "Failed to delete registration" }));
           }
+          return;
+        }
+
+        if (url === "/api/roster" && req.method === "GET") {
+          if (!hasPublishedRosters()) {
+            res.end(JSON.stringify({ published: false, teams: [] }));
+            return;
+          }
+          res.end(JSON.stringify({ published: true, teams: listPublicTeams() }));
           return;
         }
 

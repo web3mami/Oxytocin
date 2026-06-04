@@ -54,6 +54,9 @@ export default function App() {
               <a className="btn btn--primary" href="#register">
                 Register now
               </a>
+              <a className="btn btn--ghost" href="/roster">
+                Battle roster
+              </a>
             </div>
           </div>
         </section>
