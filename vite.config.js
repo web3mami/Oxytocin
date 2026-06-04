@@ -1,9 +1,28 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
-import { hasPublishedRosters, listPublicTeams } from "./api/_lib/teams.js";
+import { listPublicRoster } from "./api/_lib/teams.js";
+import { draftBrDuos } from "./api/_lib/draftBr.js";
+import { saveBrRoster } from "./api/_lib/rosterStore.js";
 import { requireAdmin } from "./api/_lib/auth.js";
 import { deletePlayer, listPlayers, registerPlayer } from "./api/_lib/players.js";
 import { validateRegistration } from "./api/_lib/validate.js";
+
+function readJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("end", () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (err) {
+        reject(err);
+      }
+    });
+    req.on("error", reject);
+  });
+}
 
 function localApiPlugin(env) {
   if (!process.env.ADMIN_PASSWORD && env.VITE_ADMIN_PASSWORD) {
@@ -82,11 +101,73 @@ function localApiPlugin(env) {
         }
 
         if (url === "/api/roster" && req.method === "GET") {
-          if (!hasPublishedRosters()) {
-            res.end(JSON.stringify({ published: false, teams: [] }));
+          try {
+            const roster = await listPublicRoster();
+            res.end(JSON.stringify(roster));
+          } catch (err) {
+            console.error("[roster]", err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: "Failed to load rosters" }));
+          }
+          return;
+        }
+
+        if (url === "/api/admin/draft-br" && req.method === "POST") {
+          const auth = requireAdmin({ headers: req.headers });
+          if (!auth.ok) {
+            res.statusCode = auth.status;
+            res.end(JSON.stringify({ error: auth.error }));
             return;
           }
-          res.end(JSON.stringify({ published: true, teams: listPublicTeams() }));
+          try {
+            const players = await listPlayers();
+            const brPlayers = players.filter((p) => p.modeBr);
+            const draft = draftBrDuos(brPlayers);
+            res.end(JSON.stringify({ ok: true, ...draft }));
+          } catch (err) {
+            if (err?.code === "INVALID_COUNT") {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: err.message }));
+              return;
+            }
+            console.error("[admin/draft-br]", err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: "Failed to draft BR teams" }));
+          }
+          return;
+        }
+
+        if (url === "/api/admin/publish-br-roster" && req.method === "POST") {
+          const auth = requireAdmin({ headers: req.headers });
+          if (!auth.ok) {
+            res.statusCode = auth.status;
+            res.end(JSON.stringify({ error: auth.error }));
+            return;
+          }
+          readJsonBody(req)
+            .then(async (body) => {
+              const squads = body?.squads;
+              if (!Array.isArray(squads) || !squads.length) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ error: "Draft squads are required to publish." }));
+                return;
+              }
+              const payload = await saveBrRoster({
+                squads,
+                meta: body?.meta ?? null,
+              });
+              res.end(JSON.stringify({ ok: true, published: true, ...payload }));
+            })
+            .catch((err) => {
+              if (err?.code === "NO_STORAGE") {
+                res.statusCode = 503;
+                res.end(JSON.stringify({ error: err.message }));
+                return;
+              }
+              console.error("[admin/publish-br-roster]", err);
+              res.statusCode = 500;
+              res.end(JSON.stringify({ error: "Failed to publish BR roster" }));
+            });
           return;
         }
 

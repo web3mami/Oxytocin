@@ -1,17 +1,16 @@
-import { battleTeams } from "../../shared/teams.js";
+import { getPublishedRoster } from "./rosterStore.js";
 
-/** @returns {Array<{ name: string, members: Array<object> }>} */
-export function listPublicTeams() {
-  return battleTeams.map((team) => ({
-    name: team.name,
-    members: (team.members ?? []).map((m) => ({
-      ign: m.ign,
-      xHandle: m.xHandle ?? null,
-      role: m.role ?? null,
-    })),
-  }));
+/** @returns {Promise<{ published: boolean, squads: Array<object>, teams: Array<object> }>} */
+export async function listPublicRoster() {
+  const roster = await getPublishedRoster();
+  return {
+    published: roster.published,
+    squads: roster.squads,
+    teams: roster.teams,
+  };
 }
 
+/** @deprecated */
 export function hasPublishedRosters() {
-  return battleTeams.length > 0;
+  return false;
 }

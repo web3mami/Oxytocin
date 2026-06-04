@@ -31,5 +31,12 @@ export async function ensureSchema(sql) {
   await sql`
     CREATE UNIQUE INDEX IF NOT EXISTS players_uid_idx ON players (uid)
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS published_rosters (
+      id TEXT PRIMARY KEY,
+      payload JSONB NOT NULL,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
   schemaReady = true;
 }

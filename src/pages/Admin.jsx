@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchAdminPlayers, deleteAdminPlayer } from "../lib/api.js";
+import BrDraftPanel from "../components/BrDraftPanel.jsx";
 
 const STORAGE_KEY = "oxytocin_admin_key";
 
@@ -248,11 +249,16 @@ export default function Admin() {
             />
           </section>
 
-          <section className="admin-list panel">
+          <section className="admin-list panel admin-list--br">
             <div className="admin-list__head">
               <h2 className="admin-list__title">Battle Royale</h2>
               <span className="admin-list__count">{brPlayers.length}</span>
             </div>
+            <BrDraftPanel
+              adminKey={adminKey}
+              brCount={brPlayers.length}
+              disabled={loading}
+            />
             <AdminPlayerTable
               players={brPlayers}
               deletingId={deletingId}

@@ -35,6 +35,40 @@ export async function deleteAdminPlayer(adminKey, id) {
   return data;
 }
 
+/** @param {string} adminKey */
+export async function draftBrTeams(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/draft-br`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: "{}",
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not draft BR teams");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {{ squads: Array<object>, meta?: object }} payload */
+export async function publishBrRoster(adminKey, payload) {
+  const res = await fetch(`${API_BASE}/api/admin/publish-br-roster`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not publish BR roster");
+  }
+  return data;
+}
+
 export async function fetchBattleRosters() {
   const res = await fetch(`${API_BASE}/api/roster`);
   const data = await res.json().catch(() => ({}));

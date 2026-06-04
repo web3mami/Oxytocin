@@ -2,7 +2,36 @@ import { useEffect, useState } from "react";
 import { fetchBattleRosters } from "../lib/api.js";
 import { tournament } from "../config.js";
 
+function MemberList({ members, teamName }) {
+  return (
+    <ul className="roster-team__list">
+      {members.map((member, index) => (
+        <li className="roster-team__member" key={`${teamName}-${member.ign}-${index}`}>
+          <span className="roster-team__slot">{index + 1}</span>
+          <div className="roster-team__info">
+            <span className="roster-team__ign">{member.ign}</span>
+            {member.role ? (
+              <span className="roster-team__role">{member.role}</span>
+            ) : null}
+            {member.xHandle ? (
+              <a
+                className="roster-team__x"
+                href={`https://x.com/${member.xHandle.replace(/^@/, "")}`}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                @{member.xHandle.replace(/^@/, "")}
+              </a>
+            ) : null}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function BattleRoster() {
+  const [squads, setSquads] = useState([]);
   const [teams, setTeams] = useState([]);
   const [published, setPublished] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -18,10 +47,12 @@ export default function BattleRoster() {
         const data = await fetchBattleRosters();
         if (cancelled) return;
         setPublished(data.published !== false);
+        setSquads(data.squads ?? []);
         setTeams(data.teams ?? []);
       } catch (err) {
         if (!cancelled) {
           setError(err.message || "Could not load rosters.");
+          setSquads([]);
           setTeams([]);
         }
       } finally {
@@ -34,6 +65,8 @@ export default function BattleRoster() {
       cancelled = true;
     };
   }, []);
+
+  const hasRoster = squads.length > 0 || teams.length > 0;
 
   return (
     <div className="roster-page">
@@ -54,46 +87,45 @@ export default function BattleRoster() {
         <p className="eyebrow">Post-draft</p>
         <h1>Battle roster</h1>
         <p className="roster-page__lead">
-          All drafted squads and teammates. Rosters appear here after the team draft (
-          {tournament.date}).
+          BR duos by squad (40 players per lobby). Rosters appear here after the organizer
+          publishes the draft.
         </p>
 
         {error ? <div className="alert alert--error">{error}</div> : null}
 
         {loading ? (
           <p className="empty-state">Loading rosters…</p>
-        ) : !published || !teams.length ? (
+        ) : !published || !hasRoster ? (
           <div className="alert alert--warn roster-page__notice">
             Rosters are not published yet. Check back after the draft on {tournament.date}.
+          </div>
+        ) : squads.length ? (
+          <div className="roster-squads">
+            {squads.map((squad) => (
+              <section className="roster-squad" key={squad.name}>
+                <div className="roster-squad__head">
+                  <h2 className="roster-squad__name">{squad.name}</h2>
+                  {squad.lobbyNote ? (
+                    <p className="roster-squad__note">{squad.lobbyNote}</p>
+                  ) : null}
+                </div>
+                <div className="roster-grid">
+                  {squad.teams.map((team) => (
+                    <section className="roster-team panel" key={`${squad.name}-${team.name}`}>
+                      <h3 className="roster-team__name">{team.name}</h3>
+                      <MemberList members={team.members} teamName={team.name} />
+                    </section>
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
         ) : (
           <div className="roster-grid">
             {teams.map((team) => (
               <section className="roster-team panel" key={team.name}>
                 <h2 className="roster-team__name">{team.name}</h2>
-                <ul className="roster-team__list">
-                  {team.members.map((member, index) => (
-                    <li className="roster-team__member" key={`${team.name}-${member.ign}-${index}`}>
-                      <span className="roster-team__slot">{index + 1}</span>
-                      <div className="roster-team__info">
-                        <span className="roster-team__ign">{member.ign}</span>
-                        {member.role ? (
-                          <span className="roster-team__role">{member.role}</span>
-                        ) : null}
-                        {member.xHandle ? (
-                          <a
-                            className="roster-team__x"
-                            href={`https://x.com/${member.xHandle.replace(/^@/, "")}`}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                          >
-                            @{member.xHandle.replace(/^@/, "")}
-                          </a>
-                        ) : null}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <MemberList members={team.members} teamName={team.name} />
               </section>
             ))}
           </div>
