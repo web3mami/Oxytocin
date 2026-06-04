@@ -36,6 +36,7 @@ export const tournament = {
     "Cheating, account sharing, or toxicity results in immediate disqualification.",
     "Streamer Mode is prohibited.",
     "Use of emotes at any point during the game will lead to an instant DQ.",
+    "Late arrival to lobby will lead to a DQ — 5 minutes waiting time.",
   ],
   bans: {
     weapons: {
