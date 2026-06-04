@@ -2,31 +2,76 @@ import { useEffect, useState } from "react";
 import { fetchBattleRosters } from "../lib/api.js";
 import { tournament } from "../config.js";
 
-function MemberList({ members, teamName }) {
+function formatXHandle(handle) {
+  return handle.replace(/^@/, "");
+}
+
+/** @param {string} squadName @param {number} index */
+function squadToneClass(squadName, index) {
+  const n = (squadName || "").toLowerCase();
+  if (n.includes("squad 2") || n.includes("squad2")) return "roster-squad--cyan";
+  if (n.includes("squad 1") || n.includes("squad1")) return "roster-squad--gold";
+  return index === 1 ? "roster-squad--cyan" : "roster-squad--gold";
+}
+
+function DuoCard({ team }) {
   return (
-    <ul className="roster-team__list">
-      {members.map((member, index) => (
-        <li className="roster-team__member" key={`${teamName}-${member.ign}-${index}`}>
-          <span className="roster-team__slot">{index + 1}</span>
-          <div className="roster-team__info">
-            <span className="roster-team__ign">{member.ign}</span>
-            {member.role ? (
-              <span className="roster-team__role">{member.role}</span>
-            ) : null}
+    <article className="roster-duo">
+      <p className="roster-duo__name">{team.name}</p>
+      <ul className="roster-duo__members">
+        {team.members.map((member, index) => (
+          <li className="roster-duo__member" key={`${team.name}-${member.ign}`}>
+            <span className="roster-duo__slot" aria-hidden="true">
+              {index + 1}
+            </span>
+            <div className="roster-duo__member-body">
+              <span className="roster-duo__ign" title={member.ign}>
+                {member.ign}
+              </span>
+              {member.xHandle ? (
+                <a
+                  className="roster-duo__x"
+                  href={`https://x.com/${formatXHandle(member.xHandle)}`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  title={`@${formatXHandle(member.xHandle)}`}
+                >
+                  @{formatXHandle(member.xHandle)}
+                </a>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
+
+function ReserveCard({ members }) {
+  return (
+    <section className="roster-reserve">
+      <div className="roster-reserve__head">
+        <h2 className="roster-reserve__name">Reserve</h2>
+        <p className="roster-reserve__note">Substitute if a duo member cannot play</p>
+      </div>
+      <ul className="roster-reserve__members">
+        {members.map((member) => (
+          <li key={member.ign}>
+            <span className="roster-duo__ign">{member.ign}</span>
             {member.xHandle ? (
               <a
-                className="roster-team__x"
-                href={`https://x.com/${member.xHandle.replace(/^@/, "")}`}
+                className="roster-duo__x"
+                href={`https://x.com/${formatXHandle(member.xHandle)}`}
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                @{member.xHandle.replace(/^@/, "")}
+                @{formatXHandle(member.xHandle)}
               </a>
             ) : null}
-          </div>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -104,15 +149,11 @@ export default function BattleRoster() {
           </div>
         ) : squads.length ? (
           <div className="roster-squads">
-            {reserve.length ? (
-              <section className="roster-reserve panel">
-                <h2 className="roster-reserve__name">Reserve</h2>
-                <p className="roster-reserve__note">Substitute if a duo member cannot play</p>
-                <MemberList members={reserve} teamName="Reserve" />
-              </section>
-            ) : null}
-            {squads.map((squad) => (
-              <section className="roster-squad" key={squad.name}>
+            {squads.map((squad, squadIndex) => (
+              <section
+                className={`roster-squad ${squadToneClass(squad.name, squadIndex)}`}
+                key={squad.name}
+              >
                 <div className="roster-squad__head">
                   <h2 className="roster-squad__name">{squad.name}</h2>
                   {squad.lobbyNote ? (
@@ -121,23 +162,21 @@ export default function BattleRoster() {
                 </div>
                 <div className="roster-grid">
                   {squad.teams.map((team) => (
-                    <section className="roster-team panel" key={`${squad.name}-${team.name}`}>
-                      <h3 className="roster-team__name">{team.name}</h3>
-                      <MemberList members={team.members} teamName={team.name} />
-                    </section>
+                    <DuoCard key={`${squad.name}-${team.name}`} team={team} />
                   ))}
                 </div>
               </section>
             ))}
+            {reserve.length ? <ReserveCard members={reserve} /> : null}
           </div>
         ) : (
-          <div className="roster-grid">
-            {teams.map((team) => (
-              <section className="roster-team panel" key={team.name}>
-                <h2 className="roster-team__name">{team.name}</h2>
-                <MemberList members={team.members} teamName={team.name} />
-              </section>
-            ))}
+          <div className="roster-squads">
+            <div className="roster-grid">
+              {teams.map((team) => (
+                <DuoCard key={team.name} team={team} />
+              ))}
+            </div>
+            {reserve.length ? <ReserveCard members={reserve} /> : null}
           </div>
         )}
       </main>

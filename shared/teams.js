@@ -41,7 +41,7 @@ export function getTeamName(index) {
  * {
  *   name: getTeamName(0),
  *   members: [
- *     { ign: "PlayerOne", uid: "6793344815339077633", role: "Captain" },
+ *     { ign: "PlayerOne", uid: "6793344815339077633" },
  *     { ign: "PlayerTwo", uid: "6893991447503568897" },
  *   ],
  * }

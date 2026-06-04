@@ -17,7 +17,7 @@ function DuoCard({ team }) {
         {team.members.map((member) => (
           <li key={`${team.name}-${member.ign}`}>
             <span className="admin-draft-duo__ign">{member.ign}</span>
-            {member.role ? (
+            {member.role && member.role !== "Captain" ? (
               <span className="admin-draft-duo__role">{member.role}</span>
             ) : null}
           </li>
@@ -131,7 +131,7 @@ export default function BrDraftPanel({ adminKey, brCount, disabled }) {
             {draft.reserve.map((member) => (
               <li key={member.ign}>
                 <span className="admin-draft-duo__ign">{member.ign}</span>
-                {member.role ? (
+                {member.role && member.role !== "Captain" ? (
                   <span className="admin-draft-duo__role">{member.role}</span>
                 ) : null}
               </li>

@@ -41,7 +41,7 @@ function pairIntoDuos(players) {
   const duos = [];
   for (let i = 0; i < players.length; i += 2) {
     duos.push({
-      members: [toRosterMember(players[i], "Captain"), toRosterMember(players[i + 1])],
+      members: [toRosterMember(players[i]), toRosterMember(players[i + 1])],
     });
   }
   return duos;

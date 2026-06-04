@@ -6,7 +6,6 @@ import { saveBrRoster } from "./api/_lib/rosterStore.js";
 import { requireAdmin } from "./api/_lib/auth.js";
 import { deletePlayer, listPlayers, registerPlayer } from "./api/_lib/players.js";
 import { validateRegistration } from "./api/_lib/validate.js";
-import { validateRegistration } from "./api/_lib/validate.js";
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -26,6 +25,12 @@ function readJsonBody(req) {
 }
 
 function localApiPlugin(env) {
+  if (!process.env.DATABASE_URL && env.DATABASE_URL) {
+    process.env.DATABASE_URL = env.DATABASE_URL;
+  }
+  if (!process.env.ADMIN_PASSWORD && env.ADMIN_PASSWORD) {
+    process.env.ADMIN_PASSWORD = env.ADMIN_PASSWORD;
+  }
   if (!process.env.ADMIN_PASSWORD && env.VITE_ADMIN_PASSWORD) {
     process.env.ADMIN_PASSWORD = env.VITE_ADMIN_PASSWORD;
   }
