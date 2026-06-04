@@ -1,5 +1,6 @@
 import { requireAdmin } from "../_lib/auth.js";
-import { deletePlayer, listPlayers } from "../_lib/players.js";
+import { deletePlayer, listPlayers, registerPlayer } from "../_lib/players.js";
+import { validateRegistration } from "../_lib/validate.js";
 
 export default async function handler(req, res) {
   const auth = requireAdmin(req);
@@ -14,6 +15,26 @@ export default async function handler(req, res) {
     } catch (err) {
       console.error("[admin/players GET]", err);
       return res.status(500).json({ error: "Failed to load registrations" });
+    }
+  }
+
+  if (req.method === "POST") {
+    const parsed = validateRegistration(req.body);
+    if (!parsed.ok) {
+      return res.status(400).json({ error: parsed.error });
+    }
+    try {
+      const player = await registerPlayer(parsed.data);
+      return res.status(201).json({ ok: true, player });
+    } catch (err) {
+      if (err?.code === "DUPLICATE") {
+        return res.status(409).json({ error: err.message });
+      }
+      if (err?.code === "NO_STORAGE") {
+        return res.status(503).json({ error: err.message });
+      }
+      console.error("[admin/players POST]", err);
+      return res.status(500).json({ error: "Failed to add registration" });
     }
   }
 
@@ -37,6 +58,6 @@ export default async function handler(req, res) {
     }
   }
 
-  res.setHeader("Allow", "GET, DELETE");
+  res.setHeader("Allow", "GET, POST, DELETE");
   return res.status(405).json({ error: "Method not allowed" });
 }

@@ -6,6 +6,7 @@ import { saveBrRoster } from "./api/_lib/rosterStore.js";
 import { requireAdmin } from "./api/_lib/auth.js";
 import { deletePlayer, listPlayers, registerPlayer } from "./api/_lib/players.js";
 import { validateRegistration } from "./api/_lib/validate.js";
+import { validateRegistration } from "./api/_lib/validate.js";
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -68,6 +69,43 @@ function localApiPlugin(env) {
             res.statusCode = 500;
             res.end(JSON.stringify({ error: "Failed to load registrations" }));
           }
+          return;
+        }
+
+        if (url === "/api/admin/players" && req.method === "POST") {
+          const auth = requireAdmin({ headers: req.headers });
+          if (!auth.ok) {
+            res.statusCode = auth.status;
+            res.end(JSON.stringify({ error: auth.error }));
+            return;
+          }
+          readJsonBody(req)
+            .then(async (body) => {
+              const parsed = validateRegistration(body);
+              if (!parsed.ok) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ error: parsed.error }));
+                return;
+              }
+              try {
+                const player = await registerPlayer(parsed.data);
+                res.statusCode = 201;
+                res.end(JSON.stringify({ ok: true, player }));
+              } catch (err) {
+                if (err?.code === "DUPLICATE") {
+                  res.statusCode = 409;
+                  res.end(JSON.stringify({ error: err.message }));
+                  return;
+                }
+                console.error("[admin/players POST]", err);
+                res.statusCode = 500;
+                res.end(JSON.stringify({ error: "Failed to add registration" }));
+              }
+            })
+            .catch(() => {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "Invalid JSON body" }));
+            });
           return;
         }
 
