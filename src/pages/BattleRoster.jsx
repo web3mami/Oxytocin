@@ -33,6 +33,7 @@ function MemberList({ members, teamName }) {
 export default function BattleRoster() {
   const [squads, setSquads] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [reserve, setReserve] = useState([]);
   const [published, setPublished] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -49,11 +50,13 @@ export default function BattleRoster() {
         setPublished(data.published !== false);
         setSquads(data.squads ?? []);
         setTeams(data.teams ?? []);
+        setReserve(data.reserve ?? []);
       } catch (err) {
         if (!cancelled) {
           setError(err.message || "Could not load rosters.");
           setSquads([]);
           setTeams([]);
+          setReserve([]);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -66,7 +69,7 @@ export default function BattleRoster() {
     };
   }, []);
 
-  const hasRoster = squads.length > 0 || teams.length > 0;
+  const hasRoster = squads.length > 0 || teams.length > 0 || reserve.length > 0;
 
   return (
     <div className="roster-page">
@@ -87,8 +90,8 @@ export default function BattleRoster() {
         <p className="eyebrow">Post-draft</p>
         <h1>Battle roster</h1>
         <p className="roster-page__lead">
-          BR duos by squad (40 players per lobby). Rosters appear here after the organizer
-          publishes the draft.
+          BR duos by squad — 40 players in Squad 1, 20 in Squad 2, plus a reserve
+          substitute.
         </p>
 
         {error ? <div className="alert alert--error">{error}</div> : null}
@@ -101,6 +104,13 @@ export default function BattleRoster() {
           </div>
         ) : squads.length ? (
           <div className="roster-squads">
+            {reserve.length ? (
+              <section className="roster-reserve panel">
+                <h2 className="roster-reserve__name">Reserve</h2>
+                <p className="roster-reserve__note">Substitute if a duo member cannot play</p>
+                <MemberList members={reserve} teamName="Reserve" />
+              </section>
+            ) : null}
             {squads.map((squad) => (
               <section className="roster-squad" key={squad.name}>
                 <div className="roster-squad__head">

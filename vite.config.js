@@ -154,6 +154,7 @@ function localApiPlugin(env) {
               }
               const payload = await saveBrRoster({
                 squads,
+                reserve: body?.reserve ?? [],
                 meta: body?.meta ?? null,
               });
               res.end(JSON.stringify({ ok: true, published: true, ...payload }));

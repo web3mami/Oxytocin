@@ -49,6 +49,7 @@ export async function getPublishedRoster() {
     return {
       published: true,
       squads: [],
+      reserve: [],
       teams: battleTeams.map((team) => ({
         name: team.name,
         members: (team.members ?? []).map((m) => ({
@@ -60,7 +61,7 @@ export async function getPublishedRoster() {
     };
   }
 
-  return { published: false, squads: [], teams: [] };
+  return { published: false, squads: [], teams: [], reserve: [] };
 }
 
 /** @param {object} payload */
@@ -69,6 +70,7 @@ export async function saveBrRoster(payload) {
     type: "br_duos",
     updatedAt: new Date().toISOString(),
     squads: payload.squads,
+    reserve: payload.reserve ?? [],
     meta: payload.meta ?? null,
   };
 
@@ -100,10 +102,11 @@ export async function saveBrRoster(payload) {
 /** @param {unknown} payload */
 function normalizePayload(payload) {
   if (!payload || typeof payload !== "object") {
-    return { published: false, squads: [], teams: [] };
+    return { published: false, squads: [], teams: [], reserve: [] };
   }
 
   const squads = Array.isArray(payload.squads) ? payload.squads : [];
+  const reserve = Array.isArray(payload.reserve) ? payload.reserve : [];
 
   return {
     published: squads.length > 0,
@@ -118,6 +121,11 @@ function normalizePayload(payload) {
           role: m.role ?? null,
         })),
       })),
+    })),
+    reserve: reserve.map((m) => ({
+      ign: m.ign,
+      xHandle: m.xHandle ?? null,
+      role: m.role ?? null,
     })),
     teams: [],
   };

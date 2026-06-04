@@ -1,11 +1,20 @@
 import {
   BR_DRAFT_SIZE,
-  BR_DUOS_PER_SQUAD,
-  BR_LOBBY_CAPACITY,
-  BR_SQUAD_COUNT,
+  BR_PRIMARY_DUO_COUNT,
+  BR_PRIMARY_LOBBY_SIZE,
+  BR_RESERVE_COUNT,
+  BR_SECONDARY_DUO_COUNT,
+  BR_SECONDARY_LOBBY_SIZE,
 } from "../../shared/brDraft.js";
 
-export { BR_DRAFT_SIZE, BR_DUOS_PER_SQUAD, BR_LOBBY_CAPACITY, BR_SQUAD_COUNT };
+export {
+  BR_DRAFT_SIZE,
+  BR_PRIMARY_DUO_COUNT,
+  BR_PRIMARY_LOBBY_SIZE,
+  BR_RESERVE_COUNT,
+  BR_SECONDARY_DUO_COUNT,
+  BR_SECONDARY_LOBBY_SIZE,
+};
 
 /** @param {Array<object>} array */
 function shuffle(array) {
@@ -27,59 +36,69 @@ function toRosterMember(player, role = null) {
   };
 }
 
+/** @param {Array<object>} players Even-length list */
+function pairIntoDuos(players) {
+  const duos = [];
+  for (let i = 0; i < players.length; i += 2) {
+    duos.push({
+      members: [toRosterMember(players[i], "Captain"), toRosterMember(players[i + 1])],
+    });
+  }
+  return duos;
+}
+
+/** @param {Array<object>} duos @param {string} squadName */
+function duosToTeams(duos) {
+  return duos.map((duo, duoIndex) => ({
+    name: `Duo ${String(duoIndex + 1).padStart(2, "0")}`,
+    members: duo.members,
+  }));
+}
+
 /**
  * @param {Array<object>} brPlayers Registered players with modeBr
- * @returns {{ squads: Array<object>, meta: object }}
+ * @returns {{ squads: Array<object>, reserve: Array<object>, meta: object }}
  */
 export function draftBrDuos(brPlayers) {
   const count = brPlayers.length;
 
   if (count !== BR_DRAFT_SIZE) {
     const err = new Error(
-      `BR draft requires exactly ${BR_DRAFT_SIZE} players (2 lobbies × ${BR_LOBBY_CAPACITY}). Currently ${count} BR registrations.`
+      `BR draft requires exactly ${BR_DRAFT_SIZE} players (${BR_PRIMARY_LOBBY_SIZE} + ${BR_SECONDARY_LOBBY_SIZE} + ${BR_RESERVE_COUNT} reserve). Currently ${count} BR registrations.`
     );
     err.code = "INVALID_COUNT";
     throw err;
   }
 
-  if (count % 2 !== 0) {
-    const err = new Error("BR draft requires an even number of players for duos.");
-    err.code = "INVALID_COUNT";
-    throw err;
-  }
-
   const shuffled = shuffle(brPlayers);
-  const duos = [];
+  const squad1Players = shuffled.slice(0, BR_PRIMARY_LOBBY_SIZE);
+  const squad2Players = shuffled.slice(
+    BR_PRIMARY_LOBBY_SIZE,
+    BR_PRIMARY_LOBBY_SIZE + BR_SECONDARY_LOBBY_SIZE
+  );
+  const reservePlayer = shuffled[BR_PRIMARY_LOBBY_SIZE + BR_SECONDARY_LOBBY_SIZE];
 
-  for (let i = 0; i < shuffled.length; i += 2) {
-    duos.push({
-      members: [toRosterMember(shuffled[i], "Captain"), toRosterMember(shuffled[i + 1])],
-    });
-  }
-
-  const squads = [];
-
-  for (let squadIndex = 0; squadIndex < BR_SQUAD_COUNT; squadIndex += 1) {
-    const start = squadIndex * BR_DUOS_PER_SQUAD;
-    const squadDuos = duos.slice(start, start + BR_DUOS_PER_SQUAD);
-
-    squads.push({
-      name: `BR Squad ${squadIndex + 1}`,
-      lobbyNote: `${BR_LOBBY_CAPACITY} players · ${BR_DUOS_PER_SQUAD} duos`,
-      teams: squadDuos.map((duo, duoIndex) => ({
-        name: `Duo ${String(duoIndex + 1).padStart(2, "0")}`,
-        members: duo.members,
-      })),
-    });
-  }
+  const squads = [
+    {
+      name: "BR Squad 1",
+      lobbyNote: `${BR_PRIMARY_LOBBY_SIZE} players · ${BR_PRIMARY_DUO_COUNT} duos`,
+      teams: duosToTeams(pairIntoDuos(squad1Players)),
+    },
+    {
+      name: "BR Squad 2",
+      lobbyNote: `${BR_SECONDARY_LOBBY_SIZE} players · ${BR_SECONDARY_DUO_COUNT} duos`,
+      teams: duosToTeams(pairIntoDuos(squad2Players)),
+    },
+  ];
 
   return {
     squads,
+    reserve: [toRosterMember(reservePlayer, "Reserve")],
     meta: {
       playerCount: count,
-      duoCount: duos.length,
-      squads: BR_SQUAD_COUNT,
-      duosPerSquad: BR_DUOS_PER_SQUAD,
+      duoCount: BR_PRIMARY_DUO_COUNT + BR_SECONDARY_DUO_COUNT,
+      squads: squads.length,
+      reserveCount: BR_RESERVE_COUNT,
     },
   };
 }

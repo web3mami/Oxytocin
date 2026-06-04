@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { draftBrTeams, publishBrRoster } from "../lib/api.js";
 import {
-  draftBrTeams,
-  publishBrRoster,
-} from "../lib/api.js";
-import { BR_DRAFT_SIZE } from "../config.js";
+  BR_DRAFT_SIZE,
+  BR_PRIMARY_LOBBY_SIZE,
+  BR_PRIMARY_DUO_COUNT,
+  BR_RESERVE_COUNT,
+  BR_SECONDARY_LOBBY_SIZE,
+  BR_SECONDARY_DUO_COUNT,
+} from "../config.js";
 
 function DuoCard({ team }) {
   return (
@@ -38,7 +42,7 @@ export default function BrDraftPanel({ adminKey, brCount, disabled }) {
       const data = await draftBrTeams(adminKey);
       setDraft(data);
       setMessage(
-        `Draft ready: ${data.meta?.duoCount ?? 40} duos across ${data.meta?.squads ?? 2} squads (randomized).`
+        `Draft ready: Squad 1 (${BR_PRIMARY_DUO_COUNT} duos) + Squad 2 (${BR_SECONDARY_DUO_COUNT} duos) + ${BR_RESERVE_COUNT} reserve.`
       );
     } catch (err) {
       setDraft(null);
@@ -64,6 +68,7 @@ export default function BrDraftPanel({ adminKey, brCount, disabled }) {
     try {
       await publishBrRoster(adminKey, {
         squads: draft.squads,
+        reserve: draft.reserve ?? [],
         meta: draft.meta,
       });
       setMessage("BR roster published. View it on /roster.");
@@ -79,8 +84,10 @@ export default function BrDraftPanel({ adminKey, brCount, disabled }) {
   return (
     <div className="admin-draft">
       <p className="admin-draft__lead">
-        Randomize all {BR_DRAFT_SIZE} BR players into duos — {BR_DRAFT_SIZE / 2} teams, split into
-        2 squads of 20 duos (40 players per lobby).
+        Randomize all {BR_DRAFT_SIZE} BR players: {BR_PRIMARY_LOBBY_SIZE} in Squad 1 (
+        {BR_PRIMARY_DUO_COUNT} duos), {BR_SECONDARY_LOBBY_SIZE} in Squad 2 (
+        {BR_SECONDARY_DUO_COUNT} duos), plus {BR_RESERVE_COUNT} reserve if someone is
+        unavailable.
       </p>
       <p className="admin-draft__meta">
         Current BR registrations: <strong>{brCount}</strong>
@@ -115,6 +122,23 @@ export default function BrDraftPanel({ adminKey, brCount, disabled }) {
 
       {error ? <div className="alert alert--error">{error}</div> : null}
       {message ? <div className="alert alert--success">{message}</div> : null}
+
+      {draft?.reserve?.length ? (
+        <section className="admin-draft-reserve panel">
+          <h3 className="admin-draft-reserve__title">Reserve</h3>
+          <p className="admin-draft-reserve__note">Substitute if a duo member cannot play</p>
+          <ul className="admin-draft-duo__members">
+            {draft.reserve.map((member) => (
+              <li key={member.ign}>
+                <span className="admin-draft-duo__ign">{member.ign}</span>
+                {member.role ? (
+                  <span className="admin-draft-duo__role">{member.role}</span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {draft?.squads?.length ? (
         <div className="admin-draft-preview">
