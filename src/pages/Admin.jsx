@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchAdminPlayers, deleteAdminPlayer } from "../lib/api.js";
+import { readSession, removeSession, writeSession } from "../lib/session.js";
 import BrDraftPanel from "../components/BrDraftPanel.jsx";
+import MpBracketPanel from "../components/MpBracketPanel.jsx";
+import MpFixturesPanel from "../components/MpFixturesPanel.jsx";
+import MpRosterPanel from "../components/MpRosterPanel.jsx";
 
 const STORAGE_KEY = "oxytocin_admin_key";
 
@@ -81,7 +85,7 @@ function AdminPlayerTable({ players, deletingId, loading, onDelete }) {
 }
 
 export default function Admin() {
-  const [adminKey, setAdminKey] = useState(() => sessionStorage.getItem(STORAGE_KEY) ?? "");
+  const [adminKey, setAdminKey] = useState(() => readSession(STORAGE_KEY));
   const [password, setPassword] = useState("");
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -127,7 +131,7 @@ export default function Admin() {
     setError("");
     try {
       const data = await fetchAdminPlayers(key);
-      sessionStorage.setItem(STORAGE_KEY, key);
+      writeSession(STORAGE_KEY, key);
       setAdminKey(key);
       setPlayers(data.players || []);
       setPassword("");
@@ -139,7 +143,7 @@ export default function Admin() {
   }
 
   function handleLogout() {
-    sessionStorage.removeItem(STORAGE_KEY);
+    removeSession(STORAGE_KEY);
     setAdminKey("");
     setPlayers([]);
     setPassword("");
@@ -172,7 +176,7 @@ export default function Admin() {
   if (!adminKey) {
     return (
       <div className="admin-page">
-        <div className="admin-login">
+        <div className="container admin-login">
           <p className="eyebrow">Organizer</p>
           <h1>Admin</h1>
           <p className="admin-login__lead">Enter the admin password to view registrations.</p>
@@ -241,6 +245,13 @@ export default function Admin() {
               <h2 className="admin-list__title">Multiplayer</h2>
               <span className="admin-list__count">{mpPlayers.length}</span>
             </div>
+            <MpRosterPanel
+              adminKey={adminKey}
+              mpPlayers={mpPlayers}
+              disabled={loading}
+            />
+            <MpFixturesPanel adminKey={adminKey} disabled={loading} />
+            <MpBracketPanel adminKey={adminKey} disabled={loading} />
             <AdminPlayerTable
               players={mpPlayers}
               deletingId={deletingId}

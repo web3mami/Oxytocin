@@ -69,6 +69,161 @@ export async function publishBrRoster(adminKey, payload) {
   return data;
 }
 
+/** @param {string} adminKey */
+export async function fetchMpRoster(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/mp-roster`, {
+    headers: { Authorization: `Bearer ${adminKey}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not load MP roster");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {Array<object>} teams */
+export async function saveMpRoster(adminKey, teams) {
+  const res = await fetch(`${API_BASE}/api/admin/mp-roster`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ teams }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not save MP roster");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {Array<object>} teams */
+export async function publishMpRoster(adminKey, teams) {
+  const res = await fetch(`${API_BASE}/api/admin/publish-mp-roster`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ teams }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not publish MP roster");
+  }
+  return data;
+}
+
+/** @param {string} adminKey */
+export async function fetchMpFixtures(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/mp-fixtures`, {
+    headers: { Authorization: `Bearer ${adminKey}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not load MP draw");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {Array<object>} matches */
+export async function saveMpFixtures(adminKey, matches) {
+  const res = await fetch(`${API_BASE}/api/admin/mp-fixtures`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ matches }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not save MP draw");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {Array<object>} matches */
+export async function publishMpFixtures(adminKey, matches) {
+  const res = await fetch(`${API_BASE}/api/admin/publish-mp-fixtures`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ matches }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not publish MP draw");
+  }
+  return data;
+}
+
+/** @param {string} adminKey */
+export async function fetchMpBracket(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/mp-bracket`, {
+    headers: { Authorization: `Bearer ${adminKey}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not load MP bracket");
+  }
+  return data;
+}
+
+/** @param {string} adminKey */
+export async function generateMpBracket(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/generate-mp-bracket`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: "{}",
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not generate MP bracket");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {object} bracket */
+export async function saveMpBracket(adminKey, bracket) {
+  const res = await fetch(`${API_BASE}/api/admin/mp-bracket`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ bracket }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not save MP bracket");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {object} bracket */
+export async function publishMpBracket(adminKey, bracket) {
+  const res = await fetch(`${API_BASE}/api/admin/publish-mp-bracket`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ bracket }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not publish MP bracket");
+  }
+  return data;
+}
+
 export async function fetchBattleRosters() {
   const res = await fetch(`${API_BASE}/api/roster`);
   const data = await res.json().catch(() => ({}));

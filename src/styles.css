@@ -1551,8 +1551,28 @@ h3 {
 }
 
 .admin-login {
-  width: min(420px, calc(100% - 2rem));
+  width: min(420px, 100%);
   margin-inline: auto;
+}
+
+.app-error {
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 36rem;
+  margin: 0 auto;
+  color: var(--text);
+}
+
+.app-error__msg {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--danger-bright);
+  word-break: break-word;
+}
+
+.app-error__hint {
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
 }
 
 .admin-login__lead {
@@ -2157,5 +2177,1490 @@ h3 {
   margin: 0 0 0.65rem;
   font-size: 0.88rem;
   color: var(--text-muted);
+}
+
+/* Admin — manual MP 5v5 grouping (steel cyan) */
+.admin-mp,
+.admin-mp-fixtures {
+  --mp-accent: #5a8f9e;
+  --mp-accent-bright: #8ec8d8;
+  --mp-r: 90;
+  --mp-g: 143;
+  --mp-b: 158;
+  --mp-dim: rgba(90, 143, 158, 0.14);
+  --mp-glow: rgba(90, 143, 158, 0.28);
+}
+
+.admin-mp {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-mp__lead {
+  margin: 0 0 0.5rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.admin-mp__meta {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.admin-mp__layout {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 900px) {
+  .admin-mp__layout {
+    grid-template-columns: minmax(200px, 240px) 1fr;
+    align-items: start;
+  }
+}
+
+.admin-mp__pool-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp__hint {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.admin-mp__pool-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.admin-mp__pool-player {
+  display: grid;
+  gap: 0.1rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 4px);
+  background: rgba(0, 0, 0, 0.2);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.admin-mp__pool-player:hover {
+  border-color: rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.4);
+}
+
+.admin-mp__pool-player--selected {
+  border-color: var(--mp-accent);
+  background: var(--mp-dim);
+  box-shadow: 0 0 0 1px var(--mp-glow);
+}
+
+.admin-mp__pool-ign {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-mp__pool-x {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.admin-mp__pool-empty {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.admin-mp__teams {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.admin-mp__team-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-mp__team-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp__slots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.admin-mp__slot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: calc(var(--radius) - 4px);
+  background: rgba(0, 0, 0, 0.15);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.admin-mp__slot--filled {
+  border-style: solid;
+  border-color: rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.3);
+  background: rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.08);
+}
+
+.admin-mp__slot--target {
+  border-color: var(--mp-accent);
+  box-shadow: 0 0 0 1px var(--mp-glow);
+}
+
+.admin-mp__slot-num {
+  flex-shrink: 0;
+  width: 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp__slot-ign {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+  font-size: 0.92rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-mp__slot-x {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-mp__slot-placeholder {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.admin-mp__slot-body {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 0.05rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.admin-mp-fixtures {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-mp-fixtures__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp-fixtures__lead,
+.admin-mp-fixtures__meta {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.admin-mp-fixtures__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-mp-fixtures__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-mp-fixtures__row {
+  display: grid;
+  grid-template-columns: auto 1fr minmax(6.5rem, 1fr) auto auto 3.5rem minmax(6.5rem, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.85rem;
+}
+
+.admin-mp-fixtures__bye {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.admin-mp-fixtures__bye input {
+  accent-color: var(--mp-accent);
+}
+
+@media (max-width: 720px) {
+  .admin-mp-fixtures__row {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "index label remove"
+      "index home remove"
+      "index vs remove"
+      "index away remove";
+  }
+
+  .admin-mp-fixtures__index {
+    grid-area: index;
+  }
+
+  .admin-mp-fixtures__label-field {
+    grid-area: label;
+  }
+
+  .admin-mp-fixtures__select:first-of-type {
+    grid-area: home;
+  }
+
+  .admin-mp-fixtures__vs-wrap {
+    grid-area: vs;
+    justify-self: center;
+  }
+
+  .admin-mp-fixtures__select:last-of-type {
+    grid-area: away;
+  }
+
+  .admin-mp-fixtures__remove {
+    grid-area: remove;
+  }
+}
+
+.admin-mp-fixtures__index {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--mp-accent-bright);
+  opacity: 0.85;
+}
+
+.admin-mp-fixtures__label-input,
+.admin-mp-fixtures__select {
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+}
+
+.admin-mp-fixtures__vs-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 3.35rem;
+  height: 3.35rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, transparent 46%, rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.35) 46%, rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.35) 54%, transparent 54%),
+    radial-gradient(circle at 38% 30%, rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.3), transparent 52%),
+    linear-gradient(160deg, #121c20, #080c10);
+  border: 1px solid rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.55);
+  border-radius: 6px;
+  box-shadow:
+    0 0 16px rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.22),
+    inset 0 0 14px rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.1);
+}
+
+.admin-mp-fixtures__vs {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mp-accent-bright);
+  text-shadow: 0 0 12px rgba(var(--mp-r), var(--mp-g), var(--mp-b), 0.45);
+}
+
+.admin-mp-fixtures__remove {
+  min-width: 2rem;
+}
+
+/* Public roster tabs + MP teams */
+.roster-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.roster-tabs__btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.roster-tabs__btn--active {
+  color: var(--accent-bright);
+  border-color: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.45);
+  background: var(--accent-dim);
+}
+
+.roster-page .roster-tabs__btn--mp.roster-tabs__btn--active {
+  color: #8ec8d8;
+  border-color: rgba(90, 143, 158, 0.5);
+  background: rgba(90, 143, 158, 0.12);
+}
+
+/* MP — steel cyan (distinct from BR Squad 2 bright cyan) */
+.roster-page .roster-squad--mp {
+  --squad-accent: #5a8f9e;
+  --squad-accent-bright: #8ec8d8;
+  --squad-r: 90;
+  --squad-g: 143;
+  --squad-b: 158;
+  --squad-glow: rgba(90, 143, 158, 0.28);
+}
+
+/* MP knockout cup — classic bracket tree */
+.roster-mp-cup {
+  margin-bottom: 2rem;
+}
+
+.roster-mp-cup .ko-bracket {
+  margin-top: 0.35rem;
+}
+
+.roster-page .ko-bracket,
+.admin-mp-bracket .ko-bracket {
+  --ko-line-dim: rgba(255, 255, 255, 0.09);
+  --ko-line-live: var(--squad-accent-bright);
+  --ko-line: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.55);
+  --ko-path-glow: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.45);
+  --ko-champion-glow: rgba(212, 175, 72, 0.35);
+  --ko-match-h: 4.75rem;
+  --ko-match-gap: 0.95rem;
+  --ko-row-h: calc(var(--ko-match-h) / var(--ko-min-span, 2));
+  --ko-stub: 1.75rem;
+}
+
+.roster-page .ko-bracket {
+  border: 1px solid var(--ko-line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(165deg, var(--bg-panel) 0%, rgba(8, 14, 18, 0.98) 100%);
+  box-shadow:
+    0 0 32px var(--squad-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.roster-page .ko-bracket__scroll,
+.admin-mp-bracket .ko-bracket__scroll {
+  overflow-x: auto;
+  padding: 2rem 1.75rem 2.25rem;
+}
+
+.roster-page .ko-bracket__grid,
+.admin-mp-bracket .ko-bracket__grid {
+  display: flex;
+  gap: 0;
+  min-width: min-content;
+  align-items: stretch;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 0.5rem 0.25rem;
+}
+
+.roster-page .ko-bracket__round,
+.admin-mp-bracket .ko-bracket__round {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 17.5rem;
+  padding: 0 2.75rem 0 0.85rem;
+}
+
+.roster-page .ko-bracket__round-label,
+.admin-mp-bracket .ko-bracket__round-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 1.15rem;
+  text-align: center;
+}
+
+.roster-page .ko-bracket__round-phase,
+.admin-mp-bracket .ko-bracket__round-phase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding-bottom: 0.45rem;
+  border-bottom: 2px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.35);
+  background: linear-gradient(180deg, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.08), transparent);
+}
+
+.roster-page .ko-bracket__round-icon,
+.admin-mp-bracket .ko-bracket__round-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.85rem;
+  height: 1.85rem;
+  padding: 0 0.35rem;
+  border: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.45);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--squad-accent-bright);
+  background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.12);
+  box-shadow: 0 0 10px var(--squad-glow);
+}
+
+.roster-page .ko-bracket__round-name,
+.admin-mp-bracket .ko-bracket__round-name {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--squad-accent-bright);
+  text-shadow: 0 0 12px var(--squad-glow);
+}
+
+.roster-page .ko-bracket__round-count,
+.admin-mp-bracket .ko-bracket__round-count {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+.roster-page .ko-bracket__matches,
+.admin-mp-bracket .ko-bracket__matches {
+  display: grid;
+  grid-template-rows: repeat(var(--ko-slots), var(--ko-row-h));
+  flex: 1;
+  align-content: start;
+}
+
+.roster-page .ko-bracket__round:first-child .ko-bracket__cell,
+.admin-mp-bracket .ko-bracket__round:first-child .ko-bracket__cell {
+  justify-content: flex-start;
+  padding-bottom: var(--ko-match-gap);
+  box-sizing: border-box;
+}
+
+.roster-page .ko-bracket__round:first-child .ko-match,
+.admin-mp-bracket .ko-bracket__round:first-child .ko-match {
+  height: calc(var(--ko-match-h) - var(--ko-match-gap));
+}
+
+.roster-page .ko-bracket__cell,
+.admin-mp-bracket .ko-bracket__cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  padding: 0;
+  min-height: 0;
+  overflow: visible;
+}
+
+@keyframes ko-line-pulse {
+  0%,
+  100% {
+    opacity: 0.82;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.15);
+  }
+}
+
+/* horizontal stub toward the next round — dim until a feeder is decided */
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell::after,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell::after {
+  content: "";
+  position: absolute;
+  right: calc(-1 * var(--ko-stub));
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--ko-stub);
+  height: 2px;
+  background: var(--ko-line-dim);
+  transition: background 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* paired feeders share one exit at their join point */
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::after,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::after {
+  content: none;
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::after,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::after {
+  top: calc(50% - var(--ko-elbow-rows, 0) * var(--ko-row-h));
+}
+
+/* vertical elbow joining pairs within a round */
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::before,
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::before {
+  content: "";
+  position: absolute;
+  right: calc(-1 * var(--ko-stub));
+  width: 2px;
+  background: var(--ko-line-dim);
+  transition: background 0.35s ease, box-shadow 0.35s ease;
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::before,
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::after,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::after {
+  background: var(--ko-line-live);
+  box-shadow: 0 0 10px var(--squad-glow);
+  animation: ko-line-pulse 2.8s ease-in-out infinite;
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--join-live.ko-bracket__cell--pair-bottom::after,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--join-live.ko-bracket__cell--pair-bottom::after {
+  background: var(--ko-line-live);
+  box-shadow:
+    0 0 12px var(--squad-glow),
+    0 0 20px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.25);
+  animation: ko-line-pulse 2.2s ease-in-out infinite;
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--join-partial.ko-bracket__cell--pair-bottom::after,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--join-partial.ko-bracket__cell--pair-bottom::after {
+  background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.55);
+  box-shadow: 0 0 6px var(--squad-glow);
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::before {
+  top: 50%;
+  bottom: auto;
+  height: calc(var(--ko-elbow-rows, 0) * var(--ko-row-h));
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::before {
+  top: auto;
+  bottom: 50%;
+  height: calc(var(--ko-elbow-rows, 0) * var(--ko-row-h));
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--solo::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--solo::before {
+  content: none;
+}
+
+.roster-page .ko-match,
+.admin-mp-bracket .ko-match {
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 13.25rem;
+  max-height: 100%;
+  border: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.55);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #0f181c 0%, #0a1114 100%);
+  overflow: hidden;
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.roster-page .ko-match:not(.ko-match--bye),
+.admin-mp-bracket .ko-match:not(.ko-match--bye) {
+  height: var(--ko-match-h);
+  display: flex;
+  flex-direction: column;
+}
+
+.roster-page .ko-match__row,
+.admin-mp-bracket .ko-match__row {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.35);
+}
+
+.roster-page .ko-match__row:first-child,
+.admin-mp-bracket .ko-match__row:first-child {
+  background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.08);
+}
+
+.roster-page .ko-match__name,
+.admin-mp-bracket .ko-match__name {
+  display: block;
+  min-height: 1.2rem;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster-page .ko-match__name--empty,
+.admin-mp-bracket .ko-match__name--empty {
+  min-height: 1.25rem;
+}
+
+@keyframes ko-path-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.35),
+      0 0 14px var(--ko-path-glow);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.55),
+      0 0 22px var(--ko-path-glow),
+      0 0 8px var(--ko-champion-glow);
+  }
+}
+
+.roster-page .ko-match--path,
+.admin-mp-bracket .ko-match--path {
+  border-color: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.7);
+  animation: ko-path-glow 3.2s ease-in-out infinite;
+}
+
+.roster-page .ko-match--decided,
+.admin-mp-bracket .ko-match--decided {
+  border-color: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.75);
+}
+
+.roster-page .ko-match__row--path,
+.admin-mp-bracket .ko-match__row--path {
+  background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.12);
+}
+
+.roster-page .ko-match__row--path .ko-match__name,
+.admin-mp-bracket .ko-match__row--path .ko-match__name {
+  color: var(--squad-accent-bright);
+  text-shadow: 0 0 8px var(--squad-glow);
+}
+
+.roster-page .ko-match__row--winner,
+.admin-mp-bracket .ko-match__row--winner {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.28),
+    rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.14)
+  );
+}
+
+.roster-page .ko-match__row--winner .ko-match__name,
+.admin-mp-bracket .ko-match__row--winner .ko-match__name {
+  color: var(--squad-accent-bright);
+  text-shadow: 0 0 10px var(--squad-glow);
+}
+
+.roster-page .ko-match__row--loser,
+.admin-mp-bracket .ko-match__row--loser {
+  opacity: 0.38;
+}
+
+.roster-page .ko-match--bye,
+.admin-mp-bracket .ko-match--bye {
+  height: var(--ko-match-h);
+  display: flex;
+  flex-direction: column;
+  opacity: 0.92;
+  border-style: dashed;
+  border-color: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.5);
+  background: linear-gradient(180deg, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.1) 0%, #0a1114 100%);
+}
+
+.roster-page .ko-match__row--bye-label,
+.admin-mp-bracket .ko-match__row--bye-label {
+  padding: 0.35rem 0.65rem;
+  text-align: center;
+  background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.1);
+}
+
+.roster-page .ko-match__bye-tag,
+.admin-mp-bracket .ko-match__bye-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--squad-accent-bright);
+  line-height: 1.25;
+}
+
+.roster-page .ko-match--placeholder,
+.admin-mp-bracket .ko-match--placeholder {
+  opacity: 0.35;
+  border-style: dotted;
+}
+
+.roster-page .ko-match__row:last-child,
+.admin-mp-bracket .ko-match__row:last-child {
+  border-bottom: none;
+}
+
+.admin-mp-bracket .ko-bracket__pick {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.35rem;
+}
+
+.admin-mp-bracket .ko-bracket {
+  margin-top: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(165deg, rgba(0, 0, 0, 0.28) 0%, rgba(8, 14, 18, 0.45) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* legacy cup list (unused) */
+.roster-page .cup-bracket {
+  --cup-line: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.4);
+  border: 1px solid var(--cup-line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.08), transparent 45%),
+    var(--bg-panel);
+  box-shadow: 0 0 28px var(--squad-glow);
+}
+
+.roster-page .cup-bracket__banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--cup-line);
+  background: linear-gradient(90deg, transparent, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.12), transparent);
+}
+
+.roster-page .cup-bracket__live {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.55);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--squad-accent-bright);
+}
+
+.roster-page .cup-bracket__title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--squad-accent-bright);
+}
+
+.roster-page .cup-bracket__scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.roster-page .cup-bracket__rounds {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-width: min-content;
+  padding: 1.1rem 0.75rem 1.35rem;
+}
+
+.roster-page .cup-bracket__round {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  min-width: 10.5rem;
+  padding: 0 1.35rem;
+  position: relative;
+}
+
+.roster-page .cup-bracket__round:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 8%;
+  bottom: 8%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--cup-line), transparent);
+}
+
+.roster-page .cup-bracket__round-name {
+  margin: 0 0 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--squad-accent-bright);
+}
+
+.roster-page .cup-bracket__ties {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 1;
+  gap: 0.55rem;
+}
+
+.roster-page .cup-bracket__tie-wrap {
+  position: relative;
+}
+
+.roster-page .cup-bracket__round:not(:last-child) .cup-bracket__tie-wrap::after {
+  content: "";
+  position: absolute;
+  right: -1.35rem;
+  top: 50%;
+  width: 1.35rem;
+  height: 1px;
+  background: var(--cup-line);
+}
+
+.roster-page .cup-tie {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 2.65rem;
+  border: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.2);
+  border-radius: 5px;
+  background: #0a1114;
+  overflow: hidden;
+}
+
+.roster-page .cup-tie__team {
+  padding: 0.4rem 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  line-height: 1.15;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.roster-page .cup-tie__team--loser {
+  opacity: 0.45;
+}
+
+.roster-page .cup-tie__team--winner {
+  color: var(--squad-accent-bright);
+  background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.1);
+}
+
+.roster-page .cup-tie__vs {
+  padding: 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--squad-accent-bright);
+  border-left: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.45);
+  border-right: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.45);
+  background:
+    radial-gradient(circle at 50% 40%, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.25), transparent 70%),
+    #0d1518;
+  box-shadow: 0 0 10px var(--squad-glow);
+}
+
+.roster-page .cup-tie--decided .cup-tie__vs {
+  border-color: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.65);
+}
+
+.roster-page .cup-tie--bye {
+  grid-template-columns: 1fr auto;
+  opacity: 0.72;
+  border-style: dashed;
+  filter: saturate(0.5);
+}
+
+.roster-page .cup-tie__bye-tag {
+  padding: 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+/* Admin cup bracket */
+.admin-mp-bracket {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.admin-mp-bracket__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp-bracket__lead,
+.admin-mp-bracket__meta {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.admin-mp-bracket__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.admin-mp-bracket__tree {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-mp-bracket__round-name {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp-bracket__matches {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.admin-mp-bracket__match {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 4px);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-mp-bracket__match--bye {
+  opacity: 0.75;
+  border-style: dashed;
+}
+
+.admin-mp-bracket__slot {
+  min-width: 0;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.88rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-mp-bracket__team--win {
+  color: var(--mp-accent-bright);
+}
+
+.admin-mp-bracket__vs {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--mp-accent);
+}
+
+.admin-mp-bracket__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.admin-mp-bracket__champ {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.78rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.admin-mp-bracket__champ--bye {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.admin-mp-bracket__undo {
+  margin-left: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--mp-accent-bright);
+  font-size: 0.72rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* MP draw board — football-style fixtures */
+.roster-mp-draw {
+  margin-bottom: 1.75rem;
+}
+
+.roster-page .roster-mp-draw .draw-board {
+  --draw-accent: var(--squad-accent);
+  --draw-accent-bright: var(--squad-accent-bright);
+  --draw-line: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.38);
+  --draw-line-strong: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.55);
+  --draw-slot: #0a1114;
+  --draw-slot-edge: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.12);
+  max-width: 640px;
+  margin: 0 auto;
+  border: 1px solid var(--draw-line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 8px,
+      rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.03) 8px 16px
+    ),
+    linear-gradient(180deg, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.1), transparent 42%),
+    var(--bg-panel);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.4) inset,
+    0 0 28px var(--squad-glow),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.roster-page .roster-mp-draw .draw-board__banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.55rem 1rem;
+  background: linear-gradient(90deg, transparent, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.14), transparent);
+  border-bottom: 1px solid var(--draw-line);
+}
+
+.roster-page .roster-mp-draw .draw-board__live {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--draw-line-strong);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--draw-accent-bright);
+  background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.1);
+}
+
+.roster-page .roster-mp-draw .draw-board__title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--draw-accent-bright);
+}
+
+.roster-page .roster-mp-draw .draw-board__fixtures {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.roster-page .roster-mp-draw .draw-board__fixtures > li + li {
+  border-top: 1px solid var(--draw-line);
+}
+
+.roster-page .roster-mp-draw .draw-tie {
+  margin: 0;
+  padding: 0.75rem 0.85rem 0.85rem;
+}
+
+.roster-page .roster-mp-draw .draw-tie__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0 0.15rem;
+}
+
+.roster-page .roster-mp-draw .draw-tie__fixture {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--draw-accent-bright);
+}
+
+.roster-page .roster-mp-draw .draw-tie__round {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.roster-page .roster-mp-draw .draw-tie__pairing {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  min-height: 3.25rem;
+  border: 1px solid var(--draw-slot-edge);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--draw-slot);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.roster-page .roster-mp-draw .draw-tie__club {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.65rem;
+  min-width: 0;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.04), transparent);
+}
+
+.roster-page .roster-mp-draw .draw-tie__club--home {
+  border-right: 1px solid var(--draw-line);
+}
+
+.roster-page .roster-mp-draw .draw-tie__club--away {
+  border-left: 1px solid var(--draw-line);
+}
+
+.roster-page .roster-mp-draw .draw-tie__club-name {
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 3.2vw, 1.15rem);
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.roster-page .roster-mp-draw .draw-tie__ball {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 3.65rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, transparent 46%, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.38) 46%, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.38) 54%, transparent 54%),
+    radial-gradient(circle at 40% 32%, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.35), transparent 50%),
+    linear-gradient(160deg, #121c20, #080c10);
+  border: 1px solid var(--draw-line-strong);
+  border-top: none;
+  border-bottom: none;
+  box-shadow:
+    0 0 18px var(--squad-glow),
+    inset 0 0 14px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.14);
+}
+
+.roster-page .roster-mp-draw .draw-tie__vs {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--draw-accent-bright);
+  text-shadow: 0 0 12px var(--squad-glow);
+}
+
+.roster-page .roster-mp-draw .draw-tie--bye .draw-tie__fixture {
+  color: var(--text-muted);
+}
+
+.roster-page .roster-mp-draw .draw-tie--bye .draw-tie__pairing {
+  grid-template-columns: 1fr auto;
+  opacity: 0.72;
+  filter: saturate(0.45);
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.roster-page .roster-mp-draw .draw-tie__pairing--bye .draw-tie__club--solo {
+  border-right: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+}
+
+.roster-page .roster-mp-draw .draw-tie--bye .draw-tie__club-name {
+  color: var(--text-muted);
+}
+
+.roster-page .roster-mp-draw .draw-tie__ball--bye {
+  width: 3.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(139, 149, 165, 0.9);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-top: none;
+  border-bottom: none;
+  box-shadow: none;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.02) 0 5px,
+    rgba(0, 0, 0, 0.2) 5px 10px
+  );
+}
+
+.roster-page .roster-mp-draw .draw-tie__note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0.45rem 0 0;
+  font-size: 0.68rem;
+  text-align: center;
+  letter-spacing: 0.04em;
+  color: rgba(139, 149, 165, 0.95);
+  line-height: 1.35;
+}
+
+.roster-page .roster-mp-draw .draw-tie__note-badge {
+  padding: 0.12rem 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 900px) {
+  .roster-page .roster-mp-draw .draw-board {
+    max-width: 720px;
+  }
+
+  .roster-page .roster-mp-draw .draw-tie__club-name {
+    font-size: 1.2rem;
+  }
+}
+
+.roster-mp__grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.roster-page .roster-mp-team {
+  position: relative;
+  padding: 0.88rem 0.9rem 0.75rem;
+  border: 1px solid rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.22);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.05), transparent 55%),
+    var(--bg-panel);
+  overflow: hidden;
+}
+
+.roster-page .roster-mp-team::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--squad-accent);
+  opacity: 0.75;
+}
+
+.roster-page .roster-mp-team__name {
+  margin: 0 0 0.55rem;
+  padding-left: 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--squad-accent-bright);
+}
+
+.roster-page .roster-mp-team__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.roster-page .roster-mp-team__player {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0.35rem 0;
+  min-width: 0;
+}
+
+.roster-page .roster-mp-team__player + .roster-mp-team__player {
+  border-top: 1px solid var(--line);
+}
+
+.roster-page .roster-mp-team__num {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--squad-accent-bright);
+}
+
+.roster-page .roster-mp-team__body {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 0.08rem;
+}
+
+.roster-page .roster-mp-team__ign {
+  font-weight: 700;
+  font-size: 0.98rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster-page .roster-mp-team__x {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster-page .roster-mp-team__x:hover {
+  color: var(--squad-accent-bright);
 }
 

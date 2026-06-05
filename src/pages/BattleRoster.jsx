@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import MpCupBracket from "../components/MpCupBracket.jsx";
 import { fetchBattleRosters } from "../lib/api.js";
-import { tournament } from "../config.js";
+import { tournament, ROSTER_SIZE } from "../config.js";
 
 function formatXHandle(handle) {
   return handle.replace(/^@/, "");
@@ -47,6 +48,36 @@ function DuoCard({ team }) {
   );
 }
 
+function MpTeamCard({ team }) {
+  return (
+    <article className="roster-mp-team">
+      <h3 className="roster-mp-team__name">{team.name}</h3>
+      <ol className="roster-mp-team__list">
+        {team.members.map((member, index) => (
+          <li className="roster-mp-team__player" key={`${team.name}-${member.ign}-${index}`}>
+            <span className="roster-mp-team__num">{index + 1}</span>
+            <div className="roster-mp-team__body">
+              <span className="roster-mp-team__ign" title={member.ign}>
+                {member.ign}
+              </span>
+              {member.xHandle ? (
+                <a
+                  className="roster-mp-team__x"
+                  href={`https://x.com/${formatXHandle(member.xHandle)}`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  @{formatXHandle(member.xHandle)}
+                </a>
+              ) : null}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </article>
+  );
+}
+
 function ReserveCard({ members }) {
   return (
     <section className="roster-reserve">
@@ -76,10 +107,15 @@ function ReserveCard({ members }) {
 }
 
 export default function BattleRoster() {
+  const [tab, setTab] = useState("br");
   const [squads, setSquads] = useState([]);
   const [teams, setTeams] = useState([]);
   const [reserve, setReserve] = useState([]);
-  const [published, setPublished] = useState(true);
+  const [brPublished, setBrPublished] = useState(false);
+  const [mpTeams, setMpTeams] = useState([]);
+  const [mpPublished, setMpPublished] = useState(false);
+  const [mpBracket, setMpBracket] = useState({ bracketSize: 0, rounds: [] });
+  const [mpBracketPublished, setMpBracketPublished] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -92,16 +128,23 @@ export default function BattleRoster() {
       try {
         const data = await fetchBattleRosters();
         if (cancelled) return;
-        setPublished(data.published !== false);
+        setBrPublished(data.published !== false);
         setSquads(data.squads ?? []);
         setTeams(data.teams ?? []);
         setReserve(data.reserve ?? []);
+        setMpPublished(data.mpPublished === true);
+        setMpTeams(data.mpTeams ?? []);
+        setMpBracketPublished(data.mpBracketPublished === true);
+        setMpBracket(data.mpBracket ?? { bracketSize: 0, rounds: [] });
       } catch (err) {
         if (!cancelled) {
           setError(err.message || "Could not load rosters.");
           setSquads([]);
           setTeams([]);
           setReserve([]);
+          setMpTeams([]);
+          setMpBracket({ bracketSize: 0, rounds: [] });
+          setMpBracketPublished(false);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -114,7 +157,9 @@ export default function BattleRoster() {
     };
   }, []);
 
-  const hasRoster = squads.length > 0 || teams.length > 0 || reserve.length > 0;
+  const hasBr = squads.length > 0 || teams.length > 0 || reserve.length > 0;
+  const hasMp = mpTeams.length > 0;
+  const hasMpBracket = (mpBracket?.rounds?.length ?? 0) > 0;
 
   return (
     <div className="roster-page">
@@ -132,52 +177,107 @@ export default function BattleRoster() {
       </header>
 
       <main className="container roster-page__main">
-        <p className="eyebrow">Post-draft</p>
-        <h1>Battle roster</h1>
-        <p className="roster-page__lead">
-          BR duos by squad — 40 players in Squad 1, 20 in Squad 2, plus a reserve
-          substitute.
-        </p>
+        <h1>Tournament rosters</h1>
+
+        <div className="roster-tabs" role="tablist" aria-label="Roster mode">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "br"}
+            className={`roster-tabs__btn${tab === "br" ? " roster-tabs__btn--active" : ""}`}
+            onClick={() => setTab("br")}
+          >
+            Battle Royale
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "mp"}
+            className={`roster-tabs__btn roster-tabs__btn--mp${
+              tab === "mp" ? " roster-tabs__btn--active" : ""
+            }`}
+            onClick={() => setTab("mp")}
+          >
+            Multiplayer
+          </button>
+        </div>
 
         {error ? <div className="alert alert--error">{error}</div> : null}
 
         {loading ? (
           <p className="empty-state">Loading rosters…</p>
-        ) : !published || !hasRoster ? (
+        ) : tab === "br" ? (
+          !brPublished || !hasBr ? (
+            <div className="alert alert--warn roster-page__notice">
+              BR rosters are not published yet. Check back after the draft on {tournament.date}.
+            </div>
+          ) : squads.length ? (
+            <div className="roster-squads">
+              {squads.map((squad, squadIndex) => (
+                <section
+                  className={`roster-squad ${squadToneClass(squad.name, squadIndex)}`}
+                  key={squad.name}
+                >
+                  <div className="roster-squad__head">
+                    <h2 className="roster-squad__name">{squad.name}</h2>
+                    {squad.lobbyNote ? (
+                      <p className="roster-squad__note">{squad.lobbyNote}</p>
+                    ) : null}
+                  </div>
+                  <div className="roster-grid">
+                    {squad.teams.map((team) => (
+                      <DuoCard key={`${squad.name}-${team.name}`} team={team} />
+                    ))}
+                  </div>
+                </section>
+              ))}
+              {reserve.length ? <ReserveCard members={reserve} /> : null}
+            </div>
+          ) : (
+            <div className="roster-squads">
+              <div className="roster-grid">
+                {teams.map((team) => (
+                  <DuoCard key={team.name} team={team} />
+                ))}
+              </div>
+              {reserve.length ? <ReserveCard members={reserve} /> : null}
+            </div>
+          )
+        ) : !mpPublished || !hasMp ? (
           <div className="alert alert--warn roster-page__notice">
-            Rosters are not published yet. Check back after the draft on {tournament.date}.
-          </div>
-        ) : squads.length ? (
-          <div className="roster-squads">
-            {squads.map((squad, squadIndex) => (
-              <section
-                className={`roster-squad ${squadToneClass(squad.name, squadIndex)}`}
-                key={squad.name}
-              >
-                <div className="roster-squad__head">
-                  <h2 className="roster-squad__name">{squad.name}</h2>
-                  {squad.lobbyNote ? (
-                    <p className="roster-squad__note">{squad.lobbyNote}</p>
-                  ) : null}
-                </div>
-                <div className="roster-grid">
-                  {squad.teams.map((team) => (
-                    <DuoCard key={`${squad.name}-${team.name}`} team={team} />
-                  ))}
-                </div>
-              </section>
-            ))}
-            {reserve.length ? <ReserveCard members={reserve} /> : null}
+            MP teams are not published yet. Check back after the organizer groups players.
           </div>
         ) : (
-          <div className="roster-squads">
-            <div className="roster-grid">
-              {teams.map((team) => (
-                <DuoCard key={team.name} team={team} />
-              ))}
+          <>
+            {!mpBracketPublished || !hasMpBracket ? (
+              <div className="alert alert--warn roster-page__notice">
+                Knockout draw is not published yet. Check back when matchups are posted.
+              </div>
+            ) : (
+              <section className="roster-mp-cup roster-squad roster-squad--mp">
+                <div className="roster-squad__head">
+                  <h2 className="roster-squad__name">Knockout draw</h2>
+                  <p className="roster-squad__note">
+                    Cup bracket · winners advance each round
+                  </p>
+                </div>
+                <MpCupBracket bracket={mpBracket} />
+              </section>
+            )}
+            <div className="roster-mp roster-squad roster-squad--mp">
+              <div className="roster-squad__head">
+                <h2 className="roster-squad__name">Multiplayer teams</h2>
+                <p className="roster-squad__note">
+                  {mpTeams.length} teams · {ROSTER_SIZE} players each
+                </p>
+              </div>
+              <div className="roster-mp__grid">
+                {mpTeams.map((team) => (
+                  <MpTeamCard key={team.name} team={team} />
+                ))}
+              </div>
             </div>
-            {reserve.length ? <ReserveCard members={reserve} /> : null}
-          </div>
+          </>
         )}
       </main>
     </div>
