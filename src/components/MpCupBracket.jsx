@@ -23,14 +23,52 @@ function advancingTeams(bracket) {
   return names;
 }
 
-/** @param {import('../../shared/mpBracket.js').BracketMatch} match @param {'home' | 'away'} side @param {Set<string>} advancing */
-function teamRowClass(match, side, advancing) {
+/**
+ * @param {import('../../shared/mpBracket.js').MpBracket} bracket
+ * @param {string} matchId
+ */
+export function findAdvanceTarget(bracket, matchId) {
+  for (let r = 0; r < bracket.rounds.length - 1; r += 1) {
+    const idx = bracket.rounds[r].matches.findIndex((m) => m.id === matchId);
+    if (idx === -1) continue;
+    const nextMatch = bracket.rounds[r + 1].matches[Math.floor(idx / 2)];
+    if (!nextMatch) return null;
+    return {
+      matchId: nextMatch.id,
+      slot: idx % 2 === 0 ? "home" : "away",
+      roundIndex: r + 1,
+    };
+  }
+  return null;
+}
+
+/** @typedef {{ fromMatchId: string, side: 'home' | 'away', teamName: string, target: { matchId: string, slot: 'home' | 'away', roundIndex: number } | null, key: number }} AdvanceFlash */
+
+/** @param {import('../../shared/mpBracket.js').BracketMatch} match @param {'home' | 'away'} side @param {Set<string>} advancing @param {AdvanceFlash | null} advanceFlash */
+function teamRowClass(match, side, advancing, advanceFlash) {
+  const classes = [];
   const w = winnerSide(match);
-  if (w === side) return "ko-match__row--winner ko-match__row--path";
-  if (w) return "ko-match__row--loser";
-  const name = side === "home" ? match.home : match.away;
-  if (name && advancing.has(name)) return "ko-match__row--path";
-  return "";
+  if (w === side) classes.push("ko-match__row--winner", "ko-match__row--path");
+  else if (w) classes.push("ko-match__row--loser");
+  else {
+    const name = side === "home" ? match.home : match.away;
+    if (name && advancing.has(name)) classes.push("ko-match__row--path");
+  }
+
+  if (advanceFlash) {
+    if (advanceFlash.fromMatchId === match.id && advanceFlash.side === side) {
+      classes.push("ko-match__row--advance-out");
+    }
+    if (
+      advanceFlash.target &&
+      advanceFlash.target.matchId === match.id &&
+      advanceFlash.target.slot === side
+    ) {
+      classes.push("ko-match__row--advance-in");
+    }
+  }
+
+  return classes.join(" ");
 }
 
 const ROUND_PHASE_ICONS = ["01", "QF", "SF", "🏆"];
@@ -53,8 +91,8 @@ function TeamName({ name }) {
   return <span className="ko-match__name">{name}</span>;
 }
 
-/** @param {import('../../shared/mpBracket.js').BracketMatch} match @param {Set<string>} advancing */
-function CupMatch({ match, advancing }) {
+/** @param {import('../../shared/mpBracket.js').BracketMatch} match @param {Set<string>} advancing @param {AdvanceFlash | null} advanceFlash */
+function CupMatch({ match, advancing, advanceFlash }) {
   const onPath =
     Boolean(match.winner) ||
     (match.home && advancing.has(match.home)) ||
@@ -65,7 +103,7 @@ function CupMatch({ match, advancing }) {
       <div
         className={`ko-match ko-match--bye${match.winner ? " ko-match--decided" : ""}${onPath ? " ko-match--path" : ""}`}
       >
-        <div className={`ko-match__row ${teamRowClass(match, "home", advancing)}`}>
+        <div className={`ko-match__row ${teamRowClass(match, "home", advancing, advanceFlash)}`}>
           <TeamName name={match.home} />
         </div>
         <div className="ko-match__row ko-match__row--bye-label">
@@ -81,10 +119,10 @@ function CupMatch({ match, advancing }) {
     <div
       className={`ko-match${match.winner ? " ko-match--decided" : ""}${onPath ? " ko-match--path" : ""}`}
     >
-      <div className={`ko-match__row ${teamRowClass(match, "home", advancing)}`}>
+      <div className={`ko-match__row ${teamRowClass(match, "home", advancing, advanceFlash)}`}>
         <TeamName name={match.home} />
       </div>
-      <div className={`ko-match__row ${teamRowClass(match, "away", advancing)}`}>
+      <div className={`ko-match__row ${teamRowClass(match, "away", advancing, advanceFlash)}`}>
         <TeamName name={match.away} />
       </div>
     </div>
@@ -207,9 +245,14 @@ function bracketGridLayout(bracket) {
 
 /**
  * @param {import('../../shared/mpBracket.js').MpBracket} bracket
- * @param {{ interactive?: boolean, onPickWinner?: (matchId: string, side: 'home' | 'away') => void }} [opts]
+ * @param {{ interactive?: boolean, onPickWinner?: (matchId: string, side: 'home' | 'away') => void, advanceFlash?: AdvanceFlash | null }} [opts]
  */
-export default function MpCupBracket({ bracket, interactive = false, onPickWinner }) {
+export default function MpCupBracket({
+  bracket,
+  interactive = false,
+  onPickWinner,
+  advanceFlash = null,
+}) {
   if (!bracket?.rounds?.length) return null;
 
   const { subRows, minSpan, centersByRound, placementsByRound } = bracketGridLayout(bracket);
@@ -226,7 +269,11 @@ export default function MpCupBracket({ bracket, interactive = false, onPickWinne
             const isLastRound = roundIndex === bracket.rounds.length - 1;
             const roundCenters = centersByRound[roundIndex];
             return (
-            <section className="ko-bracket__round" key={round.index}>
+            <section
+              className="ko-bracket__round"
+              key={round.index}
+              style={{ "--ko-round-i": roundIndex }}
+            >
               <h3 className="ko-bracket__round-label">
                 <span className="ko-bracket__round-phase">
                   <span
@@ -254,16 +301,33 @@ export default function MpCupBracket({ bracket, interactive = false, onPickWinne
                     !match.winner &&
                     onPickWinner;
 
+                  const connectorClasses = cellConnectorClasses(
+                    match,
+                    matchIndex,
+                    round,
+                    isLastRound,
+                  );
+                  const lineTravel =
+                    advanceFlash?.fromMatchId === match.id
+                      ? " ko-bracket__cell--line-travel"
+                      : "";
+
                   return (
                     <div
-                      className={`ko-bracket__cell ${cellConnectorClasses(match, matchIndex, round, isLastRound)}`}
+                      className={`ko-bracket__cell ${connectorClasses}${lineTravel}`}
                       key={match.id}
+                      data-match-id={match.id}
                       style={{
                         gridRow,
                         "--ko-elbow-rows": elbow,
+                        "--ko-cell-i": matchIndex,
                       }}
                     >
-                      <CupMatch match={match} advancing={advancing} />
+                      <CupMatch
+                        match={match}
+                        advancing={advancing}
+                        advanceFlash={advanceFlash}
+                      />
                       {canPick ? (
                         <div className="ko-bracket__pick">
                           <button

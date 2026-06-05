@@ -1206,6 +1206,23 @@ h3 {
   .stat-pill--prize::before {
     transform: scaleY(1);
   }
+
+  .roster-page .ko-bracket__round,
+  .admin-mp-bracket .ko-bracket__round,
+  .roster-page .ko-match,
+  .admin-mp-bracket .ko-match {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell::after,
+  .roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell::before,
+  .admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell::after,
+  .admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell::before {
+    transform: none;
+    animation: none;
+  }
 }
 
 /* Hero load-in: staggered rise */
@@ -2648,6 +2665,19 @@ h3 {
   flex-direction: column;
   min-width: 17.5rem;
   padding: 0 2.75rem 0 0.85rem;
+  animation: ko-round-rise 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(0.08s + var(--ko-round-i, 0) * 0.24s);
+}
+
+@keyframes ko-round-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .roster-page .ko-bracket__round-label,
@@ -2771,22 +2801,50 @@ h3 {
   position: absolute;
   right: calc(-1 * var(--ko-stub));
   top: 50%;
-  transform: translateY(-50%);
+  transform-origin: left center;
   width: var(--ko-stub);
   height: 2px;
   background: var(--ko-line-dim);
   transition: background 0.35s ease, box-shadow 0.35s ease;
+  animation: ko-draw-h 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(0.52s + var(--ko-round-i, 0) * 0.32s + var(--ko-cell-i, 0) * 0.04s);
+}
+
+@keyframes ko-draw-h {
+  from {
+    transform: translateY(-50%) scaleX(0);
+    background: var(--ko-line-dim);
+  }
+  to {
+    transform: translateY(-50%) scaleX(1);
+    background: var(--ko-line-dim);
+  }
 }
 
 /* paired feeders share one exit at their join point */
 .roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::after,
 .admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::after {
   content: none;
+  animation: none;
 }
 
 .roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::after,
 .admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::after {
   top: calc(50% - var(--ko-elbow-rows, 0) * var(--ko-row-h));
+  transform-origin: left center;
+  animation: ko-draw-h-join 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(0.52s + var(--ko-round-i, 0) * 0.32s + var(--ko-cell-i, 0) * 0.04s);
+}
+
+@keyframes ko-draw-h-join {
+  from {
+    transform: scaleX(0);
+    background: var(--ko-line-dim);
+  }
+  to {
+    transform: scaleX(1);
+    background: var(--ko-line-dim);
+  }
 }
 
 /* vertical elbow joining pairs within a round */
@@ -2802,13 +2860,70 @@ h3 {
   transition: background 0.35s ease, box-shadow 0.35s ease;
 }
 
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-top::before {
+  animation: ko-draw-v-down 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(0.48s + var(--ko-round-i, 0) * 0.32s + var(--ko-cell-i, 0) * 0.04s);
+  transform-origin: top center;
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--pair-bottom::before {
+  animation: ko-draw-v-up 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(0.48s + var(--ko-round-i, 0) * 0.32s + var(--ko-cell-i, 0) * 0.04s);
+  transform-origin: bottom center;
+}
+
+@keyframes ko-draw-v-down {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes ko-draw-v-up {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
 .roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::before,
 .roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::after,
 .admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::before,
 .admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-live::after {
   background: var(--ko-line-live);
   box-shadow: 0 0 10px var(--squad-glow);
-  animation: ko-line-pulse 2.8s ease-in-out infinite;
+  animation: ko-line-pulse 4.5s ease-in-out infinite;
+}
+
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-travel::after,
+.roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-travel::before,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-travel::after,
+.admin-mp-bracket .ko-bracket__round:not(:last-child) .ko-bracket__cell--line-travel::before {
+  animation: ko-line-travel 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes ko-line-travel {
+  0% {
+    background: var(--ko-line-dim);
+    box-shadow: none;
+    filter: brightness(1);
+  }
+  35% {
+    background: var(--ko-line-live);
+    box-shadow: 0 0 16px var(--squad-glow);
+    filter: brightness(1.2);
+  }
+  100% {
+    background: var(--ko-line-live);
+    box-shadow: 0 0 10px var(--squad-glow);
+    filter: brightness(1);
+  }
 }
 
 .roster-page .ko-bracket__round:not(:last-child) .ko-bracket__cell--join-live.ko-bracket__cell--pair-bottom::after,
@@ -2858,6 +2973,19 @@ h3 {
   box-shadow:
     0 2px 10px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: ko-match-rise 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(0.18s + var(--ko-round-i, 0) * 0.24s + var(--ko-cell-i, 0) * 0.045s);
+}
+
+@keyframes ko-match-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .roster-page .ko-match:not(.ko-match--bye),
@@ -2906,21 +3034,21 @@ h3 {
   0%,
   100% {
     box-shadow:
-      0 0 0 1px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.35),
-      0 0 14px var(--ko-path-glow);
+      0 0 0 1px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.32),
+      0 0 12px var(--ko-path-glow);
   }
   50% {
     box-shadow:
-      0 0 0 1px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.55),
-      0 0 22px var(--ko-path-glow),
-      0 0 8px var(--ko-champion-glow);
+      0 0 0 1px rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.48),
+      0 0 20px var(--ko-path-glow),
+      0 0 6px var(--ko-champion-glow);
   }
 }
 
 .roster-page .ko-match--path,
 .admin-mp-bracket .ko-match--path {
   border-color: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.7);
-  animation: ko-path-glow 3.2s ease-in-out infinite;
+  animation: ko-path-glow 5.5s ease-in-out infinite;
 }
 
 .roster-page .ko-match--decided,
@@ -2936,7 +3064,64 @@ h3 {
 .roster-page .ko-match__row--path .ko-match__name,
 .admin-mp-bracket .ko-match__row--path .ko-match__name {
   color: var(--squad-accent-bright);
-  text-shadow: 0 0 8px var(--squad-glow);
+  animation: ko-path-breathe 5.5s ease-in-out infinite;
+}
+
+@keyframes ko-path-breathe {
+  0%,
+  100% {
+    text-shadow: 0 0 6px var(--squad-glow);
+    opacity: 0.9;
+  }
+  50% {
+    text-shadow:
+      0 0 14px var(--squad-glow),
+      0 0 5px var(--ko-champion-glow);
+    opacity: 1;
+  }
+}
+
+.roster-page .ko-match__row--advance-out,
+.admin-mp-bracket .ko-match__row--advance-out {
+  animation: ko-advance-out 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 2;
+}
+
+.roster-page .ko-match__row--advance-in,
+.admin-mp-bracket .ko-match__row--advance-in {
+  animation: ko-advance-in 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards;
+  opacity: 0;
+}
+
+@keyframes ko-advance-out {
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+    filter: brightness(1);
+  }
+  to {
+    opacity: 0.4;
+    transform: translateX(1.75rem) translateY(-0.35rem);
+    filter: brightness(1.35);
+  }
+}
+
+@keyframes ko-advance-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-1.5rem) translateY(0.85rem);
+    background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.38);
+  }
+  65% {
+    opacity: 1;
+    transform: translateX(0.2rem) translateY(0);
+    background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.22);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.12);
+  }
 }
 
 .roster-page .ko-match__row--winner,

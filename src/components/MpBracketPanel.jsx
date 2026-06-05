@@ -11,7 +11,7 @@ import {
   recomputeBracket,
   setMatchWinner,
 } from "../../shared/mpBracket.js";
-import MpCupBracket from "./MpCupBracket.jsx";
+import MpCupBracket, { findAdvanceTarget } from "./MpCupBracket.jsx";
 
 export default function MpBracketPanel({ adminKey, disabled }) {
   const [bracket, setBracket] = useState({ bracketSize: 0, rounds: [] });
@@ -20,6 +20,7 @@ export default function MpBracketPanel({ adminKey, disabled }) {
   const [publishing, setPublishing] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [advanceFlash, setAdvanceFlash] = useState(null);
 
   const syncFromDraw = useCallback(async () => {
     const [roster, fixtures] = await Promise.all([
@@ -62,9 +63,27 @@ export default function MpBracketPanel({ adminKey, disabled }) {
   }, [adminKey, loadBracket]);
 
   async function handlePickWinner(matchId, side) {
+    const source = bracket.rounds
+      .flatMap((r) => r.matches)
+      .find((m) => m.id === matchId);
+    const teamName = side === "home" ? source?.home : source?.away;
+    const target = findAdvanceTarget(bracket, matchId);
+
     const next = setMatchWinner(bracket, matchId, side);
     const payload = { bracketSize: next.bracketSize, rounds: next.rounds };
     setBracket(payload);
+
+    if (teamName) {
+      setAdvanceFlash({
+        fromMatchId: matchId,
+        side,
+        teamName,
+        target,
+        key: Date.now(),
+      });
+      window.setTimeout(() => setAdvanceFlash(null), 950);
+    }
+
     try {
       await saveMpBracket(adminKey, payload);
       setMessage("Winner advanced to the next round.");
@@ -142,6 +161,7 @@ export default function MpBracketPanel({ adminKey, disabled }) {
           bracket={bracket}
           interactive
           onPickWinner={handlePickWinner}
+          advanceFlash={advanceFlash}
         />
       ) : null}
     </div>
