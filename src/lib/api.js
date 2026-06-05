@@ -71,7 +71,7 @@ export async function publishBrRoster(adminKey, payload) {
 
 /** @param {string} adminKey */
 export async function fetchMpRoster(adminKey) {
-  const res = await fetch(`${API_BASE}/api/admin/mp-roster`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/roster`, {
     headers: { Authorization: `Bearer ${adminKey}` },
   });
   const data = await res.json().catch(() => ({}));
@@ -83,7 +83,7 @@ export async function fetchMpRoster(adminKey) {
 
 /** @param {string} adminKey @param {Array<object>} teams */
 export async function saveMpRoster(adminKey, teams) {
-  const res = await fetch(`${API_BASE}/api/admin/mp-roster`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/roster`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -100,7 +100,7 @@ export async function saveMpRoster(adminKey, teams) {
 
 /** @param {string} adminKey @param {Array<object>} teams */
 export async function publishMpRoster(adminKey, teams) {
-  const res = await fetch(`${API_BASE}/api/admin/publish-mp-roster`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/roster/publish`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -117,7 +117,7 @@ export async function publishMpRoster(adminKey, teams) {
 
 /** @param {string} adminKey */
 export async function fetchMpFixtures(adminKey) {
-  const res = await fetch(`${API_BASE}/api/admin/mp-fixtures`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/fixtures`, {
     headers: { Authorization: `Bearer ${adminKey}` },
   });
   const data = await res.json().catch(() => ({}));
@@ -129,7 +129,7 @@ export async function fetchMpFixtures(adminKey) {
 
 /** @param {string} adminKey @param {Array<object>} matches */
 export async function saveMpFixtures(adminKey, matches) {
-  const res = await fetch(`${API_BASE}/api/admin/mp-fixtures`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/fixtures`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -146,7 +146,7 @@ export async function saveMpFixtures(adminKey, matches) {
 
 /** @param {string} adminKey @param {Array<object>} matches */
 export async function publishMpFixtures(adminKey, matches) {
-  const res = await fetch(`${API_BASE}/api/admin/publish-mp-fixtures`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/fixtures/publish`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -163,7 +163,7 @@ export async function publishMpFixtures(adminKey, matches) {
 
 /** @param {string} adminKey */
 export async function fetchMpBracket(adminKey) {
-  const res = await fetch(`${API_BASE}/api/admin/mp-bracket`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/bracket`, {
     headers: { Authorization: `Bearer ${adminKey}` },
   });
   const data = await res.json().catch(() => ({}));
@@ -175,7 +175,7 @@ export async function fetchMpBracket(adminKey) {
 
 /** @param {string} adminKey */
 export async function generateMpBracket(adminKey) {
-  const res = await fetch(`${API_BASE}/api/admin/generate-mp-bracket`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/bracket/generate`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -192,7 +192,7 @@ export async function generateMpBracket(adminKey) {
 
 /** @param {string} adminKey @param {object} bracket */
 export async function saveMpBracket(adminKey, bracket) {
-  const res = await fetch(`${API_BASE}/api/admin/mp-bracket`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/bracket`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -209,7 +209,7 @@ export async function saveMpBracket(adminKey, bracket) {
 
 /** @param {string} adminKey @param {object} bracket */
 export async function publishMpBracket(adminKey, bracket) {
-  const res = await fetch(`${API_BASE}/api/admin/publish-mp-bracket`, {
+  const res = await fetch(`${API_BASE}/api/admin/mp/bracket/publish`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${adminKey}`,

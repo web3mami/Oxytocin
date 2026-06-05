@@ -1,5 +1,12 @@
 {
   "rewrites": [
+    { "source": "/api/admin/mp-roster", "destination": "/api/admin/mp/roster" },
+    { "source": "/api/admin/publish-mp-roster", "destination": "/api/admin/mp/roster/publish" },
+    { "source": "/api/admin/mp-fixtures", "destination": "/api/admin/mp/fixtures" },
+    { "source": "/api/admin/publish-mp-fixtures", "destination": "/api/admin/mp/fixtures/publish" },
+    { "source": "/api/admin/mp-bracket", "destination": "/api/admin/mp/bracket" },
+    { "source": "/api/admin/publish-mp-bracket", "destination": "/api/admin/mp/bracket/publish" },
+    { "source": "/api/admin/generate-mp-bracket", "destination": "/api/admin/mp/bracket/generate" },
     {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
