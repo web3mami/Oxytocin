@@ -1749,27 +1749,27 @@ h3 {
   text-align: right;
 }
 
-/* Battle roster page — gold theme scoped here only (home stays green) */
+/* Battle roster page — steel cyan (home stays green) */
 .roster-page {
-  --bg-panel: #1a1814;
-  --bg-elevated: #131210;
-  --bg-panel-hover: #221f1a;
-  --line: rgba(255, 245, 220, 0.08);
-  --line-strong: rgba(255, 245, 220, 0.12);
-  --text-muted: #a8a196;
-  --accent: #c9a227;
-  --accent-bright: #f0d78c;
-  --accent-r: 201;
-  --accent-g: 162;
-  --accent-b: 39;
+  --bg-panel: #12181c;
+  --bg-elevated: #0e1418;
+  --bg-panel-hover: #161e22;
+  --line: rgba(180, 220, 230, 0.08);
+  --line-strong: rgba(180, 220, 230, 0.12);
+  --text-muted: #9aadb4;
+  --accent: #5a8f9e;
+  --accent-bright: #8ec8d8;
+  --accent-r: 90;
+  --accent-g: 143;
+  --accent-b: 158;
   --accent-dim: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.1);
-  --accent-glow: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.2);
+  --accent-glow: rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.22);
 
   min-height: 100vh;
   padding: 1.5rem 0 4rem;
   background:
-    radial-gradient(ellipse 55% 40% at 15% -8%, rgba(201, 162, 39, 0.07), transparent),
-    radial-gradient(ellipse 45% 35% at 88% 12%, rgba(94, 184, 212, 0.06), transparent),
+    radial-gradient(ellipse 55% 40% at 15% -8%, rgba(90, 143, 158, 0.08), transparent),
+    radial-gradient(ellipse 45% 35% at 88% 12%, rgba(90, 143, 158, 0.06), transparent),
     var(--bg);
 }
 
@@ -1813,24 +1813,15 @@ h3 {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-/* Squad 1 — gold */
-.roster-page .roster-squad--gold {
-  --squad-accent: #c9a227;
-  --squad-accent-bright: #f0d78c;
-  --squad-r: 201;
-  --squad-g: 162;
-  --squad-b: 39;
-  --squad-glow: rgba(201, 162, 39, 0.22);
-}
-
-/* Squad 2 — cyan */
+/* BR squads — steel cyan (matches MP) */
+.roster-page .roster-squad--gold,
 .roster-page .roster-squad--cyan {
-  --squad-accent: #5eb8d4;
-  --squad-accent-bright: #a8e4f0;
-  --squad-r: 94;
-  --squad-g: 184;
-  --squad-b: 212;
-  --squad-glow: rgba(94, 184, 212, 0.22);
+  --squad-accent: #5a8f9e;
+  --squad-accent-bright: #8ec8d8;
+  --squad-r: 90;
+  --squad-g: 143;
+  --squad-b: 158;
+  --squad-glow: rgba(90, 143, 158, 0.28);
 }
 
 /* Polished duo cards — squad-colored left strip */
@@ -1965,12 +1956,12 @@ h3 {
 }
 
 .roster-page .roster-reserve {
-  --squad-accent: #e8a87a;
-  --squad-accent-bright: #f5c9a8;
-  --squad-r: 232;
-  --squad-g: 168;
-  --squad-b: 122;
-  --squad-glow: rgba(232, 168, 122, 0.18);
+  --squad-accent: #5a8f9e;
+  --squad-accent-bright: #8ec8d8;
+  --squad-r: 90;
+  --squad-g: 143;
+  --squad-b: 158;
+  --squad-glow: rgba(90, 143, 158, 0.2);
 
   margin-top: 0.5rem;
   margin-bottom: 1rem;
@@ -2592,13 +2583,7 @@ h3 {
   background: var(--accent-dim);
 }
 
-.roster-page .roster-tabs__btn--mp.roster-tabs__btn--active {
-  color: #8ec8d8;
-  border-color: rgba(90, 143, 158, 0.5);
-  background: rgba(90, 143, 158, 0.12);
-}
-
-/* MP — steel cyan (distinct from BR Squad 2 bright cyan) */
+/* MP — same steel cyan as BR */
 .roster-page .roster-squad--mp {
   --squad-accent: #5a8f9e;
   --squad-accent-bright: #8ec8d8;
@@ -2704,6 +2689,13 @@ h3 {
   color: var(--squad-accent-bright);
   background: rgba(var(--squad-r), var(--squad-g), var(--squad-b), 0.12);
   box-shadow: 0 0 10px var(--squad-glow);
+}
+
+.roster-page .ko-bracket__round-icon--trophy,
+.admin-mp-bracket .ko-bracket__round-icon--trophy {
+  font-family: inherit;
+  font-size: 1.05rem;
+  line-height: 1;
 }
 
 .roster-page .ko-bracket__round-name,

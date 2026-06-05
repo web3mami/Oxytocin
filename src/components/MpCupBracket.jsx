@@ -33,7 +33,7 @@ function teamRowClass(match, side, advancing) {
   return "";
 }
 
-const ROUND_PHASE_ICONS = ["01", "QF", "SF", "★"];
+const ROUND_PHASE_ICONS = ["01", "QF", "SF", "🏆"];
 
 /** @param {import('../../shared/mpBracket.js').BracketRound} round @param {number} roundIndex @param {import('../../shared/mpBracket.js').MpBracket} bracket */
 function roundPhaseMeta(round, roundIndex, bracket) {
@@ -229,7 +229,10 @@ export default function MpCupBracket({ bracket, interactive = false, onPickWinne
             <section className="ko-bracket__round" key={round.index}>
               <h3 className="ko-bracket__round-label">
                 <span className="ko-bracket__round-phase">
-                  <span className="ko-bracket__round-icon" aria-hidden="true">
+                  <span
+                    className={`ko-bracket__round-icon${roundIndex === bracket.rounds.length - 1 ? " ko-bracket__round-icon--trophy" : ""}`}
+                    aria-hidden="true"
+                  >
                     {roundPhaseMeta(round, roundIndex, bracket).icon}
                   </span>
                   <span className="ko-bracket__round-name">{round.name}</span>

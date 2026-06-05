@@ -7,12 +7,8 @@ function formatXHandle(handle) {
   return handle.replace(/^@/, "");
 }
 
-/** @param {string} squadName @param {number} index */
-function squadToneClass(squadName, index) {
-  const n = (squadName || "").toLowerCase();
-  if (n.includes("squad 2") || n.includes("squad2")) return "roster-squad--cyan";
-  if (n.includes("squad 1") || n.includes("squad1")) return "roster-squad--gold";
-  return index === 1 ? "roster-squad--cyan" : "roster-squad--gold";
+function squadToneClass() {
+  return "roster-squad--cyan";
 }
 
 function DuoCard({ team }) {
