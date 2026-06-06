@@ -75,6 +75,47 @@ function MpTeamCard({ team }) {
 }
 
 function ReserveCard({ members }) {
+  const isDuo = members.length >= 2;
+
+  if (isDuo) {
+    return (
+      <section className="roster-reserve roster-reserve--duo">
+        <div className="roster-reserve__head">
+          <h2 className="roster-reserve__name">Reserve duo</h2>
+          <p className="roster-reserve__note">Substitute pair if a duo member cannot play</p>
+        </div>
+        <article className="roster-duo">
+          <p className="roster-duo__name">Reserve duo</p>
+          <ul className="roster-duo__members">
+            {members.map((member, index) => (
+              <li className="roster-duo__member" key={member.ign}>
+                <span className="roster-duo__slot" aria-hidden="true">
+                  {index + 1}
+                </span>
+                <div className="roster-duo__member-body">
+                  <span className="roster-duo__ign" title={member.ign}>
+                    {member.ign}
+                  </span>
+                  {member.xHandle ? (
+                    <a
+                      className="roster-duo__x"
+                      href={`https://x.com/${formatXHandle(member.xHandle)}`}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      title={`@${formatXHandle(member.xHandle)}`}
+                    >
+                      @{formatXHandle(member.xHandle)}
+                    </a>
+                  ) : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </article>
+      </section>
+    );
+  }
+
   return (
     <section className="roster-reserve">
       <div className="roster-reserve__head">

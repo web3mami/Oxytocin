@@ -20,6 +20,7 @@ export default async function handler(req, res) {
   try {
     const payload = await saveBrRoster({
       squads,
+      reserve: req.body?.reserve ?? [],
       meta: req.body?.meta ?? null,
     });
     return res.status(200).json({ ok: true, published: true, ...payload });

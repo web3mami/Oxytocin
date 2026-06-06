@@ -281,6 +281,7 @@ export default function Admin() {
             />
             <BrDraftPanel
               adminKey={adminKey}
+              brPlayers={brPlayers}
               brCount={brPlayers.length}
               disabled={loading}
             />
