@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   fetchMpBracket,
   fetchMpFixtures,
@@ -62,14 +62,14 @@ export default function MpBracketPanel({ adminKey, disabled }) {
     if (adminKey) loadBracket();
   }, [adminKey, loadBracket]);
 
-  async function handlePickWinner(matchId, side) {
+  async function handlePickWinner(matchId, side, seriesScore) {
     const source = bracket.rounds
       .flatMap((r) => r.matches)
       .find((m) => m.id === matchId);
     const teamName = side === "home" ? source?.home : source?.away;
     const target = findAdvanceTarget(bracket, matchId);
 
-    const next = setMatchWinner(bracket, matchId, side);
+    const next = setMatchWinner(bracket, matchId, side, seriesScore);
     const payload = { bracketSize: next.bracketSize, rounds: next.rounds };
     setBracket(payload);
 
@@ -86,7 +86,7 @@ export default function MpBracketPanel({ adminKey, disabled }) {
 
     try {
       await saveMpBracket(adminKey, payload);
-      setMessage("Winner advanced to the next round.");
+      setMessage(`Result recorded (${seriesScore}). Winner advanced to the next round.`);
     } catch (err) {
       setError(err.message || "Could not save bracket.");
     }
@@ -120,12 +120,30 @@ export default function MpBracketPanel({ adminKey, disabled }) {
 
   const hasTree = bracket.rounds?.length > 0;
 
+  const pendingMatches = useMemo(() => {
+    /** @type {Array<{ id: string, roundName: string, home: string, away: string }>} */
+    const open = [];
+    for (const round of bracket.rounds ?? []) {
+      for (const match of round.matches ?? []) {
+        if (match.home && match.away && !match.byeSlot && !match.winner) {
+          open.push({
+            id: match.id,
+            roundName: round.name,
+            home: match.home,
+            away: match.away,
+          });
+        }
+      }
+    }
+    return open;
+  }, [bracket]);
+
   return (
     <div className="admin-mp-bracket">
       <h3 className="admin-mp-bracket__title">Knockout tree</h3>
       <p className="admin-mp-bracket__lead">
-        Set pairings in the <strong>Draw</strong> section above, then mark winners
-        here — they move to the next round like a cup knockout.
+        Set pairings in the <strong>Draw</strong> section above, then record Best of 3
+        results below — winners advance on the tree.
       </p>
 
       {error ? <div className="alert alert--error">{error}</div> : null}
@@ -157,12 +175,74 @@ export default function MpBracketPanel({ adminKey, disabled }) {
       ) : null}
 
       {hasTree ? (
-        <MpCupBracket
-          bracket={bracket}
-          interactive
-          onPickWinner={handlePickWinner}
-          advanceFlash={advanceFlash}
-        />
+        <MpCupBracket bracket={bracket} advanceFlash={advanceFlash} />
+      ) : null}
+
+      {pendingMatches.length ? (
+        <section className="admin-mp-results panel">
+          <h4 className="admin-mp-results__title">Record results (Best of 3)</h4>
+          <p className="admin-mp-results__lead">
+            Pick the winner and series score — 2-0 or 2-1. The bracket updates when you save.
+          </p>
+          <ul className="admin-mp-results__list">
+            {pendingMatches.map((match) => (
+              <li className="admin-mp-results__row" key={match.id}>
+                <div className="admin-mp-results__meta">
+                  <span className="admin-mp-results__round">{match.roundName}</span>
+                  <span className="admin-mp-results__teams">
+                    {match.home} <span className="admin-mp-results__vs">vs</span> {match.away}
+                  </span>
+                </div>
+                <div className="admin-mp-results__pick">
+                  <div className="admin-mp-results__side">
+                    <span className="admin-mp-results__team">{match.home}</span>
+                    <div className="admin-mp-results__scores">
+                      <button
+                        type="button"
+                        className="btn btn--ghost btn--sm"
+                        onClick={() => handlePickWinner(match.id, "home", "2-0")}
+                        disabled={disabled || loading}
+                      >
+                        2-0
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn--ghost btn--sm"
+                        onClick={() => handlePickWinner(match.id, "home", "2-1")}
+                        disabled={disabled || loading}
+                      >
+                        2-1
+                      </button>
+                    </div>
+                  </div>
+                  <div className="admin-mp-results__side">
+                    <span className="admin-mp-results__team">{match.away}</span>
+                    <div className="admin-mp-results__scores">
+                      <button
+                        type="button"
+                        className="btn btn--ghost btn--sm"
+                        onClick={() => handlePickWinner(match.id, "away", "2-0")}
+                        disabled={disabled || loading}
+                      >
+                        2-0
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn--ghost btn--sm"
+                        onClick={() => handlePickWinner(match.id, "away", "2-1")}
+                        disabled={disabled || loading}
+                      >
+                        2-1
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : hasTree ? (
+        <p className="admin-mp-results__empty">All current matchups have results recorded.</p>
       ) : null}
     </div>
   );
@@ -170,16 +250,22 @@ export default function MpBracketPanel({ adminKey, disabled }) {
 
 /** Keep winners when refreshing tree from draw. */
 function mergeWinners(fromDraw, current) {
-  const winners = new Map();
+  /** @type {Map<string, { winner: 'home' | 'away', seriesScore?: '2-0' | '2-1' | null }>} */
+  const results = new Map();
   for (const round of current.rounds ?? []) {
     for (const m of round.matches) {
-      if (m.winner) winners.set(m.id, m.winner);
+      if (m.winner) {
+        results.set(m.id, { winner: m.winner, seriesScore: m.seriesScore ?? null });
+      }
     }
   }
   const merged = structuredClone(fromDraw);
   for (const round of merged.rounds) {
     for (const m of round.matches) {
-      if (winners.has(m.id)) m.winner = winners.get(m.id);
+      if (!results.has(m.id)) continue;
+      const saved = results.get(m.id);
+      m.winner = saved.winner;
+      m.seriesScore = saved.seriesScore ?? null;
     }
   }
   return recomputeBracket(merged);

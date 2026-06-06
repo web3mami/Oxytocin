@@ -1,4 +1,5 @@
-/** @typedef {{ id: string, roundIndex: number, matchIndex: number, home: string | null, away: string | null, winner: 'home' | 'away' | null, byeSlot?: boolean, byeLabel?: string }} BracketMatch */
+/** @typedef {'2-0' | '2-1'} SeriesScore */
+/** @typedef {{ id: string, roundIndex: number, matchIndex: number, home: string | null, away: string | null, winner: 'home' | 'away' | null, seriesScore?: SeriesScore | null, byeSlot?: boolean, byeLabel?: string }} BracketMatch */
 /** @typedef {{ index: number, name: string, matches: BracketMatch[] }} BracketRound */
 /** @typedef {{ team: string, roundIndex: number, matchIndex: number, slot: 'home' | 'away' }} ByeAdvance */
 /** @typedef {{ bracketSize: number, leafCount: number, rounds: BracketRound[], byeAdvance?: ByeAdvance | null, published?: boolean, updatedAt?: string | null }} MpBracket */
@@ -26,6 +27,9 @@ function normalizeMatch(raw, roundIndex, matchIndex) {
   if (winner === "home" && !home) winner = null;
   if (winner === "away" && !away) winner = null;
 
+  const seriesScore =
+    raw?.seriesScore === "2-0" || raw?.seriesScore === "2-1" ? raw.seriesScore : null;
+
   return {
     id: String(raw?.id ?? `r${roundIndex}-m${matchIndex}`),
     roundIndex,
@@ -33,6 +37,7 @@ function normalizeMatch(raw, roundIndex, matchIndex) {
     home,
     away,
     winner,
+    seriesScore: winner && !raw?.byeSlot ? seriesScore : null,
     ...(raw?.byeSlot ? { byeSlot: true } : {}),
     ...(raw?.byeLabel ? { byeLabel: String(raw.byeLabel) } : {}),
   };
@@ -110,6 +115,7 @@ function propagateDrawBracket(bracket) {
     match.home = null;
     match.away = null;
     match.winner = null;
+    match.seriesScore = null;
   }
   for (const match of sf) {
     if (!match.byeSlot) {
@@ -119,11 +125,13 @@ function propagateDrawBracket(bracket) {
       match.home = null;
     }
     match.winner = null;
+    match.seriesScore = null;
   }
   for (const match of fin) {
     match.home = null;
     match.away = null;
     match.winner = null;
+    match.seriesScore = null;
   }
 
   const playMatches = r0.filter((m) => !m.byeSlot);
@@ -299,8 +307,8 @@ export function normalizeBracket(raw) {
   });
 }
 
-/** @param {MpBracket} bracket @param {string} matchId @param {'home' | 'away'} winnerSide */
-export function setMatchWinner(bracket, matchId, winnerSide) {
+/** @param {MpBracket} bracket @param {string} matchId @param {'home' | 'away'} winnerSide @param {SeriesScore} seriesScore */
+export function setMatchWinner(bracket, matchId, winnerSide, seriesScore) {
   const b = structuredClone(bracket);
   for (let r = 0; r < b.rounds.length; r++) {
     for (let m = 0; m < b.rounds[r].matches.length; m++) {
@@ -309,7 +317,9 @@ export function setMatchWinner(bracket, matchId, winnerSide) {
       if (match.byeSlot) return b;
       if (!match.home || !match.away) return b;
       if (winnerSide !== "home" && winnerSide !== "away") return b;
+      if (seriesScore !== "2-0" && seriesScore !== "2-1") return b;
       match.winner = winnerSide;
+      match.seriesScore = seriesScore;
       return recomputeBracket(b);
     }
   }
@@ -370,7 +380,10 @@ export function clearMatchWinner(bracket, matchId) {
   const b = structuredClone(bracket);
   for (const round of b.rounds) {
     for (const match of round.matches) {
-      if (match.id === matchId) match.winner = null;
+      if (match.id === matchId) {
+        match.winner = null;
+        match.seriesScore = null;
+      }
     }
   }
   return recomputeBracket(b);

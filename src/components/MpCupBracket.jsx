@@ -125,6 +125,11 @@ function CupMatch({ match, advancing, advanceFlash }) {
       <div className={`ko-match__row ${teamRowClass(match, "away", advancing, advanceFlash)}`}>
         <TeamName name={match.away} />
       </div>
+      {match.winner && match.seriesScore ? (
+        <span className="ko-match__series" title="Best of 3 series score">
+          {match.seriesScore}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -245,12 +250,10 @@ function bracketGridLayout(bracket) {
 
 /**
  * @param {import('../../shared/mpBracket.js').MpBracket} bracket
- * @param {{ interactive?: boolean, onPickWinner?: (matchId: string, side: 'home' | 'away') => void, advanceFlash?: AdvanceFlash | null }} [opts]
+ * @param {{ advanceFlash?: AdvanceFlash | null }} [opts]
  */
 export default function MpCupBracket({
   bracket,
-  interactive = false,
-  onPickWinner,
   advanceFlash = null,
 }) {
   if (!bracket?.rounds?.length) return null;
@@ -293,14 +296,6 @@ export default function MpCupBracket({
                   const { span, start } = placementsByRound[roundIndex][matchIndex];
                   const elbow = elbowRows(matchIndex, roundCenters);
                   const gridRow = `${start} / span ${span}`;
-                  const canPick =
-                    interactive &&
-                    match.home &&
-                    match.away &&
-                    !match.byeSlot &&
-                    !match.winner &&
-                    onPickWinner;
-
                   const connectorClasses = cellConnectorClasses(
                     match,
                     matchIndex,
@@ -328,24 +323,6 @@ export default function MpCupBracket({
                         advancing={advancing}
                         advanceFlash={advanceFlash}
                       />
-                      {canPick ? (
-                        <div className="ko-bracket__pick">
-                          <button
-                            type="button"
-                            className="btn btn--ghost btn--sm"
-                            onClick={() => onPickWinner(match.id, "home")}
-                          >
-                            {match.home} wins
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn--ghost btn--sm"
-                            onClick={() => onPickWinner(match.id, "away")}
-                          >
-                            {match.away} wins
-                          </button>
-                        </div>
-                      ) : null}
                     </div>
                   );
                 })}
