@@ -1,4 +1,18 @@
-/** @typedef {'2-0' | '2-1'} SeriesScore */
+/** @typedef {'2-0' | '2-1' | '0-2' | '1-2'} SeriesScore */
+
+const HOME_WIN_SCORES = new Set(["2-0", "2-1"]);
+const AWAY_WIN_SCORES = new Set(["0-2", "1-2"]);
+
+/** @param {unknown} score @param {'home' | 'away' | null} winner */
+function normalizeSeriesScore(score, winner) {
+  if (!winner) return null;
+  const raw = typeof score === "string" ? score : null;
+  if (raw && HOME_WIN_SCORES.has(raw) && winner === "home") return raw;
+  if (raw && AWAY_WIN_SCORES.has(raw) && winner === "away") return raw;
+  if (winner === "away" && raw === "2-0") return "0-2";
+  if (winner === "away" && raw === "2-1") return "1-2";
+  return null;
+}
 /** @typedef {{ id: string, roundIndex: number, matchIndex: number, home: string | null, away: string | null, winner: 'home' | 'away' | null, seriesScore?: SeriesScore | null, byeSlot?: boolean, byeLabel?: string }} BracketMatch */
 /** @typedef {{ index: number, name: string, matches: BracketMatch[] }} BracketRound */
 /** @typedef {{ team: string, roundIndex: number, matchIndex: number, slot: 'home' | 'away' }} ByeAdvance */
@@ -28,7 +42,7 @@ function normalizeMatch(raw, roundIndex, matchIndex) {
   if (winner === "away" && !away) winner = null;
 
   const seriesScore =
-    raw?.seriesScore === "2-0" || raw?.seriesScore === "2-1" ? raw.seriesScore : null;
+    winner && !raw?.byeSlot ? normalizeSeriesScore(raw?.seriesScore, winner) : null;
 
   return {
     id: String(raw?.id ?? `r${roundIndex}-m${matchIndex}`),
@@ -37,7 +51,7 @@ function normalizeMatch(raw, roundIndex, matchIndex) {
     home,
     away,
     winner,
-    seriesScore: winner && !raw?.byeSlot ? seriesScore : null,
+    seriesScore,
     ...(raw?.byeSlot ? { byeSlot: true } : {}),
     ...(raw?.byeLabel ? { byeLabel: String(raw.byeLabel) } : {}),
   };
@@ -317,7 +331,10 @@ export function setMatchWinner(bracket, matchId, winnerSide, seriesScore) {
       if (match.byeSlot) return b;
       if (!match.home || !match.away) return b;
       if (winnerSide !== "home" && winnerSide !== "away") return b;
-      if (seriesScore !== "2-0" && seriesScore !== "2-1") return b;
+      const valid =
+        (winnerSide === "home" && HOME_WIN_SCORES.has(seriesScore)) ||
+        (winnerSide === "away" && AWAY_WIN_SCORES.has(seriesScore));
+      if (!valid) return b;
       match.winner = winnerSide;
       match.seriesScore = seriesScore;
       return recomputeBracket(b);

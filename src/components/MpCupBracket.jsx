@@ -126,7 +126,7 @@ function CupMatch({ match, advancing, advanceFlash }) {
         <TeamName name={match.away} />
       </div>
       {match.winner && match.seriesScore ? (
-        <span className="ko-match__series" title="Best of 3 series score">
+        <span className="ko-match__series" title="Best of 3 score (home–away maps)">
           {match.seriesScore}
         </span>
       ) : null}

@@ -182,7 +182,7 @@ export default function MpBracketPanel({ adminKey, disabled }) {
         <section className="admin-mp-results panel">
           <h4 className="admin-mp-results__title">Record results (Best of 3)</h4>
           <p className="admin-mp-results__lead">
-            Pick the winner and series score — 2-0 or 2-1. The bracket updates when you save.
+            Pick the series score (home–away maps). The bracket updates when you save.
           </p>
           <ul className="admin-mp-results__list">
             {pendingMatches.map((match) => (
@@ -221,18 +221,18 @@ export default function MpBracketPanel({ adminKey, disabled }) {
                       <button
                         type="button"
                         className="btn btn--ghost btn--sm"
-                        onClick={() => handlePickWinner(match.id, "away", "2-0")}
+                        onClick={() => handlePickWinner(match.id, "away", "0-2")}
                         disabled={disabled || loading}
                       >
-                        2-0
+                        0-2
                       </button>
                       <button
                         type="button"
                         className="btn btn--ghost btn--sm"
-                        onClick={() => handlePickWinner(match.id, "away", "2-1")}
+                        onClick={() => handlePickWinner(match.id, "away", "1-2")}
                         disabled={disabled || loading}
                       >
-                        2-1
+                        1-2
                       </button>
                     </div>
                   </div>
@@ -250,7 +250,7 @@ export default function MpBracketPanel({ adminKey, disabled }) {
 
 /** Keep winners when refreshing tree from draw. */
 function mergeWinners(fromDraw, current) {
-  /** @type {Map<string, { winner: 'home' | 'away', seriesScore?: '2-0' | '2-1' | null }>} */
+  /** @type {Map<string, { winner: 'home' | 'away', seriesScore?: '2-0' | '2-1' | '0-2' | '1-2' | null }>} */
   const results = new Map();
   for (const round of current.rounds ?? []) {
     for (const m of round.matches) {
