@@ -2301,6 +2301,13 @@ h3 {
   margin-top: 0.35rem;
 }
 
+.admin-draft-reserve__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
 .admin-draft-reserve__title {
   margin: 0 0 0.35rem;
   font-family: var(--font-display);

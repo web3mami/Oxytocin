@@ -82,3 +82,73 @@ export function pairBrPlayerWithReserve(roster, player) {
 export function canPairWithReserve(roster) {
   return (roster?.reserve?.length ?? 0) < BR_RESERVE_DUO_SIZE;
 }
+
+export const BR_SQUAD_2_NAME = "BR Squad 2";
+
+/**
+ * @param {{ reserve?: Array<object> }} roster
+ */
+export function canPromoteReserveDuo(roster) {
+  return (roster?.reserve?.length ?? 0) >= BR_RESERVE_DUO_SIZE;
+}
+
+/**
+ * Move the reserve duo into BR Squad 2 as the next numbered duo and clear reserve.
+ * @param {{ squads?: Array<object>, reserve?: Array<object>, meta?: object }} roster
+ * @param {string} [squadName]
+ */
+export function promoteReserveDuoToSquad(roster, squadName = BR_SQUAD_2_NAME) {
+  const reserve = [...(roster.reserve ?? [])];
+  if (reserve.length < BR_RESERVE_DUO_SIZE) {
+    const err = new Error("Need a full reserve duo (2 players) to add to a squad.");
+    err.code = "RESERVE_INCOMPLETE";
+    throw err;
+  }
+
+  let squadFound = false;
+  const squads = (roster.squads ?? []).map((squad) => {
+    if (squad.name !== squadName) return squad;
+
+    squadFound = true;
+    const teams = [...(squad.teams ?? [])];
+    const duoNum = teams.length + 1;
+    const members = reserve.slice(0, BR_RESERVE_DUO_SIZE).map((member) => ({
+      ign: member.ign,
+      uid: member.uid ?? null,
+      xHandle: member.xHandle ?? null,
+    }));
+
+    teams.push({
+      name: `Duo ${String(duoNum).padStart(2, "0")}`,
+      members,
+    });
+
+    const playerCount = teams.reduce(
+      (sum, team) => sum + (team.members?.length ?? 0),
+      0
+    );
+
+    return {
+      ...squad,
+      lobbyNote: `${playerCount} players · ${teams.length} duos`,
+      teams,
+    };
+  });
+
+  if (!squadFound) {
+    const err = new Error(`${squadName} not found on this roster.`);
+    err.code = "SQUAD_NOT_FOUND";
+    throw err;
+  }
+
+  return {
+    ...roster,
+    squads,
+    reserve: [],
+    meta: {
+      ...(roster.meta ?? {}),
+      reserveCount: 0,
+      reserveDuo: false,
+    },
+  };
+}

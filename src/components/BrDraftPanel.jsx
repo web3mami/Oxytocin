@@ -11,8 +11,10 @@ import { draftBrTeams, fetchBattleRosters, publishBrRoster } from "../lib/api.js
 import {
   BR_RESERVE_DUO_SIZE,
   canPairWithReserve,
+  canPromoteReserveDuo,
   findUnassignedBrPlayers,
   pairBrPlayerWithReserve,
+  promoteReserveDuoToSquad,
 } from "../../shared/brRoster.js";
 
 function DuoCard({ team }) {
@@ -33,7 +35,7 @@ function DuoCard({ team }) {
   );
 }
 
-function ReserveBlock({ reserve }) {
+function ReserveBlock({ reserve, onPromoteToSquad2, promoting, disabled }) {
   if (!reserve?.length) return null;
 
   const isDuo = reserve.length >= 2;
@@ -43,7 +45,7 @@ function ReserveBlock({ reserve }) {
       <h3 className="admin-draft-reserve__title">{isDuo ? "Reserve duo" : "Reserve"}</h3>
       <p className="admin-draft-reserve__note">
         {isDuo
-          ? "Substitute pair if a duo member cannot play"
+          ? "Substitute pair — move into BR Squad 2 when they are playing as a full duo."
           : "Substitute if a duo member cannot play"}
       </p>
       {isDuo ? (
@@ -65,6 +67,18 @@ function ReserveBlock({ reserve }) {
           ))}
         </ul>
       )}
+      {isDuo && onPromoteToSquad2 ? (
+        <div className="admin-draft-reserve__actions">
+          <button
+            type="button"
+            className="btn btn--primary btn--sm"
+            onClick={onPromoteToSquad2}
+            disabled={disabled || promoting}
+          >
+            {promoting ? "Moving…" : "Move to BR Squad 2"}
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -84,6 +98,7 @@ export default function BrDraftPanel({ adminKey, brPlayers, brCount, disabled })
   const [loading, setLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [pairingId, setPairingId] = useState(null);
+  const [promotingReserve, setPromotingReserve] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -119,6 +134,7 @@ export default function BrDraftPanel({ adminKey, brPlayers, brCount, disabled })
   );
 
   const reserveOpen = activeRoster ? canPairWithReserve(activeRoster) : false;
+  const canPromote = activeRoster ? canPromoteReserveDuo(activeRoster) : false;
 
   async function handleDraft() {
     setLoading(true);
@@ -171,6 +187,49 @@ export default function BrDraftPanel({ adminKey, brPlayers, brCount, disabled })
     } catch (err) {
       setError(err.message || "Could not publish roster.");
     } finally {
+      setPublishing(false);
+    }
+  }
+
+  async function handlePromoteReserveToSquad2() {
+    if (!activeRoster) {
+      setError("Publish or randomize a BR roster first.");
+      return;
+    }
+    if (!canPromote) {
+      setError("Need a full reserve duo (2 players) to move into BR Squad 2.");
+      return;
+    }
+    if (
+      !window.confirm(
+        "Move the reserve duo into BR Squad 2 as a new duo and clear reserve? This updates the public roster."
+      )
+    ) {
+      return;
+    }
+
+    setPromotingReserve(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const next = promoteReserveDuoToSquad(activeRoster);
+
+      if (draft) {
+        setDraft(next);
+        setMessage("Reserve duo moved to BR Squad 2 in draft. Publish to update /roster.");
+        return;
+      }
+
+      setPublishing(true);
+      await publishRoster(
+        next,
+        "Reserve duo added to BR Squad 2. Reserve cleared on /roster."
+      );
+    } catch (err) {
+      setError(err.message || "Could not move reserve duo.");
+    } finally {
+      setPromotingReserve(false);
       setPublishing(false);
     }
   }
@@ -265,7 +324,9 @@ export default function BrDraftPanel({ adminKey, brPlayers, brCount, disabled })
           <p className="admin-draft-unassigned__note">
             {reserveOpen
               ? "Pair a late sign-up with the reserve player to form a substitute duo."
-              : "Reserve duo is full. Remove someone from the roster before pairing another player."}
+              : canPromote
+                ? "Reserve duo is full — move them to BR Squad 2 or delete a registration to pair someone else."
+                : "Reserve is full."}
           </p>
           <ul className="admin-draft-unassigned__list">
             {unassigned.map((player) => (
@@ -301,7 +362,12 @@ export default function BrDraftPanel({ adminKey, brPlayers, brCount, disabled })
       ) : null}
 
       {activeRoster?.reserve?.length ? (
-        <ReserveBlock reserve={activeRoster.reserve} />
+        <ReserveBlock
+          reserve={activeRoster.reserve}
+          onPromoteToSquad2={canPromote ? handlePromoteReserveToSquad2 : null}
+          promoting={promotingReserve}
+          disabled={disabled || loading || publishing}
+        />
       ) : null}
 
       {draft?.squads?.length ? (
