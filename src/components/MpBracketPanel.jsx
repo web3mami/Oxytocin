@@ -70,7 +70,12 @@ export default function MpBracketPanel({ adminKey, disabled }) {
     const target = findAdvanceTarget(bracket, matchId);
 
     const next = setMatchWinner(bracket, matchId, side, seriesScore);
-    const payload = { bracketSize: next.bracketSize, rounds: next.rounds };
+    const payload = {
+      bracketSize: next.bracketSize,
+      leafCount: next.leafCount ?? bracket.leafCount,
+      rounds: next.rounds,
+      byeAdvance: next.byeAdvance ?? bracket.byeAdvance ?? null,
+    };
     setBracket(payload);
 
     if (teamName) {
@@ -85,8 +90,16 @@ export default function MpBracketPanel({ adminKey, disabled }) {
     }
 
     try {
-      await saveMpBracket(adminKey, payload);
-      setMessage(`Result recorded (${seriesScore}). Winner advanced to the next round.`);
+      if (published) {
+        await publishMpBracket(adminKey, payload);
+      } else {
+        await saveMpBracket(adminKey, payload);
+      }
+      setMessage(
+        published
+          ? `Result recorded (${seriesScore}). Live on /roster.`
+          : `Result recorded (${seriesScore}). Publish knockout to show scores on /roster.`
+      );
     } catch (err) {
       setError(err.message || "Could not save bracket.");
     }
@@ -260,6 +273,7 @@ function mergeWinners(fromDraw, current) {
     }
   }
   const merged = structuredClone(fromDraw);
+  merged.byeAdvance = current.byeAdvance ?? merged.byeAdvance ?? null;
   for (const round of merged.rounds) {
     for (const m of round.matches) {
       if (!results.has(m.id)) continue;

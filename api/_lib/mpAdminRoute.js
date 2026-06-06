@@ -263,8 +263,11 @@ export async function handleMpAdmin(req, res, segments, body = {}) {
         return;
       }
       try {
-        const payload = await saveMpBracket(normalizeBracket(bracket), { publish: false });
-        res.end(JSON.stringify({ ok: true, ...payload }));
+        const existing = await getMpBracketDraft();
+        const payload = await saveMpBracket(normalizeBracket(bracket), {
+          publish: Boolean(existing.published),
+        });
+        res.end(JSON.stringify({ ok: true, published: payload.published, ...payload }));
       } catch (err) {
         if (err?.code === "NO_STORAGE") {
           res.statusCode = 503;
