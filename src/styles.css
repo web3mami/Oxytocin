@@ -2031,6 +2031,66 @@ h3 {
   grid-column: 1 / -1;
 }
 
+.admin-add-player {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-add-player__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.admin-add-player__title {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  color: var(--accent-bright);
+}
+
+.admin-add-player__lead {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.admin-add-player__form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-add-player__mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.admin-add-player__mode-note {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.admin-add-player__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
 .admin-draft {
   margin-bottom: 1.25rem;
   padding-bottom: 1.25rem;

@@ -19,6 +19,23 @@ export async function fetchAdminPlayers(adminKey) {
   return data;
 }
 
+/** @param {string} adminKey @param {object} payload */
+export async function addAdminPlayer(adminKey, payload) {
+  const res = await fetch(`${API_BASE}/api/admin/players`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not add registration");
+  }
+  return data.player;
+}
+
 /** @param {string} adminKey @param {string | number} id */
 export async function deleteAdminPlayer(adminKey, id) {
   const res = await fetch(

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchAdminPlayers, deleteAdminPlayer } from "../lib/api.js";
 import { readSession, removeSession, writeSession } from "../lib/session.js";
+import AdminAddPlayerForm from "../components/AdminAddPlayerForm.jsx";
 import BrDraftPanel from "../components/BrDraftPanel.jsx";
 import MpBracketPanel from "../components/MpBracketPanel.jsx";
 import MpFixturesPanel from "../components/MpFixturesPanel.jsx";
@@ -151,6 +152,14 @@ export default function Admin() {
     setDeletingId(null);
   }
 
+  function handlePlayerAdded(player) {
+    setPlayers((prev) => {
+      const exists = prev.some((p) => p.id === player.id);
+      if (exists) return prev;
+      return [player, ...prev];
+    });
+  }
+
   async function handleDelete(player) {
     const label = player.ign || "this player";
     if (
@@ -236,8 +245,6 @@ export default function Admin() {
 
       {loading && !players.length ? (
         <p className="empty-state">Loading registrations…</p>
-      ) : !players.length ? (
-        <p className="empty-state">No registrations yet.</p>
       ) : (
         <div className="admin-lists">
           <section className="admin-list panel">
@@ -265,6 +272,13 @@ export default function Admin() {
               <h2 className="admin-list__title">Battle Royale</h2>
               <span className="admin-list__count">{brPlayers.length}</span>
             </div>
+            <AdminAddPlayerForm
+              adminKey={adminKey}
+              disabled={loading}
+              modeBr
+              allowModeMp
+              onAdded={handlePlayerAdded}
+            />
             <BrDraftPanel
               adminKey={adminKey}
               brCount={brPlayers.length}
