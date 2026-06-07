@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchPublicRaffle } from "../lib/api.js";
 import { entryKey, normalizeEntry } from "../../shared/raffle.js";
 
@@ -57,6 +57,21 @@ export default function Raffle() {
   const winners = data.winners ?? [];
   const pool = data.pool ?? [];
   const hasDraw = data.published && winners.length > 0;
+
+  // Group winners by destination (team or "Standby"); only when dests are set.
+  const destGroups = useMemo(() => {
+    if (!winners.some((w) => w.dest)) return [];
+    const map = new Map();
+    for (const w of winners) {
+      const key = w.dest || "Reserve";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(w);
+    }
+    // Real teams first, Standby/Reserve last.
+    return [...map.entries()].sort(
+      (a, b) => Number(/standby|reserve/i.test(a[0])) - Number(/standby|reserve/i.test(b[0]))
+    );
+  }, [winners]);
 
   const runReveal = useCallback(() => {
     if (!hasDraw || running) return;
@@ -149,7 +164,9 @@ export default function Raffle() {
                       {locked ? (
                         <span className="raffle-reel__name">
                           <span className="raffle-reel__ign">{winner.ign}</span>
-                          {winner.team ? (
+                          {winner.dest ? (
+                            <span className="raffle-reel__dest">→ {winner.dest}</span>
+                          ) : winner.team ? (
                             <span className="raffle-reel__team">{winner.team}</span>
                           ) : null}
                         </span>
@@ -180,17 +197,46 @@ export default function Raffle() {
             </div>
 
             {celebrate && revealedCount >= winners.length ? (
-              <section className="raffle-result">
-                <h2 className="raffle-result__title">Reserve spots go to…</h2>
-                <ol className="raffle-result__list">
-                  {winners.map((w) => (
-                    <li className="raffle-result__item" key={entryKey(normalizeEntry(w))}>
-                      <span className="raffle-result__ign">{w.ign}</span>
-                      {w.team ? <span className="raffle-result__team">{w.team}</span> : null}
-                    </li>
-                  ))}
-                </ol>
-              </section>
+              destGroups.length ? (
+                <section className="raffle-result">
+                  <h2 className="raffle-result__title">Where they land</h2>
+                  <div className="raffle-dest-groups">
+                    {destGroups.map(([dest, members]) => {
+                      const standby = /standby/i.test(dest);
+                      return (
+                        <article
+                          className={`raffle-dest${standby ? " raffle-dest--standby" : ""}`}
+                          key={dest}
+                        >
+                          <h3 className="raffle-dest__name">{dest}</h3>
+                          <ul className="raffle-dest__members">
+                            {members.map((w) => (
+                              <li key={entryKey(normalizeEntry(w))}>{w.ign}</li>
+                            ))}
+                          </ul>
+                          {standby ? (
+                            <p className="raffle-dest__note">
+                              On standby — slots into any team that ends up short.
+                            </p>
+                          ) : null}
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+              ) : (
+                <section className="raffle-result">
+                  <h2 className="raffle-result__title">Reserve spots go to…</h2>
+                  <ol className="raffle-result__list">
+                    {winners.map((w) => (
+                      <li className="raffle-result__item" key={entryKey(normalizeEntry(w))}>
+                        <span className="raffle-result__ign">{w.ign}</span>
+                        {w.team ? <span className="raffle-result__team">{w.team}</span> : null}
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              )
             ) : null}
 
             {pool.length ? (

@@ -3,7 +3,7 @@
  * Pure logic shared by the API (server draw) and the client (reveal/animation).
  */
 
-/** @typedef {{ id: string | null, ign: string, uid: string, xHandle: string | null, team: string | null }} RaffleEntry */
+/** @typedef {{ id: string | null, ign: string, uid: string, xHandle: string | null, team: string | null, dest: string | null }} RaffleEntry */
 /** @typedef {{ spots: number, pool: RaffleEntry[], winners: RaffleEntry[] | null, drawnAt: string | null, published: boolean, updatedAt: string | null }} Raffle */
 
 /** @param {unknown} raw @returns {RaffleEntry} */
@@ -15,6 +15,8 @@ export function normalizeEntry(raw) {
     uid: String(r.uid ?? ""),
     xHandle: r.xHandle != null && r.xHandle !== "" ? String(r.xHandle) : null,
     team: r.team != null && r.team !== "" ? String(r.team) : null,
+    // Where this player lands after the draw (destination team, or "Standby").
+    dest: r.dest != null && r.dest !== "" ? String(r.dest) : null,
   };
 }
 
