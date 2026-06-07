@@ -8,16 +8,10 @@ import { getMpBracketDraft, saveMpBracket } from "../api/_lib/mpBracketStore.js"
 /** @type {Array<{ matchId: string, side: 'home' | 'away', seriesScore: '2-0' | '2-1' | '0-2' | '1-2', label: string }>} */
 const RESULTS = [
   {
-    matchId: "match-1780630227964-17ovz",
-    side: "home",
-    seriesScore: "2-1",
-    label: "Team Echo def. Team Kilo 2-1",
-  },
-  {
-    matchId: "match-1780630242692-gmfxn",
+    matchId: "r1-m1",
     side: "away",
     seriesScore: "0-2",
-    label: "Team Juliet def. Team Golf 2-0",
+    label: "Team Echo def. Team Alpha 2-0",
   },
 ];
 
