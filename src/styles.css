@@ -4131,3 +4131,414 @@ h3 {
   color: var(--squad-accent-bright);
 }
 
+.roster-page__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ===== Admin: reserve raffle panel ===== */
+.admin-raffle {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.25rem;
+}
+
+.admin-raffle__title {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  font-size: 1.2rem;
+  margin: 0 0 0.35rem;
+}
+
+.admin-raffle__lead {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+  max-width: 60ch;
+}
+
+.admin-raffle__lead a {
+  color: var(--accent-bright);
+}
+
+.admin-raffle__meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0.75rem;
+}
+
+.admin-raffle__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.admin-raffle__spots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.admin-raffle__spots input {
+  width: 5rem;
+  padding: 0.4rem 0.55rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.admin-raffle__winners {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-raffle__winners-title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.admin-raffle__winners-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-raffle__winners-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent-glow);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+}
+
+.admin-raffle__winner-ign {
+  font-weight: 600;
+}
+
+.admin-raffle__winner-team {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.admin-raffle__teams {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.admin-raffle__team {
+  padding: 0.75rem;
+}
+
+.admin-raffle__team-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.admin-raffle__team-name {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.admin-raffle__members {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.admin-raffle__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.28rem 0.6rem;
+  color: var(--text);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.admin-raffle__chip:hover {
+  border-color: var(--accent);
+}
+
+.admin-raffle__chip--in {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+}
+
+.admin-raffle__chip-mark {
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+/* ===== Public: /raffle reveal page ===== */
+.raffle-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% -10%, rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.12), transparent 55%), var(--bg);
+}
+
+.raffle-page__main {
+  padding: 2rem 0 4rem;
+  text-align: center;
+}
+
+.raffle-page__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  letter-spacing: 0.04em;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.raffle-page__lead {
+  color: var(--text-muted);
+  max-width: 56ch;
+  margin: 0 auto 2rem;
+}
+
+.raffle-stage {
+  position: relative;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel);
+  padding: 2rem 1.25rem;
+  max-width: 900px;
+  margin: 0 auto;
+  overflow: hidden;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+.raffle-stage--won {
+  border-color: var(--accent);
+  box-shadow: 0 0 60px rgba(var(--accent-r), var(--accent-g), var(--accent-b), 0.25);
+}
+
+.raffle-stage__confetti {
+  position: absolute;
+  inset: 0;
+  font-size: 2rem;
+  pointer-events: none;
+  animation: raffle-pop 0.6s ease-out;
+  display: grid;
+  place-items: start center;
+  padding-top: 0.5rem;
+  opacity: 0.85;
+}
+
+.raffle-stage__count {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin: 0 0 1.25rem;
+}
+
+.raffle-reels {
+  display: grid;
+  grid-template-columns: repeat(var(--raffle-cols, 3), minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 560px) {
+  .raffle-reels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.raffle-reel {
+  position: relative;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 0.75rem 0.5rem;
+  overflow: hidden;
+}
+
+.raffle-reel__num {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.raffle-reel__name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.raffle-reel__team {
+  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.raffle-reel__name--idle {
+  font-size: 2rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.raffle-reel__name--flash {
+  color: var(--text-muted);
+  filter: blur(0.4px);
+  animation: raffle-flash 0.12s steps(1) infinite;
+}
+
+.raffle-reel--spinning {
+  border-color: var(--warn);
+  box-shadow: 0 0 24px var(--warn-glow);
+}
+
+.raffle-reel--locked {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  animation: raffle-pop 0.45s ease-out;
+}
+
+.raffle-reel--locked .raffle-reel__ign {
+  color: var(--accent-bright);
+}
+
+.raffle-stage__btn {
+  min-width: 200px;
+}
+
+.raffle-result {
+  max-width: 700px;
+  margin: 2rem auto 0;
+}
+
+.raffle-result__title {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.raffle-result__list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.raffle-result__item {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.6rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--accent-glow);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+}
+
+.raffle-result__ign {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.raffle-result__team {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.raffle-pool {
+  max-width: 820px;
+  margin: 2.5rem auto 0;
+}
+
+.raffle-pool__title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.raffle-pool__list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.raffle-pool__chip {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.raffle-pool__chip--won {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+  font-weight: 600;
+}
+
+@keyframes raffle-flash {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes raffle-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-reel__name--flash,
+  .raffle-reel--locked,
+  .raffle-stage__confetti {
+    animation: none;
+  }
+}
+

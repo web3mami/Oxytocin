@@ -208,9 +208,14 @@ export default function BattleRoster() {
             <small>Tournament</small>
           </span>
         </a>
-        <a className="btn btn--ghost" href="/">
-          ← Home
-        </a>
+        <div className="roster-page__header-actions">
+          <a className="btn btn--ghost" href="/raffle">
+            🎰 Reserve raffle
+          </a>
+          <a className="btn btn--ghost" href="/">
+            ← Home
+          </a>
+        </div>
       </header>
 
       <main className="container roster-page__main">

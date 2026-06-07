@@ -6,6 +6,7 @@ import BrDraftPanel from "../components/BrDraftPanel.jsx";
 import MpBracketPanel from "../components/MpBracketPanel.jsx";
 import MpFixturesPanel from "../components/MpFixturesPanel.jsx";
 import MpRosterPanel from "../components/MpRosterPanel.jsx";
+import MpRafflePanel from "../components/MpRafflePanel.jsx";
 
 const STORAGE_KEY = "oxytocin_admin_key";
 
@@ -259,6 +260,7 @@ export default function Admin() {
             />
             <MpFixturesPanel adminKey={adminKey} disabled={loading} />
             <MpBracketPanel adminKey={adminKey} disabled={loading} />
+            <MpRafflePanel adminKey={adminKey} disabled={loading} />
             <AdminPlayerTable
               players={mpPlayers}
               deletingId={deletingId}

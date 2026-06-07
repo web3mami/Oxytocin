@@ -241,6 +241,78 @@ export async function publishMpBracket(adminKey, bracket) {
   return data;
 }
 
+/** @param {string} adminKey */
+export async function fetchRaffle(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/mp/raffle`, {
+    headers: { Authorization: `Bearer ${adminKey}` },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not load raffle");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {{ spots: number, pool: Array<object> }} payload */
+export async function saveRaffle(adminKey, payload) {
+  const res = await fetch(`${API_BASE}/api/admin/mp/raffle`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not save raffle");
+  }
+  return data;
+}
+
+/** @param {string} adminKey @param {{ spots: number, pool: Array<object> }} payload */
+export async function drawRaffle(adminKey, payload) {
+  const res = await fetch(`${API_BASE}/api/admin/mp/raffle/draw`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not run raffle draw");
+  }
+  return data;
+}
+
+/** @param {string} adminKey */
+export async function clearRaffle(adminKey) {
+  const res = await fetch(`${API_BASE}/api/admin/mp/raffle/clear`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${adminKey}`,
+      "Content-Type": "application/json",
+    },
+    body: "{}",
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not clear raffle");
+  }
+  return data;
+}
+
+export async function fetchPublicRaffle() {
+  const res = await fetch(`${API_BASE}/api/raffle`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || "Could not load raffle");
+  }
+  return data;
+}
+
 export async function fetchBattleRosters() {
   const res = await fetch(`${API_BASE}/api/roster`);
   const data = await res.json().catch(() => ({}));

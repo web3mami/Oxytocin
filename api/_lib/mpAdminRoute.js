@@ -16,6 +16,14 @@ import {
   saveMpRoster,
   validateMpRosterForPublish,
 } from "./mpRosterStore.js";
+import { randomInt } from "node:crypto";
+import {
+  getRaffleDraft,
+  normalizeRaffle,
+  pickWinners,
+  saveRaffle,
+  validateRaffleForDraw,
+} from "./raffleStore.js";
 
 /** @param {import("http").IncomingMessage & { query?: Record<string, string | string[]> }} req */
 export function mpAdminSegments(req) {
@@ -277,6 +285,94 @@ export async function handleMpAdmin(req, res, segments, body = {}) {
         console.error("[admin/mp bracket PUT]", err);
         res.statusCode = 500;
         res.end(JSON.stringify({ error: "Failed to save MP bracket" }));
+      }
+      return;
+    }
+  }
+
+  if (resource === "raffle") {
+    if (!action && req.method === "GET") {
+      try {
+        const draft = await getRaffleDraft();
+        res.end(JSON.stringify({ ok: true, ...draft }));
+      } catch (err) {
+        console.error("[admin/mp raffle GET]", err);
+        res.statusCode = 500;
+        res.end(JSON.stringify({ error: "Failed to load raffle" }));
+      }
+      return;
+    }
+
+    if (!action && req.method === "PUT") {
+      try {
+        const payload = await saveRaffle(
+          { spots: body?.spots, pool: body?.pool, winners: null, drawnAt: null },
+          { publish: false }
+        );
+        res.end(JSON.stringify({ ok: true, ...payload }));
+      } catch (err) {
+        if (err?.code === "NO_STORAGE") {
+          res.statusCode = 503;
+          res.end(JSON.stringify({ error: err.message }));
+          return;
+        }
+        console.error("[admin/mp raffle PUT]", err);
+        res.statusCode = 500;
+        res.end(JSON.stringify({ error: "Failed to save raffle" }));
+      }
+      return;
+    }
+
+    if (action === "draw" && req.method === "POST") {
+      const incoming = normalizeRaffle({ spots: body?.spots, pool: body?.pool });
+      const check = validateRaffleForDraw(incoming);
+      if (!check.ok) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ error: check.error }));
+        return;
+      }
+      try {
+        const winners = pickWinners(incoming.pool, incoming.spots, (n) => randomInt(n));
+        const payload = await saveRaffle(
+          {
+            spots: incoming.spots,
+            pool: incoming.pool,
+            winners,
+            drawnAt: new Date().toISOString(),
+          },
+          { publish: true }
+        );
+        res.end(JSON.stringify({ ok: true, published: true, ...payload }));
+      } catch (err) {
+        if (err?.code === "NO_STORAGE") {
+          res.statusCode = 503;
+          res.end(JSON.stringify({ error: err.message }));
+          return;
+        }
+        console.error("[admin/mp raffle draw]", err);
+        res.statusCode = 500;
+        res.end(JSON.stringify({ error: "Failed to run raffle draw" }));
+      }
+      return;
+    }
+
+    if (action === "clear" && req.method === "POST") {
+      try {
+        const existing = await getRaffleDraft();
+        const payload = await saveRaffle(
+          { spots: existing.spots, pool: existing.pool, winners: null, drawnAt: null },
+          { publish: false }
+        );
+        res.end(JSON.stringify({ ok: true, ...payload }));
+      } catch (err) {
+        if (err?.code === "NO_STORAGE") {
+          res.statusCode = 503;
+          res.end(JSON.stringify({ error: err.message }));
+          return;
+        }
+        console.error("[admin/mp raffle clear]", err);
+        res.statusCode = 500;
+        res.end(JSON.stringify({ error: "Failed to clear raffle" }));
       }
       return;
     }
