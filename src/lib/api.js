@@ -282,7 +282,10 @@ export async function drawRaffle(adminKey, payload) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || "Could not run raffle draw");
+    throw new Error(
+      data.error ||
+        `Draw failed (HTTP ${res.status}${res.status === 504 ? " — server timed out" : ""}). Try again.`
+    );
   }
   return data;
 }

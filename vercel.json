@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/**/*.js": { "maxDuration": 30 }
+  },
   "rewrites": [
     { "source": "/api/admin/mp-roster", "destination": "/api/admin/mp/roster" },
     { "source": "/api/admin/publish-mp-roster", "destination": "/api/admin/mp/roster/publish" },
