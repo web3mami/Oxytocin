@@ -4298,6 +4298,48 @@ h3 {
   font-size: 0.75rem;
 }
 
+.admin-raffle__chip-team {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.admin-raffle__chip-team--free {
+  color: var(--warn);
+}
+
+.admin-raffle__current {
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px dashed var(--line-strong);
+}
+
+.admin-raffle__current-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.admin-raffle__current-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.admin-raffle__current-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.admin-raffle__team--free {
+  border-color: var(--warn-glow);
+}
+
 /* ===== Public: /raffle reveal page ===== */
 .raffle-page {
   min-height: 100vh;

@@ -260,7 +260,7 @@ export default function Admin() {
             />
             <MpFixturesPanel adminKey={adminKey} disabled={loading} />
             <MpBracketPanel adminKey={adminKey} disabled={loading} />
-            <MpRafflePanel adminKey={adminKey} disabled={loading} />
+            <MpRafflePanel adminKey={adminKey} mpPlayers={mpPlayers} disabled={loading} />
             <AdminPlayerTable
               players={mpPlayers}
               deletingId={deletingId}

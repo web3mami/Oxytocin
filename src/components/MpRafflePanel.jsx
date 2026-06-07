@@ -8,19 +8,20 @@ import {
 } from "../lib/api.js";
 import { entryKey, normalizeEntry } from "../../shared/raffle.js";
 
-/** @param {{ id?: string|number, ign: string, uid?: string, xHandle?: string|null }} member @param {string} team */
-function memberToEntry(member, team) {
+/** @param {{ id?: string|number, ign: string, uid?: string, xHandle?: string|null }} src @param {string|null} team */
+function toEntry(src, team) {
   return normalizeEntry({
-    id: member.id,
-    ign: member.ign,
-    uid: member.uid,
-    xHandle: member.xHandle,
+    id: src.id,
+    ign: src.ign,
+    uid: src.uid,
+    xHandle: src.xHandle,
     team,
   });
 }
 
-export default function MpRafflePanel({ adminKey, disabled }) {
+export default function MpRafflePanel({ adminKey, mpPlayers = [], disabled }) {
   const [teams, setTeams] = useState([]);
+  const [loadedPool, setLoadedPool] = useState([]);
   const [selected, setSelected] = useState(() => new Set());
   const [spots, setSpots] = useState(1);
   const [winners, setWinners] = useState([]);
@@ -32,17 +33,47 @@ export default function MpRafflePanel({ adminKey, disabled }) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  /** @type {Map<string, import('../../shared/raffle.js').RaffleEntry>} */
+  const assignedIds = useMemo(() => {
+    const ids = new Set();
+    for (const team of teams) {
+      for (const m of team.members ?? []) {
+        if (m?.id != null) ids.add(String(m.id));
+      }
+    }
+    return ids;
+  }, [teams]);
+
+  const unassigned = useMemo(
+    () => mpPlayers.filter((p) => !assignedIds.has(String(p.id))),
+    [mpPlayers, assignedIds]
+  );
+
+  /**
+   * Every selectable/known entry, keyed. Sources merged so nothing in the saved
+   * pool is ever lost — team members, unassigned MP sign-ups, and any saved
+   * pool entry (e.g. a player no longer on a team).
+   * @type {Map<string, import('../../shared/raffle.js').RaffleEntry>}
+   */
   const entryByKey = useMemo(() => {
     const map = new Map();
     for (const team of teams) {
       for (const member of team.members ?? []) {
-        const entry = memberToEntry(member, team.name);
+        const entry = toEntry(member, team.name);
         map.set(entryKey(entry), entry);
       }
     }
+    for (const player of unassigned) {
+      const entry = toEntry(player, null);
+      const key = entryKey(entry);
+      if (!map.has(key)) map.set(key, entry);
+    }
+    for (const raw of loadedPool) {
+      const entry = normalizeEntry(raw);
+      const key = entryKey(entry);
+      if (!map.has(key)) map.set(key, entry);
+    }
     return map;
-  }, [teams]);
+  }, [teams, unassigned, loadedPool]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -56,6 +87,7 @@ export default function MpRafflePanel({ adminKey, disabled }) {
       setTeams(rosterTeams);
 
       const pool = raffle.pool ?? [];
+      setLoadedPool(pool);
       setSelected(new Set(pool.map((p) => entryKey(normalizeEntry(p)))));
       setSpots(raffle.spots ?? 1);
       setWinners(raffle.winners ?? []);
@@ -94,7 +126,7 @@ export default function MpRafflePanel({ adminKey, disabled }) {
     setSelected((prev) => {
       const next = new Set(prev);
       for (const member of team.members ?? []) {
-        const key = entryKey(memberToEntry(member, team.name));
+        const key = entryKey(toEntry(member, team.name));
         if (addAll) next.add(key);
         else next.delete(key);
       }
@@ -108,6 +140,7 @@ export default function MpRafflePanel({ adminKey, disabled }) {
     setMessage("");
     try {
       await saveRaffle(adminKey, { spots: Number(spots) || 1, pool: poolEntries });
+      setLoadedPool(poolEntries);
       setMessage(`Pool saved (${poolEntries.length} players, draw ${spots}).`);
     } catch (err) {
       setError(err.message || "Could not save raffle pool.");
@@ -138,6 +171,7 @@ export default function MpRafflePanel({ adminKey, disabled }) {
     setMessage("");
     try {
       const data = await drawRaffle(adminKey, { spots: count, pool: poolEntries });
+      setLoadedPool(poolEntries);
       setWinners(data.winners ?? []);
       setPublished(true);
       setDrawnAt(data.drawnAt ?? null);
@@ -239,6 +273,37 @@ export default function MpRafflePanel({ adminKey, disabled }) {
         ) : null}
       </div>
 
+      <div className="admin-raffle__current panel">
+        <h4 className="admin-raffle__current-title">In the pool ({poolEntries.length})</h4>
+        {poolEntries.length ? (
+          <ul className="admin-raffle__current-list">
+            {poolEntries.map((e) => (
+              <li key={entryKey(e)}>
+                <button
+                  type="button"
+                  className="admin-raffle__chip admin-raffle__chip--in"
+                  onClick={() => toggle(entryKey(e))}
+                  disabled={disabled}
+                  title="Remove from pool"
+                >
+                  <span className="admin-raffle__chip-mark" aria-hidden="true">×</span>
+                  <span className="admin-raffle__chip-ign">{e.ign}</span>
+                  {e.team ? <span className="admin-raffle__chip-team">{e.team}</span> : (
+                    <span className="admin-raffle__chip-team admin-raffle__chip-team--free">
+                      unassigned
+                    </span>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="admin-raffle__current-empty">
+            No players in the pool yet — add them from the lists below.
+          </p>
+        )}
+      </div>
+
       {winners.length ? (
         <div className="admin-raffle__winners">
           <h4 className="admin-raffle__winners-title">
@@ -261,11 +326,41 @@ export default function MpRafflePanel({ adminKey, disabled }) {
         </div>
       ) : null}
 
+      {unassigned.length ? (
+        <section className="admin-raffle__team panel admin-raffle__team--free">
+          <div className="admin-raffle__team-head">
+            <h4 className="admin-raffle__team-name">Unassigned MP players ({unassigned.length})</h4>
+          </div>
+          <ul className="admin-raffle__members">
+            {unassigned.map((player) => {
+              const key = entryKey(toEntry(player, null));
+              const checked = selected.has(key);
+              return (
+                <li key={key}>
+                  <button
+                    type="button"
+                    className={`admin-raffle__chip${checked ? " admin-raffle__chip--in" : ""}`}
+                    onClick={() => toggle(key)}
+                    disabled={disabled}
+                    aria-pressed={checked}
+                  >
+                    <span className="admin-raffle__chip-mark" aria-hidden="true">
+                      {checked ? "✓" : "+"}
+                    </span>
+                    <span className="admin-raffle__chip-ign">{player.ign}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
+
       <div className="admin-raffle__teams">
         {teams.map((team) => {
           const members = team.members ?? [];
           const allIn = members.every((m) =>
-            selected.has(entryKey(memberToEntry(m, team.name)))
+            selected.has(entryKey(toEntry(m, team.name)))
           );
           return (
             <section className="admin-raffle__team panel" key={team.name}>
@@ -282,7 +377,7 @@ export default function MpRafflePanel({ adminKey, disabled }) {
               </div>
               <ul className="admin-raffle__members">
                 {members.map((member) => {
-                  const key = entryKey(memberToEntry(member, team.name));
+                  const key = entryKey(toEntry(member, team.name));
                   const checked = selected.has(key);
                   return (
                     <li key={key}>
