@@ -243,19 +243,19 @@ export async function publishMpBracket(adminKey, bracket) {
 
 /** @param {string} adminKey */
 export async function fetchRaffle(adminKey) {
-  const res = await fetch(`${API_BASE}/api/admin/mp/raffle`, {
+  const res = await fetch(`${API_BASE}/api/admin/raffle`, {
     headers: { Authorization: `Bearer ${adminKey}` },
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || "Could not load raffle");
+    throw new Error(data.error || `Could not load raffle (HTTP ${res.status})`);
   }
   return data;
 }
 
 /** @param {string} adminKey @param {{ spots: number, pool: Array<object> }} payload */
 export async function saveRaffle(adminKey, payload) {
-  const res = await fetch(`${API_BASE}/api/admin/mp/raffle`, {
+  const res = await fetch(`${API_BASE}/api/admin/raffle`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -265,14 +265,14 @@ export async function saveRaffle(adminKey, payload) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || "Could not save raffle");
+    throw new Error(data.error || `Could not save raffle (HTTP ${res.status})`);
   }
   return data;
 }
 
 /** @param {string} adminKey @param {{ spots: number, pool: Array<object> }} payload */
 export async function drawRaffle(adminKey, payload) {
-  const res = await fetch(`${API_BASE}/api/admin/mp/raffle/draw`, {
+  const res = await fetch(`${API_BASE}/api/admin/raffle?op=draw`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -292,7 +292,7 @@ export async function drawRaffle(adminKey, payload) {
 
 /** @param {string} adminKey */
 export async function clearRaffle(adminKey) {
-  const res = await fetch(`${API_BASE}/api/admin/mp/raffle/clear`, {
+  const res = await fetch(`${API_BASE}/api/admin/raffle?op=clear`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${adminKey}`,
@@ -302,7 +302,7 @@ export async function clearRaffle(adminKey) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error || "Could not clear raffle");
+    throw new Error(data.error || `Could not clear raffle (HTTP ${res.status})`);
   }
   return data;
 }
