@@ -165,7 +165,12 @@ export default function Raffle() {
                         <span className="raffle-reel__name">
                           <span className="raffle-reel__ign">{winner.ign}</span>
                           {winner.dest ? (
-                            <span className="raffle-reel__dest">→ {winner.dest}</span>
+                            <span className="raffle-reel__move">
+                              <span className="raffle-reel__from">
+                                {winner.team || "free agent"}
+                              </span>
+                              <span className="raffle-reel__dest">→ {winner.dest}</span>
+                            </span>
                           ) : winner.team ? (
                             <span className="raffle-reel__team">{winner.team}</span>
                           ) : null}
@@ -211,7 +216,12 @@ export default function Raffle() {
                           <h3 className="raffle-dest__name">{dest}</h3>
                           <ul className="raffle-dest__members">
                             {members.map((w) => (
-                              <li key={entryKey(normalizeEntry(w))}>{w.ign}</li>
+                              <li key={entryKey(normalizeEntry(w))}>
+                                <span className="raffle-dest__ign">{w.ign}</span>
+                                <span className="raffle-dest__from">
+                                  from {w.team || "free agent"}
+                                </span>
+                              </li>
                             ))}
                           </ul>
                           {standby ? (

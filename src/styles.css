@@ -4455,6 +4455,19 @@ h3 {
   color: var(--text-muted);
 }
 
+.raffle-reel__move {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+}
+
+.raffle-reel__from {
+  font-weight: 500;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
 .raffle-reel__dest {
   font-weight: 700;
   font-size: 0.8rem;
@@ -4572,8 +4585,19 @@ h3 {
 }
 
 .raffle-dest__members li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+}
+
+.raffle-dest__ign {
   font-weight: 600;
   font-size: 1rem;
+}
+
+.raffle-dest__from {
+  font-size: 0.72rem;
+  color: var(--text-muted);
 }
 
 .raffle-dest__note {
