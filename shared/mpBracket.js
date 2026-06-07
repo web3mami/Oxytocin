@@ -118,6 +118,19 @@ export function applyByeAdvance(bracket) {
   return bracket;
 }
 
+/** Drop a recorded result if the winning side is no longer populated. @param {BracketMatch} match */
+function reconcileWinner(match) {
+  if (!match || match.byeSlot) return;
+  if (match.winner === "home" && !match.home) {
+    match.winner = null;
+    match.seriesScore = null;
+  }
+  if (match.winner === "away" && !match.away) {
+    match.winner = null;
+    match.seriesScore = null;
+  }
+}
+
 /** @param {MpBracket} bracket */
 function propagateDrawBracket(bracket) {
   const r0 = bracket.rounds[0]?.matches ?? [];
@@ -125,56 +138,39 @@ function propagateDrawBracket(bracket) {
   const sf = bracket.rounds[2]?.matches ?? [];
   const fin = bracket.rounds[3]?.matches ?? [];
 
-  for (const match of qf) {
-    match.home = null;
-    match.away = null;
-    match.winner = null;
-    match.seriesScore = null;
-  }
-  for (const match of sf) {
-    if (!match.byeSlot) {
-      match.home = null;
-      match.away = null;
-    } else {
-      match.home = null;
-    }
-    match.winner = null;
-    match.seriesScore = null;
-  }
-  for (const match of fin) {
-    match.home = null;
-    match.away = null;
-    match.winner = null;
-    match.seriesScore = null;
-  }
-
+  // Advance R1 winners into the QF slots; keep any recorded QF results.
   const playMatches = r0.filter((m) => !m.byeSlot);
   for (let i = 0; i < playMatches.length; i++) {
     const winner = winnerTeam(playMatches[i]);
-    if (!winner) continue;
     const qfIdx = Math.floor(i / 2);
     const slot = i % 2 === 0 ? "home" : "away";
-    if (qf[qfIdx]) qf[qfIdx][slot] = winner;
+    if (qf[qfIdx]) qf[qfIdx][slot] = winner ?? null;
   }
 
   applyByeAdvance(bracket);
+  for (const match of qf) reconcileWinner(match);
 
   const sfPlay = sf.filter((m) => !m.byeSlot);
   const sfBye = sf.find((m) => m.byeSlot);
 
+  // SF play card fed by QF[0]/QF[1] winners; preserve its recorded result.
   if (sfPlay[0]) {
-    if (qf[0]?.winner) sfPlay[0].home = winnerTeam(qf[0]);
-    if (qf[1]?.winner) sfPlay[0].away = winnerTeam(qf[1]);
+    sfPlay[0].home = qf[0]?.winner ? winnerTeam(qf[0]) : null;
+    sfPlay[0].away = qf[1]?.winner ? winnerTeam(qf[1]) : null;
+    reconcileWinner(sfPlay[0]);
   }
 
-  if (sfBye && qf[2]?.winner) {
-    sfBye.home = winnerTeam(qf[2]);
-    sfBye.winner = "home";
+  // Bye SF card auto-advances QF[2] winner.
+  if (sfBye) {
+    sfBye.home = qf[2]?.winner ? winnerTeam(qf[2]) : null;
+    sfBye.winner = sfBye.home ? "home" : null;
   }
 
+  // Final fed by the two SF winners; preserve its recorded result.
   if (fin[0]) {
-    if (sfPlay[0]?.winner) fin[0].home = winnerTeam(sfPlay[0]);
-    if (sfBye?.winner) fin[0].away = winnerTeam(sfBye);
+    fin[0].home = sfPlay[0]?.winner ? winnerTeam(sfPlay[0]) : null;
+    fin[0].away = sfBye?.winner ? winnerTeam(sfBye) : null;
+    reconcileWinner(fin[0]);
   }
 }
 

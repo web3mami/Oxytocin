@@ -13,6 +13,12 @@ const RESULTS = [
     seriesScore: "2-0",
     label: "Team Delta def. Team Charlie 2-0",
   },
+  {
+    matchId: "r1-m1",
+    side: "away",
+    seriesScore: "0-2",
+    label: "Team Echo def. Team Alpha 2-0",
+  },
 ];
 
 let draft = await getMpBracketDraft();
