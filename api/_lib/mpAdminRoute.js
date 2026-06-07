@@ -351,7 +351,9 @@ export async function handleMpAdmin(req, res, segments, body = {}) {
         }
         console.error("[admin/mp raffle draw]", err);
         res.statusCode = 500;
-        res.end(JSON.stringify({ error: "Failed to run raffle draw" }));
+        res.end(
+          JSON.stringify({ error: `Failed to run raffle draw: ${err?.message || "unknown error"}` })
+        );
       }
       return;
     }

@@ -14,6 +14,29 @@ const MP_RAFFLE_ID = "mp_raffle";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const MP_RAFFLE_FILE = path.join(__dirname, "../../data/mp-raffle.json");
 
+/**
+ * Neon serverless connections occasionally drop with a transient "fetch failed"
+ * on cold starts. Retry those a couple of times before giving up.
+ * @template T @param {() => Promise<T>} fn @returns {Promise<T>}
+ */
+async function withDbRetry(fn, attempts = 3) {
+  let lastErr;
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      const msg = String(err?.message || "");
+      const transient = /fetch failed|ECONNRESET|ETIMEDOUT|connection|terminating|timeout/i.test(
+        msg
+      );
+      if (!transient || i === attempts - 1) throw err;
+      await new Promise((resolve) => setTimeout(resolve, 200 * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
 /** @returns {Promise<object | null>} */
 async function readFile() {
   try {
@@ -43,9 +66,11 @@ export async function getRaffleDraft() {
   const sql = getSql();
   if (sql) {
     await ensureSchema(sql);
-    const rows = await sql`
-      SELECT payload FROM published_rosters WHERE id = ${MP_RAFFLE_ID}
-    `;
+    const rows = await withDbRetry(
+      () => sql`
+        SELECT payload FROM published_rosters WHERE id = ${MP_RAFFLE_ID}
+      `
+    );
     if (rows[0]?.payload) {
       const parsed =
         typeof rows[0].payload === "string" ? JSON.parse(rows[0].payload) : rows[0].payload;
@@ -89,13 +114,15 @@ export async function saveRaffle(raffle, opts = {}) {
   const sql = getSql();
   if (sql) {
     await ensureSchema(sql);
-    await sql`
-      INSERT INTO published_rosters (id, payload, updated_at)
-      VALUES (${MP_RAFFLE_ID}, ${JSON.stringify(payload)}::jsonb, NOW())
-      ON CONFLICT (id) DO UPDATE SET
-        payload = EXCLUDED.payload,
-        updated_at = EXCLUDED.updated_at
-    `;
+    await withDbRetry(
+      () => sql`
+        INSERT INTO published_rosters (id, payload, updated_at)
+        VALUES (${MP_RAFFLE_ID}, ${JSON.stringify(payload)}::jsonb, NOW())
+        ON CONFLICT (id) DO UPDATE SET
+          payload = EXCLUDED.payload,
+          updated_at = EXCLUDED.updated_at
+      `
+    );
     return payload;
   }
 
